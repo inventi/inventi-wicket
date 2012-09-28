@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>lt.inventi</groupId>
+        <artifactId>inventi-wicket</artifactId>
+        <version>0.0.2-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>wicket-generic</artifactId>
+    <packaging>jar</packaging>
+    <name>Inventi :: UI :: Wicket :: Generic Components</name>
+
+    <dependencies>
+        <!-- Needed for KeypressUpdatingBehaviour (jquery.widget js) -->
+        <dependency>
+            <groupId>org.odlabs.wiquery</groupId>
+            <artifactId>wiquery-jquery-ui</artifactId>
+        </dependency>
+
+        <!-- Needed for KeypressUpdatingBehaviour (json) -->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>wicket-test</artifactId>
+        </dependency>
+    </dependencies>
+</project>

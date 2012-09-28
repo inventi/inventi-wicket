@@ -16,6 +16,7 @@
 
     <modules>
         <module>wicket-test</module>
+        <module>wicket-generic</module>
         <module>wicket-jquery-autocomplete</module>
         <module>wicket-expandable-list</module>
         <module>wicket-breadcrumb-page</module>
