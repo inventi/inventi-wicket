@@ -127,11 +127,22 @@
                 <groupId>org.odlabs.wiquery</groupId>
                 <artifactId>wiquery-core</artifactId>
                 <version>${wicket.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.codehaus.jackson</groupId>
+                        <artifactId>jackson-mapper-asl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.odlabs.wiquery</groupId>
                 <artifactId>wiquery-jquery-ui</artifactId>
                 <version>${wicket.version}</version>
+            </dependency>
+            <dependency> <!-- Transitive dependency resolution fails from WiQuery -->
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.9.9</version>
             </dependency>
 
             <!-- AUTOCOMPLETE -->
