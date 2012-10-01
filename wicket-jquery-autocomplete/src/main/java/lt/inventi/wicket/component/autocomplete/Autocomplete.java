@@ -12,6 +12,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
@@ -239,6 +240,7 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
         response.render(JavaScriptHeaderItem.forReference(AutocompleteJavaScriptResourceReference.get()));
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(Autocomplete.class, "jquery.ui.subclass.js")));
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(Autocomplete.class, "Autocomplete.js")));
+        response.render(CssHeaderItem.forReference(AutocompleteCssResourceReference.get()));
 
         JSONObject cfg = new JSONObject();
         cfg.put("source", urlFor(IQueryListener.INTERFACE, null));
