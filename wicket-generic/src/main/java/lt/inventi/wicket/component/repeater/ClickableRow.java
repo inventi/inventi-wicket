@@ -7,14 +7,14 @@ import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 
 public class ClickableRow extends Behavior {
 
-    private String exceptionClass;
+    private final String exceptionClass;
 
     public ClickableRow(String exceptionClass) {
         this.exceptionClass = exceptionClass;
     }
 
     public ClickableRow() {
-
+        this.exceptionClass = "not-clickable";
     }
 
     @Override
