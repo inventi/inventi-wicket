@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Inventi :: Wicket :: Reusable Components</name>
 
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <properties>
         <wicket.version>6.1.1</wicket.version>
