@@ -184,49 +184,6 @@
                 <version>3.0.1</version>
                 <scope>test</scope>
             </dependency>
-
-            <!-- Web
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-core</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-extensions</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-guice</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.wicketstuff</groupId>
-                <artifactId>wicketstuff-jsr303</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.odlabs.wiquery</groupId>
-                <artifactId>wiquery-jquery-ui</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit-dep</artifactId>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.sonatype.sisu</groupId>
-                <artifactId>sisu-guava</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>solid-test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
