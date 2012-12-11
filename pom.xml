@@ -16,17 +16,16 @@
     </properties>
 
     <modules>
-        <module>wicket-test</module>
-        <module>wicket-generic</module>
-        <module>wicket-jquery-autocomplete</module>
-        <module>wicket-expandable-list</module>
-        <module>wicket-breadcrumb-page</module>
+        <module>inventi-wicket-test</module>
+        <module>inventi-wicket-generic</module>
+        <module>inventi-wicket-autocomplete</module>
+        <module>inventi-wicket-expandable-list</module>
+        <module>inventi-wicket-breadcrumbs</module>
     </modules>
 
     <scm>
-        <connection>scm:git:git://git.inventi.corp/git/inventi-wicket.git</connection>
-        <developerConnection>scm:git:ssh://adminas@git/git/inventi-wicket.git</developerConnection>
-        <url>http://gitblit/summary/?r=inventi-wicket.git</url>
+	<connection>scm:git:git://git@github.com:inventiLT/wicket-components.git</connection>
+	<developerConnection>scm:git://git@github.com:inventiLT/wicket-components.git</developerConnection>
     </scm>
 
     <distributionManagement>

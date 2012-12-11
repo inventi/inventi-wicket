@@ -7,17 +7,18 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>wicket-jquery-autocomplete</artifactId>
+    <artifactId>inventi-wicket-generic</artifactId>
     <packaging>jar</packaging>
-    <name>Inventi :: UI :: Wicket :: Autocomplete</name>
+    <name>Inventi :: UI :: Wicket :: Generic Components</name>
 
     <dependencies>
+        <!-- Needed for KeypressUpdatingBehaviour (jquery.widget js) -->
         <dependency>
             <groupId>org.odlabs.wiquery</groupId>
             <artifactId>wiquery-jquery-ui</artifactId>
         </dependency>
 
-        <!-- Utils (Autocomplete) -->
+        <!-- Needed for KeypressUpdatingBehaviour (json) -->
         <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>

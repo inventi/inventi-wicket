@@ -7,14 +7,21 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>wicket-expandable-list</artifactId>
+    <artifactId>inventi-wicket-autocomplete</artifactId>
     <packaging>jar</packaging>
-    <name>Inventi :: UI :: Wicket :: Expandable List</name>
+    <name>Inventi :: UI :: Wicket :: Autocomplete</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket-core</artifactId>
+            <groupId>org.odlabs.wiquery</groupId>
+            <artifactId>wiquery-jquery-ui</artifactId>
+        </dependency>
+
+        <!-- Utils (Autocomplete) -->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
         </dependency>
 
         <!-- TEST -->

@@ -7,22 +7,14 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>wicket-generic</artifactId>
+    <artifactId>inventi-wicket-breadcrumbs</artifactId>
     <packaging>jar</packaging>
-    <name>Inventi :: UI :: Wicket :: Generic Components</name>
+    <name>Inventi :: UI :: Wicket :: Breadcrumb Page</name>
 
     <dependencies>
-        <!-- Needed for KeypressUpdatingBehaviour (jquery.widget js) -->
         <dependency>
-            <groupId>org.odlabs.wiquery</groupId>
-            <artifactId>wiquery-jquery-ui</artifactId>
-        </dependency>
-
-        <!-- Needed for KeypressUpdatingBehaviour (json) -->
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <classifier>jdk15</classifier>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
         </dependency>
 
         <!-- TEST -->
