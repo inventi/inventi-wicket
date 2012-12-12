@@ -17,6 +17,7 @@
 
     <modules>
         <module>inventi-wicket-test</module>
+        <module>inventi-wicket-js</module>
         <module>inventi-wicket-generic</module>
         <module>inventi-wicket-autocomplete</module>
         <module>inventi-wicket-expandable-list</module>
