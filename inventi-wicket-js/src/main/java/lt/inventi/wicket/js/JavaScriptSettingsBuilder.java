@@ -27,6 +27,8 @@ public interface JavaScriptSettingsBuilder {
     }
 
     interface UiWidgetsBuilder {
+        UiWidgetsBuilder withUiWidgetsMenu(JavaScriptResourceReference menu);
+
         UiWidgetsBuilder withUiWidgetsAutocomplete(JavaScriptResourceReference autocomplete);
 
         JQueryUiBuilder endUiWidgets();
@@ -73,12 +75,25 @@ public interface JavaScriptSettingsBuilder {
         }
 
         class WidgetsBuilder implements UiWidgetsBuilder {
+            
+            @Override
+            public UiWidgetsBuilder withUiWidgetsMenu(JavaScriptResourceReference menu) {
+                Set<ResourceReference> dependencies = toSet(menu.getDependencies());
+                ensureContains(dependencies, JQueryUi192Builder.this.uiCoreCore,
+                                             JQueryUi192Builder.this.uiCoreWidget,
+                                             JQueryUi192Builder.this.uiCorePosition);
+
+                JQueryUi192Builder.this.uiWidgetsMenu = menu;
+                return this;
+            }
+
             @Override
             public UiWidgetsBuilder withUiWidgetsAutocomplete(JavaScriptResourceReference autocomplete) {
                 Set<ResourceReference> dependencies = toSet(autocomplete.getDependencies());
                 ensureContains(dependencies, JQueryUi192Builder.this.uiCoreCore,
                                              JQueryUi192Builder.this.uiCoreWidget,
-                                             JQueryUi192Builder.this.uiCorePosition);
+                                             JQueryUi192Builder.this.uiCorePosition,
+                                             JQueryUi192Builder.this.uiWidgetsMenu);
 
                 JQueryUi192Builder.this.uiWidgetsAutocomplete = autocomplete;
                 return this;
@@ -92,7 +107,7 @@ public interface JavaScriptSettingsBuilder {
 
         private final JavaScriptSettingsBuilder settingsBuilder;
         private JavaScriptResourceReference uiCoreCore, uiCoreWidget, uiCorePosition, uiCoreMouse;
-        private JavaScriptResourceReference uiWidgetsAutocomplete;
+        private JavaScriptResourceReference uiWidgetsAutocomplete, uiWidgetsMenu;
 
         public JQueryUi192Builder(JavaScriptSettingsBuilder settingsBuilder) {
             this.settingsBuilder = settingsBuilder;
@@ -122,7 +137,8 @@ public interface JavaScriptSettingsBuilder {
 
         @Override
         public JQueryUiSettings build() {
-            return new JQueryUiSettings(uiCoreCore, uiCoreWidget, uiCoreMouse, uiCorePosition, uiWidgetsAutocomplete);
+            return new JQueryUiSettings(uiCoreCore, uiCoreWidget, uiCoreMouse, uiCorePosition, 
+                uiWidgetsMenu, uiWidgetsAutocomplete);
         }
 
         private static void ensureContains(Set<ResourceReference> dependences, ResourceReference... expected) {
@@ -156,7 +172,7 @@ public interface JavaScriptSettingsBuilder {
 
     }
 
-    enum JQueryUiVersions implements JQueryUiBuilderFactory {
+    public enum JQueryUiVersions implements JQueryUiBuilderFactory {
         v1_9_2 {
             @Override
             public JQueryUiBuilder newBuilder(final JavaScriptSettingsBuilder settingsBuilder) {

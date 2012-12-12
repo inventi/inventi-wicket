@@ -41,10 +41,16 @@ public class JavaScriptSettingsTest {
             }
         };
         final JavaScriptResourceReference position = new JavaScriptResourceReference(getClass(), "position");
-        JavaScriptResourceReference autocomplete = new JavaScriptResourceReference(getClass(), "autocomplete") {
+        final JavaScriptResourceReference menu = new JavaScriptResourceReference(getClass(), "menu") {
             @Override
             public Iterable<? extends HeaderItem> getDependencies() {
                 return Arrays.asList(forReference(core), forReference(widget), forReference(position));
+            }
+        };
+        JavaScriptResourceReference autocomplete = new JavaScriptResourceReference(getClass(), "autocomplete") {
+            @Override
+            public Iterable<? extends HeaderItem> getDependencies() {
+                return Arrays.asList(forReference(core), forReference(widget), forReference(position), forReference(menu));
             }
         };
 
@@ -54,10 +60,12 @@ public class JavaScriptSettingsTest {
                 .withUiCorePosition(position)
             .endUiCore()
             .withUiWidgets()
+                .withUiWidgetsMenu(menu)
                 .withUiWidgetsAutocomplete(autocomplete)
             .endUiWidgets()
             .endJqueryUi().build();
 
+        assertThat(settings.jqueryUi.uiWidgetMenu, is(menu));
         assertThat(settings.jqueryUi.uiWidgetAutocomplete, is(autocomplete));
     }
 

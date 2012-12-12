@@ -11,18 +11,20 @@ public class JQueryUiSettings {
     public final JavaScriptResourceReference uiCoreMouse;
     public final JavaScriptResourceReference uiCorePosition;
 
+    public final JavaScriptResourceReference uiWidgetMenu;
     public final JavaScriptResourceReference uiWidgetAutocomplete;
 
     JQueryUiSettings() {
-        this(get(), get(), get(), get(), get());
+        this(get(), get(), get(), get(), get(), get());
     }
 
     public JQueryUiSettings(JavaScriptResourceReference uiCoreCore, JavaScriptResourceReference uiCoreWidget,
-        JavaScriptResourceReference uiCoreMouse, JavaScriptResourceReference uiCorePosition, JavaScriptResourceReference uiWidgetAutocomplete) {
+        JavaScriptResourceReference uiCoreMouse, JavaScriptResourceReference uiCorePosition, JavaScriptResourceReference uiWidgetMenu, JavaScriptResourceReference uiWidgetAutocomplete) {
         this.uiCoreCore = uiCoreCore;
         this.uiCoreWidget = uiCoreWidget;
         this.uiCoreMouse = uiCoreMouse;
         this.uiCorePosition = uiCorePosition;
+        this.uiWidgetMenu = uiWidgetMenu;
         this.uiWidgetAutocomplete = uiWidgetAutocomplete;
     }
 
