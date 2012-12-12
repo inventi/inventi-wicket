@@ -9,11 +9,16 @@ public class JQueryUiSettings {
     public final JavaScriptResourceReference uiCoreMouse;
     public final JavaScriptResourceReference uiCorePosition;
 
-    public JQueryUiSettings(JavaScriptResourceReference uiCoreCore, JavaScriptResourceReference uiCoreWidget, JavaScriptResourceReference uiCoreMouse, JavaScriptResourceReference uiCorePosition) {
+    public final JavaScriptResourceReference uiWidgetAutocomplete;
+
+    public JQueryUiSettings(JavaScriptResourceReference uiCoreCore, JavaScriptResourceReference uiCoreWidget,
+        JavaScriptResourceReference uiCoreMouse, JavaScriptResourceReference uiCorePosition, JavaScriptResourceReference uiWidgetAutocomplete) {
         this.uiCoreCore = uiCoreCore;
         this.uiCoreWidget = uiCoreWidget;
         this.uiCoreMouse = uiCoreMouse;
         this.uiCorePosition = uiCorePosition;
+        this.uiWidgetAutocomplete = uiWidgetAutocomplete;
     }
+
 
 }

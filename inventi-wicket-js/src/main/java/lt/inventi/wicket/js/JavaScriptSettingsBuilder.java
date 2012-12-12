@@ -18,10 +18,18 @@ public interface JavaScriptSettingsBuilder {
         JQueryUiBuilder endUiCore();
     }
 
+    interface UiWidgetsBuilder {
+        UiWidgetsBuilder withUiWidgetsAutocomplete(JavaScriptResourceReference autocomplete);
+
+        JQueryUiBuilder endUiWidgets();
+    }
+
     interface JQueryUiBuilder {
         JQueryUiBuilder withAllUiCore(JavaScriptResourceReference core);
 
         UiCoreBuilder withUiCore(JavaScriptResourceReference core);
+
+        UiWidgetsBuilder withUiWidgets();
 
         JavaScriptSettingsBuilder endJqueryUi();
 
@@ -54,8 +62,22 @@ public interface JavaScriptSettingsBuilder {
             }
         }
 
+        class WidgetsBuilder implements UiWidgetsBuilder {
+            @Override
+            public UiWidgetsBuilder withUiWidgetsAutocomplete(JavaScriptResourceReference autocomplete) {
+                JQueryUi192Builder.this.uiWidgetsAutocomplete = autocomplete;
+                return this;
+            }
+
+            @Override
+            public JQueryUiBuilder endUiWidgets() {
+                return JQueryUi192Builder.this;
+            }
+        }
+
         private final JavaScriptSettingsBuilder settingsBuilder;
         private JavaScriptResourceReference uiCoreCore, uiCoreWidget, uiCorePosition, uiCoreMouse;
+        private JavaScriptResourceReference uiWidgetsAutocomplete;
 
         public JQueryUi192Builder(JavaScriptSettingsBuilder settingsBuilder) {
             this.settingsBuilder = settingsBuilder;
@@ -78,8 +100,13 @@ public interface JavaScriptSettingsBuilder {
         }
 
         @Override
+        public UiWidgetsBuilder withUiWidgets() {
+            return new WidgetsBuilder();
+        }
+
+        @Override
         public JQueryUiSettings build() {
-            return new JQueryUiSettings(uiCoreCore, uiCoreWidget, uiCorePosition, uiCoreMouse);
+            return new JQueryUiSettings(uiCoreCore, uiCoreWidget, uiCorePosition, uiCoreMouse, uiWidgetsAutocomplete);
         }
 
     }
