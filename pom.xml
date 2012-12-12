@@ -105,7 +105,7 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>wicket-test</artifactId>
+                <artifactId>inventi-wicket-test</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
