@@ -48,6 +48,8 @@ public interface JavaScriptSettingsBuilder {
         class CoreBuilder implements UiCoreBuilder {
             @Override
             public UiCoreBuilder withUiCoreWidget(JavaScriptResourceReference widget) {
+                ensureContains(toSet(widget.getDependencies()), JQueryUi192Builder.this.uiCoreCore);
+
                 JQueryUi192Builder.this.uiCoreWidget = widget;
                 return this;
             }
@@ -77,6 +79,7 @@ public interface JavaScriptSettingsBuilder {
                 ensureContains(dependencies, JQueryUi192Builder.this.uiCoreCore,
                                              JQueryUi192Builder.this.uiCoreWidget,
                                              JQueryUi192Builder.this.uiCorePosition);
+
                 JQueryUi192Builder.this.uiWidgetsAutocomplete = autocomplete;
                 return this;
             }
@@ -96,8 +99,9 @@ public interface JavaScriptSettingsBuilder {
         }
 
         @Override
-        public JQueryUiBuilder withAllUiCore(JavaScriptResourceReference core) {
-            throw new UnsupportedOperationException();
+        public JQueryUiBuilder withAllUiCore(JavaScriptResourceReference fullCore) {
+            this.uiCoreCore = this.uiCoreWidget = this.uiCorePosition = this.uiCoreMouse = fullCore;
+            return this;
         }
 
         @Override

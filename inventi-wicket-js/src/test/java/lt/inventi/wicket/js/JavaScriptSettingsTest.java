@@ -17,13 +17,11 @@ public class JavaScriptSettingsTest {
     @Test
     public void shouldSetResourcesForSeparateJQueryUiCoreFiles() {
         JavaScriptResourceReference core = new JavaScriptResourceReference(getClass(), "core");
-        JavaScriptResourceReference widget = new JavaScriptResourceReference(getClass(), "widget");
         JavaScriptResourceReference mouse = new JavaScriptResourceReference(getClass(), "mouse");
         JavaScriptResourceReference position = new JavaScriptResourceReference(getClass(), "position");
 
         JavaScriptSettings settings = JavaScriptSettings.newBuilder().withJqueryUi(JQueryUiVersions.v1_9_2)
             .withUiCore(core)
-            .withUiCoreWidget(widget)
             .withUiCoreMouse(mouse)
             .withUiCorePosition(position)
             .endUiCore().endJqueryUi().build();
@@ -31,13 +29,17 @@ public class JavaScriptSettingsTest {
         assertThat(settings.jqueryUi.uiCoreCore, is(core));
         assertThat(settings.jqueryUi.uiCorePosition, is(position));
         assertThat(settings.jqueryUi.uiCoreMouse, is(mouse));
-        assertThat(settings.jqueryUi.uiCoreWidget, is(widget));
     }
 
     @Test
     public void shouldCheckAutocompleteWidgetDependencies() {
         final JavaScriptResourceReference core = new JavaScriptResourceReference(getClass(), "core");
-        final JavaScriptResourceReference widget = new JavaScriptResourceReference(getClass(), "widget");
+        final JavaScriptResourceReference widget = new JavaScriptResourceReference(getClass(), "widget") {
+            @Override
+            public Iterable<? extends HeaderItem> getDependencies() {
+                return Arrays.asList(forReference(core));
+            }
+        };
         final JavaScriptResourceReference position = new JavaScriptResourceReference(getClass(), "position");
         JavaScriptResourceReference autocomplete = new JavaScriptResourceReference(getClass(), "autocomplete") {
             @Override
@@ -57,5 +59,18 @@ public class JavaScriptSettingsTest {
             .endJqueryUi().build();
 
         assertThat(settings.jqueryUi.uiWidgetAutocomplete, is(autocomplete));
+    }
+
+    @Test
+    public void shouldUsePackageCoreInsteadOfSubcomponents() {
+        final JavaScriptResourceReference fullCore = new JavaScriptResourceReference(getClass(), "full-core");
+
+        JavaScriptSettings settings = JavaScriptSettings.newBuilder().withJqueryUi(JQueryUiVersions.v1_9_2)
+            .withAllUiCore(fullCore).endJqueryUi().build();
+
+        assertThat(settings.jqueryUi.uiCoreCore, is(fullCore));
+        assertThat(settings.jqueryUi.uiCorePosition, is(fullCore));
+        assertThat(settings.jqueryUi.uiCoreMouse, is(fullCore));
+        assertThat(settings.jqueryUi.uiCoreWidget, is(fullCore));
     }
 }
