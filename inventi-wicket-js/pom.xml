@@ -12,6 +12,10 @@
     <name>Inventi :: UI :: Wicket :: Javascript Manager</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+        </dependency>
         <!-- TEST -->
         <dependency>
             <groupId>${project.groupId}</groupId>

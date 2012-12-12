@@ -1,5 +1,7 @@
 package lt.inventi.wicket.js;
 
+import static lt.inventi.wicket.js.EmptyResourceReference.get;
+
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
 public class JQueryUiSettings {
@@ -10,6 +12,10 @@ public class JQueryUiSettings {
     public final JavaScriptResourceReference uiCorePosition;
 
     public final JavaScriptResourceReference uiWidgetAutocomplete;
+
+    JQueryUiSettings() {
+        this(get(), get(), get(), get(), get());
+    }
 
     public JQueryUiSettings(JavaScriptResourceReference uiCoreCore, JavaScriptResourceReference uiCoreWidget,
         JavaScriptResourceReference uiCoreMouse, JavaScriptResourceReference uiCorePosition, JavaScriptResourceReference uiWidgetAutocomplete) {

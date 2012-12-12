@@ -24,12 +24,17 @@ public class JavaScriptSettings {
 
     private static final MetaDataKey<JavaScriptSettings> KEY = new MetaDataKey<JavaScriptSettings>() { /* empty */ };
 
+    public static void installEmpty(Application app) {
+        app.setMetaData(KEY, new JavaScriptSettings(new JQueryUiSettings()));
+    }
+
     public static void install(Application app, JavaScriptSettings settings) {
         app.setMetaData(KEY, settings);
     }
 
     public static JavaScriptSettings get(Application app) {
-        return app.getMetaData(KEY);
+        JavaScriptSettings settings = app.getMetaData(KEY);
+        return settings;
     }
 
     public static JavaScriptSettings get() {
