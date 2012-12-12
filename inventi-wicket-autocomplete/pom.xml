@@ -13,10 +13,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.odlabs.wiquery</groupId>
-            <artifactId>wiquery-jquery-ui</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>inventi-wicket-js</artifactId>
         </dependency>
