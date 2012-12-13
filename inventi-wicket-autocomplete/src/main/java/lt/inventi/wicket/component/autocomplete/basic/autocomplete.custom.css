@@ -23,7 +23,7 @@ span.autocomplete span.spinner.show{
     display:block;
 }
 
-/*jQuery autocomplete*/
+/* jQuery autocomplete */
 ul.ui-autocomplete li.add_new {
     background: #fff;
 }

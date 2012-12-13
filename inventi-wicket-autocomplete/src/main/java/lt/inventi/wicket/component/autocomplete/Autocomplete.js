@@ -1,11 +1,11 @@
-$.ui.widget.subclass('ui.superautocomplete', $.ui.autocomplete.prototype);
-$.ui.superautocomplete.subclass('ui.objectautocomplete', {
+$.widget('ui.objectautocomplete', $.ui.autocomplete, {
 
     options: {
         minLength: 0
     },
 
     _create: function() {
+    	this._super("_create");
         var self = this;
         this.lastValue = "";
         this.hiddenField = this.element.find("~ input[type='hidden']");
@@ -19,13 +19,13 @@ $.ui.superautocomplete.subclass('ui.objectautocomplete', {
         }
 
         this.dropDownButton.click(function(event) {
-                if (self.menu.element.is(":visible")) {
-                    self.close();
-                    return;
-                }
-                self.search();
-                self.element.focus();
-            });
+            if (self.menu.element.is(":visible")) {
+                self.close();
+                return;
+            }
+            self.search();
+            self.element.focus();
+        });
 
         if (this.element.val() == '') {
             this.dropDownButton.addClass('show');
@@ -42,48 +42,40 @@ $.ui.superautocomplete.subclass('ui.objectautocomplete', {
             }
         });
     },
-
-    close: function(event) {
-        if (this.menu.element.is(":visible")) {
-            this.element.change();
-        }
-        this._super(event);
-    },
-
-
+    
+    /*
+     * Update hidden field value when the autocomplete value is selected
+     */
     _trigger: function(name, event, obj) {
-        if (name == "select") {
+        if (name === "select") {
             this.hiddenField.val(obj.item.id);
             this.lastSelected = obj.item.value;
+        } else if (name === "search") {
+            // Show spinner when starting search
+            this.dropDownButton.removeClass("show");
+            this.spinner.addClass("show");
+        } else if (name === "response") {
+            // Hide spinner when results arrive (doesn't work with 1.8.16)
+            this.spinner.removeClass('show');
+        } else if (name === "close") {
+            // Always trigger onchange when menu closes
+        	// in order to show the dropDown button when nothing is selected.
+            this.element.change();
         }
         this._super(name, event, obj);
     },
 
+    /*
+     * Render 'Add new item' link at the bottom of the result
+     */
     _renderItem: function(ul, item) {
-
         if (item.addNew) {
         	var link = $("#"+item.id).parent().clone();
         	link.appendTo(ul);
         	link.show();
-        } else {
-            this._super(ul, item);
-        }
-    },
-
-    _search: function(value) {
-        this._super(value);
-        this.dropDownButton.removeClass("show");
-        this.spinner.addClass("show");
-    },
-    _response: function(content) {
-        this.spinner.removeClass('show');
-        this._super(content);
-    },
-
-    setCustomValue: function(id, value) {
-        this.hiddenField.val(id);
-        this.lastSelected = value;
-        this.element.val(value);
-        this.element.change();
+            return link;
+        } 
+        return this._super(ul, item);
     }
+    
 });

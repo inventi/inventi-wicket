@@ -237,9 +237,7 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
 
     @Override
     public void renderHead(IHeaderResponse response) {
-
         response.render(JavaScriptHeaderItem.forReference(JavaScriptSettings.get().jqueryUi.uiWidgetAutocomplete));
-        response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(Autocomplete.class, "jquery.ui.subclass.js")));
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(Autocomplete.class, "Autocomplete.js")));
         response.render(CssHeaderItem.forReference(AutocompleteCssResourceReference.get()));
 
