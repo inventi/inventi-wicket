@@ -7,9 +7,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>inventi-wicket-js</artifactId>
+    <artifactId>inventi-wicket-resources</artifactId>
     <packaging>jar</packaging>
-    <name>Inventi :: UI :: Wicket :: Javascript Manager</name>
+    <name>Inventi :: UI :: Wicket :: Resources Manager</name>
 
     <dependencies>
         <dependency>
