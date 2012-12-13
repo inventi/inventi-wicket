@@ -33,7 +33,7 @@ import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.util.convert.ConversionException;
 
-import lt.inventi.wicket.js.JavaScriptSettings;
+import lt.inventi.wicket.resource.ResourceSettings;
 
 /**
  * Provides autocomplete functionality, based on jquery autocomplete plugin. This class adds some
@@ -237,7 +237,7 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.render(JavaScriptHeaderItem.forReference(JavaScriptSettings.get().jqueryUi.uiWidgetAutocomplete));
+        response.render(JavaScriptHeaderItem.forReference(ResourceSettings.get().js().jqueryUi.uiWidgetAutocomplete));
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(Autocomplete.class, "Autocomplete.js")));
         response.render(CssHeaderItem.forReference(AutocompleteCssResourceReference.get()));
 

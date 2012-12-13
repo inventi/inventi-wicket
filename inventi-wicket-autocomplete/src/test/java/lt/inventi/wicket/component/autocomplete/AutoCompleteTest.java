@@ -24,7 +24,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import lt.inventi.wicket.component.autocomplete.Autocomplete.ValueField;
-import lt.inventi.wicket.js.JavaScriptSettings;
+import lt.inventi.wicket.resource.ResourceSettings;
 import lt.inventi.wicket.test.BaseNonInjectedTest;
 
 public class AutoCompleteTest extends BaseNonInjectedTest {
@@ -38,7 +38,7 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
 
     @Before
     public void setUp(){
-        JavaScriptSettings.installEmpty(tester.getApplication());
+        ResourceSettings.installEmpty(tester.getApplication());
 
         list = new ArrayList<TestObject>();
         TestObject oldObj = new TestObject(2L, "OldName");

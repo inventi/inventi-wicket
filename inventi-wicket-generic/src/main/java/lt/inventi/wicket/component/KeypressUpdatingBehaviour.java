@@ -10,10 +10,9 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
-import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.time.Duration;
 
-import lt.inventi.wicket.js.JavaScriptSettings;
+import lt.inventi.wicket.resource.ResourceSettings;
 
 /**
  * Triggers update of provided components on keypress.
@@ -54,7 +53,7 @@ public class KeypressUpdatingBehaviour extends AjaxFormComponentUpdatingBehavior
     }
 
     private static void renderJavaScript(IHeaderResponse response) {
-        response.render(forReference(JavaScriptSettings.get().jqueryUi.uiCoreWidget));
+        response.render(forReference(ResourceSettings.get().js().jqueryUi.uiCoreWidget));
         response.render(forReference(new JavaScriptResourceReference(KeypressUpdatingBehaviour.class, "KeypressUpdatingBehaviour.js")));
 
         response.render(forReference(ThrottleDebounceResourceReference.get()));
