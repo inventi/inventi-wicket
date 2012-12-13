@@ -12,10 +12,9 @@
     <name>Inventi :: UI :: Wicket :: Generic Components</name>
 
     <dependencies>
-        <!-- Needed for KeypressUpdatingBehaviour (jquery.widget js) -->
         <dependency>
-            <groupId>org.odlabs.wiquery</groupId>
-            <artifactId>wiquery-jquery-ui</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>inventi-wicket-js</artifactId>
         </dependency>
 
         <!-- Needed for KeypressUpdatingBehaviour (json) -->

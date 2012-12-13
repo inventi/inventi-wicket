@@ -12,7 +12,8 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.time.Duration;
-import org.odlabs.wiquery.ui.widget.WidgetJavaScriptResourceReference;
+
+import lt.inventi.wicket.js.JavaScriptSettings;
 
 /**
  * Triggers update of provided components on keypress.
@@ -53,9 +54,8 @@ public class KeypressUpdatingBehaviour extends AjaxFormComponentUpdatingBehavior
     }
 
     private static void renderJavaScript(IHeaderResponse response) {
-        response.render(forReference(WidgetJavaScriptResourceReference.get()));
-        ResourceReference jsRef = new JavaScriptResourceReference(KeypressUpdatingBehaviour.class, "KeypressUpdatingBehaviour.js");
-        response.render(forReference(jsRef));
+        response.render(forReference(JavaScriptSettings.get().jqueryUi.uiCoreWidget));
+        response.render(forReference(new JavaScriptResourceReference(KeypressUpdatingBehaviour.class, "KeypressUpdatingBehaviour.js")));
 
         response.render(forReference(ThrottleDebounceResourceReference.get()));
     }

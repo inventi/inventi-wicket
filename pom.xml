@@ -10,7 +10,6 @@
 
     <properties>
         <wicket.version>6.3.0</wicket.version>
-        <wiquery.version>6.0.0</wiquery.version>
         <junit.version>4.8.2</junit.version>
         <mockito.version>1.9.0</mockito.version>
     </properties>
@@ -126,35 +125,6 @@
                 <groupId>org.apache.wicket</groupId>
                 <artifactId>wicket-extensions</artifactId>
                 <version>${wicket.version}</version>
-            </dependency>
-
-            <!-- Wicket JQuery plugins -->
-            <dependency>
-                <groupId>org.odlabs.wiquery</groupId>
-                <artifactId>wiquery-core</artifactId>
-                <version>${wiquery.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.codehaus.jackson</groupId>
-                        <artifactId>jackson-mapper-asl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.odlabs.wiquery</groupId>
-                <artifactId>wiquery-jquery-ui</artifactId>
-                <version>${wiquery.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.codehaus.jackson</groupId>
-                        <artifactId>jackson-mapper-asl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency> <!-- Transitive dependency resolution fails from WiQuery -->
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.9</version>
             </dependency>
 
             <!-- AUTOCOMPLETE -->
