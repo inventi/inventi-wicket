@@ -1,11 +1,16 @@
 package lt.inventi.wicket.component.repeater.expandable;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.model.ChainingModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
@@ -28,6 +33,7 @@ import org.apache.wicket.model.IModel;
 public abstract class ExpandableView<T> extends RefreshingView<T> {
 
     private int childIdCounter = 0;
+    private List<IndexTrackingModel<T>> models = new ArrayList<IndexTrackingModel<T>>();
 
     @SuppressWarnings("unchecked")
     protected IModel<? extends Iterable<T>> getModel() {
@@ -50,7 +56,38 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
 
     @Override
     protected Iterator<IModel<T>> getItemModels() {
+        models.clear();
         return modelIterator(getModel());
+    }
+
+    @Override
+    public MarkupContainer remove(Component component) {
+        if (component instanceof Item) {
+            Item<T> item = (Item<T>) component;
+            IndexTrackingModel<T> model = getTrackingModel(item.getModel());
+            int idx = models.indexOf(model);
+            if (idx < 0) {
+                throw new IllegalStateException("Model doesn't exist!");
+            }
+            models.remove(model);
+            for (IndexTrackingModel<T> m : models) {
+                m.onRemove(idx);
+            }
+        }
+
+        return super.remove(component);
+    }
+
+    private IndexTrackingModel<T> getTrackingModel(IModel<T> model) {
+        IModel<T> current = model;
+        while (!(current instanceof IndexTrackingModel)) {
+            if (current instanceof ChainingModel) {
+                current = ((ChainingModel) current).getChainedModel();
+            } else {
+                throw new IllegalStateException("Please do not unwrap ExpandableView models!");
+            }
+        }
+        return (IndexTrackingModel<T>) current;
     }
 
     @Override
@@ -71,7 +108,7 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
         return null;
     }
 
-    private static <T> Iterator<IModel<T>> modelIterator(IModel<? extends Iterable<T>> model) {
+    private Iterator<IModel<T>> modelIterator(IModel<? extends Iterable<T>> model) {
         if (model == null) {
             return new Iterator<IModel<T>>() {
                 @Override
@@ -91,7 +128,7 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
             };
         }
         if (model.getObject() instanceof List) {
-            return new ListModelIterator<T>((List<T>) model.getObject());
+            return new ListModelIterator();
         }
         return new IterableModelIterator<T>(model.getObject());
     }
@@ -112,48 +149,75 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
         }
     }
 
-    private static class ListModelIterator<T> implements Iterator<IModel<T>> {
-        private transient List<T> list;
+    private class ListModelIterator implements Iterator<IModel<T>>, Serializable {
         private int index = 0;
-
-        ListModelIterator(List<T> list) {
-            this.list = list;
-        }
 
         @Override
         public boolean hasNext() {
-            return index < list.size();
+            return index < getList().size();
         }
 
         @Override
         public IModel<T> next() {
-            final int currentIndex = index;
-            index++;
-            return new CompoundPropertyModel<T>(new IModel<T>() {
-                @Override
-                public void detach() {
-                    // do nothing
-                }
-
+            IndexTrackingModel<T> model = new IndexTrackingModel<T>(index) {
                 @Override
                 public T getObject() {
-                    return list.get(currentIndex);
+                    return getList().get(getIndex());
                 }
 
                 @Override
                 public void setObject(T object) {
-                    list.set(currentIndex, object);
+                    getList().set(getIndex(), object);
                 }
-            });
+            };
+            index++;
+            models.add(model);
+            return new CompoundPropertyModel<T>(model);
         }
 
         @Override
         public void remove() {
             unsupportedRemoval();
         }
+
+        private List<T> getList() {
+            return (List<T>) ExpandableView.this.getDefaultModelObject();
+        }
+
     }
 
-    private static class IterableModelIterator<T> implements Iterator<IModel<T>> {
+    private static abstract class IndexTrackingModel<T> implements IModel<T> {
+        private int index;
+
+        public IndexTrackingModel(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public void detach() {
+            // nothing
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void onRemove(int removedIndex) {
+            if (removedIndex < index) {
+                index--;
+            }
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof IndexTrackingModel) {
+                return ((IndexTrackingModel<T>) obj).index == index;
+            }
+            return false;
+        }
+    }
+
+    private static class IterableModelIterator<T> implements Iterator<IModel<T>>, Serializable {
         private transient Iterator<T> iterator;
 
         public IterableModelIterator(Iterable<T> object) {

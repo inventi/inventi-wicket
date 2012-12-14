@@ -95,6 +95,28 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     @Test
+    public void shouldAddAndRemoveItems() {
+        TestPanel panel = new TestPanel();
+        //TestPanel panel = new TestPanel();
+        tester.startComponentInPage(panel);
+
+        // add third item
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+        assertThat(values, contains("test1", "test2", "test3"));
+
+        // remove second item
+        tester.executeAjaxEvent(panel.getTestView().get("1:remove"), "click");
+        assertThat(values, contains("test1", "test3"));
+
+        FormTester formTester = tester.newFormTester("test:form");
+        formTester.setValue("view:2:field", "newValue");
+        formTester.submit();
+
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+        assertThat(values, contains("test1", "newValue", "test3"));
+    }
+
+    @Test
     public void shouldRemoveItemsFromTheList() {
         TestPanel panel = new TestPanel();
         tester.startComponentInPage(panel);
