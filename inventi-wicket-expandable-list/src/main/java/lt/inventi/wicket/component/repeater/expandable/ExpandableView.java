@@ -1,7 +1,6 @@
 package lt.inventi.wicket.component.repeater.expandable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,12 +32,6 @@ import org.apache.wicket.model.IModel;
 public abstract class ExpandableView<T> extends RefreshingView<T> {
 
     private int childIdCounter = 0;
-    private List<IndexTrackingModel<T>> models = new ArrayList<IndexTrackingModel<T>>();
-
-    @SuppressWarnings("unchecked")
-    protected IModel<? extends Iterable<T>> getModel() {
-        return (IModel<List<T>>) getDefaultModel();
-    }
 
     public ExpandableView(String id) {
         super(id);
@@ -54,40 +47,26 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
         super.onInitialize();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Iterator<IModel<T>> getItemModels() {
-        models.clear();
-        return modelIterator(getModel());
+        return modelIterator((IModel<? extends Iterable<T>>) getDefaultModel());
     }
 
     @Override
     public MarkupContainer remove(Component component) {
         if (component instanceof Item) {
+            @SuppressWarnings("unchecked")
             Item<T> item = (Item<T>) component;
-            IndexTrackingModel<T> model = getTrackingModel(item.getModel());
-            int idx = models.indexOf(model);
-            if (idx < 0) {
-                throw new IllegalStateException("Model doesn't exist!");
-            }
-            models.remove(model);
-            for (IndexTrackingModel<T> m : models) {
-                m.onRemove(idx);
+
+            Iterator<Item<T>> allItems = getItems();
+            while (allItems.hasNext()) {
+                Item<T> nextItem = allItems.next();
+                getTrackingModel(nextItem.getModel()).onRemove(item.getIndex());
             }
         }
 
         return super.remove(component);
-    }
-
-    private IndexTrackingModel<T> getTrackingModel(IModel<T> model) {
-        IModel<T> current = model;
-        while (!(current instanceof IndexTrackingModel)) {
-            if (current instanceof ChainingModel) {
-                current = ((ChainingModel) current).getChainedModel();
-            } else {
-                throw new IllegalStateException("Please do not unwrap ExpandableView models!");
-            }
-        }
-        return (IndexTrackingModel<T>) current;
     }
 
     @Override
@@ -171,7 +150,6 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
                 }
             };
             index++;
-            models.add(model);
             return new CompoundPropertyModel<T>(model);
         }
 
@@ -180,10 +158,10 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
             unsupportedRemoval();
         }
 
+        @SuppressWarnings("unchecked")
         private List<T> getList() {
             return (List<T>) ExpandableView.this.getDefaultModelObject();
         }
-
     }
 
     private static abstract class IndexTrackingModel<T> implements IModel<T> {
@@ -206,14 +184,6 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
             if (removedIndex < index) {
                 index--;
             }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof IndexTrackingModel) {
-                return ((IndexTrackingModel<T>) obj).index == index;
-            }
-            return false;
         }
     }
 
@@ -242,6 +212,19 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
 
     private static void unsupportedRemoval() {
         throw new UnsupportedOperationException("Cannot remove items from ExpandableView!");
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static <T> IndexTrackingModel<T> getTrackingModel(IModel<T> model) {
+        IModel<T> current = model;
+        while (!(current instanceof IndexTrackingModel)) {
+            if (current instanceof ChainingModel) {
+                current = ((ChainingModel) current).getChainedModel();
+            } else {
+                throw new IllegalStateException("Please do not unwrap ExpandableView models!");
+            }
+        }
+        return (IndexTrackingModel<T>) current;
     }
 
 }

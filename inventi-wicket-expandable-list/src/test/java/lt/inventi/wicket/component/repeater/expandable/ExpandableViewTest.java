@@ -137,6 +137,20 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     @Test
+    public void shouldAddAnItemAndRemoveTheFirstTwo() {
+        TestPanel panel = new TestPanel();
+        tester.startComponentInPage(panel);
+
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+        assertThat(values, contains("test1", "test2", "test3"));
+
+        tester.executeAjaxEvent(panel.getTestView().get("0:remove"), "click");
+        assertThat(values, contains("test2", "test3"));
+        tester.executeAjaxEvent(panel.getTestView().get("1:remove"), "click");
+        assertThat(values, contains("test3"));
+    }
+
+    @Test
     public void shouldReplaceItemsInTheBackingListModel() {
         TestPanel panel = new TestPanel();
         tester.startComponentInPage(panel);
