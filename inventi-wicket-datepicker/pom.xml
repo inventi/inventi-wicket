@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>lt.inventi</groupId>
+        <artifactId>inventi-wicket</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>inventi-wicket-datepicker</artifactId>
+    <packaging>jar</packaging>
+    <name>Inventi :: UI :: Wicket :: Datepicker</name>
+
+    <description>
+        Datepicker borrowed from https://github.com/l0rdn1kk0n/wicket-bootstrap
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>inventi-wicket-js</artifactId>
+        </dependency>
+
+        <dependency> <!-- DateTextField -->
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>inventi-wicket-test</artifactId>
+        </dependency>
+    </dependencies>
+</project>
