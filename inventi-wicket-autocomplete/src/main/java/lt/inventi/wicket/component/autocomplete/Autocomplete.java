@@ -297,7 +297,7 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
     protected void onComponentTag(ComponentTag tag) {
         tag.setType(TagType.OPEN);
         tag.setName("span");
-        tag.put("class", "autocomplete");
+        tag.append("class", "autocomplete", " ");
         tag.remove("type");
         super.onComponentTag(tag);
     }
