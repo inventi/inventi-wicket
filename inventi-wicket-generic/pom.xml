@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>inventi-wicket-js</artifactId>
+            <artifactId>inventi-wicket-resources</artifactId>
         </dependency>
 
         <!-- Needed for KeypressUpdatingBehaviour (json) -->
