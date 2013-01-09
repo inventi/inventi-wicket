@@ -115,7 +115,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>inventi-wicket-js</artifactId>
+                <artifactId>inventi-wicket-resources</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
