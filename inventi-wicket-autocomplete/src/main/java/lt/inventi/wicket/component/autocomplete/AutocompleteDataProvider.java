@@ -56,12 +56,6 @@ public interface AutocompleteDataProvider<T> extends Serializable {
     /**
      * Returns list of items for the specified query.
      *
-     * Note when implementing this method that the following expressions,
-     * should work and return results:
-     *
-     * doSearch(getLabel(object));
-     * getObject(getKey(object));
-     *
      * @param query
      * @return
      */

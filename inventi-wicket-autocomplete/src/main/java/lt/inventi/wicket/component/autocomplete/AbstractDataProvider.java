@@ -1,22 +1,9 @@
 package lt.inventi.wicket.component.autocomplete;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Provides implementation for some of the methods
- *
  */
-public abstract class AbstractDataProvider<T> implements AutocompleteDataProvider<T>{
-
-    @Override
-    public Map<String, String> getJsonParameters(T item) {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Autocomplete.LABEL_PARAM, getValue(item));
-        map.put(Autocomplete.ID_PARAM, getId(item));
-        return map;
-    }
-
+public abstract class AbstractDataProvider<T> extends AbstractLabeledDataProvider<T> {
 
     /**
      * Adds some extra checking for blank id,
