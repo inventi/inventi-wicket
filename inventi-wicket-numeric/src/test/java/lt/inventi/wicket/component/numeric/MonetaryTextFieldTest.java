@@ -1,6 +1,7 @@
 package lt.inventi.wicket.component.numeric;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ public class MonetaryTextFieldTest {
         TestPage page = new TestPage() {
             @Override
             protected MonetaryTextField<? extends Number> createMonetaryField(String id) {
-                return new MonetaryTextField<BigDecimal>(id, valueModel);
+                return new MonetaryTextField<BigDecimal>(id, valueModel, BigDecimal.class);
             }
         };
         tester.startPage(page);
@@ -34,6 +35,11 @@ public class MonetaryTextFieldTest {
 
         MockHttpServletResponse response = tester.getLastResponse();
         assertThat(response.getDocument(), containsString("$('#" + page.getAmountMarkupId() + "').autoNumeric('init');"));
+
+        tester.newFormTester("form").setValue("amount", "11.00").submit();
+
+        tester.assertNoErrorMessage();
+        assertThat(valueModel.getObject().compareTo(BigDecimal.valueOf(11)), is(0));
     }
 
     private static abstract class TestPage extends WebPage {
