@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>lt.inventi</groupId>
+        <artifactId>inventi-wicket</artifactId>
+        <version>0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>inventi-wicket-numeric</artifactId>
+    <packaging>jar</packaging>
+    <name>Inventi :: UI :: Wicket :: Numeric</name>
+
+    <description>
+        Based on autoNumeric from http://www.decorplanit.com/plugin/
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>inventi-wicket-resources</artifactId>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>inventi-wicket-test</artifactId>
+        </dependency>
+    </dependencies>
+</project>
