@@ -16,10 +16,12 @@
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
         </dependency>
+
         <!-- TEST -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>inventi-wicket-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

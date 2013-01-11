@@ -10,6 +10,7 @@ import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.junit.Test;
 
+import lt.inventi.wicket.js.JavaScriptSettingsBuilder.BootstrapJsVersions;
 import lt.inventi.wicket.js.JavaScriptSettingsBuilder.JQueryUiVersions;
 
 public class JavaScriptSettingsTest {
@@ -70,8 +71,8 @@ public class JavaScriptSettingsTest {
     }
 
     @Test
-    public void shouldUsePackageCoreInsteadOfSubcomponents() {
-        final JavaScriptResourceReference fullCore = new JavaScriptResourceReference(getClass(), "full-core");
+    public void usesPackagedJQueryUiCoreInsteadOfSeparateComponents() {
+        JavaScriptResourceReference fullCore = new JavaScriptResourceReference(getClass(), "full-core");
 
         JavaScriptSettings settings = JavaScriptSettings.newBuilder().withJqueryUi(JQueryUiVersions.v1_9_2)
             .withAllUiCore(fullCore).endJqueryUi().build();
@@ -80,5 +81,29 @@ public class JavaScriptSettingsTest {
         assertThat(settings.jqueryUi.uiCorePosition, is(fullCore));
         assertThat(settings.jqueryUi.uiCoreMouse, is(fullCore));
         assertThat(settings.jqueryUi.uiCoreWidget, is(fullCore));
+    }
+
+    @Test
+    public void usesPackagedBootstrapJsInsteadOfSeparateComponents() {
+        JavaScriptResourceReference fullBootstrapJs = new JavaScriptResourceReference(getClass(), "full-bootstrap");
+
+        JavaScriptSettings settings = JavaScriptSettings.newBuilder()
+            .withBootstrapJs(BootstrapJsVersions.v2_x)
+                .withAllBootstrapJs(fullBootstrapJs)
+            .endBootstrapJs().build();
+
+        assertThat(settings.bootstrapJs.bsTransitions, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsModal, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsDropdown, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsScrollspy, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsTab, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsTooltip, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsPopover, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsAlert, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsButton, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsCollapse, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsCarousel, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsTypeahead, is(fullBootstrapJs));
+        assertThat(settings.bootstrapJs.bsAffix, is(fullBootstrapJs));
     }
 }

@@ -12,6 +12,49 @@ import org.apache.wicket.request.resource.ResourceReference;
 
 public interface JavaScriptSettingsBuilder {
 
+    interface BootstrapJsBuilderFactory {
+        BootstrapJsBuilder newBuilder(JavaScriptSettingsBuilder settingsBuilder);
+    }
+
+    interface BootstrapJsBuilder {
+        BootstrapJsBuilder withAllBootstrapJs(JavaScriptResourceReference all);
+
+        BootstrapJsSettings build();
+
+        JavaScriptSettingsBuilder endBootstrapJs();
+    }
+
+    static class BootstrapJs2xBuilder implements BootstrapJsBuilder {
+
+        private final JavaScriptSettingsBuilder settingsBuilder;
+        private JavaScriptResourceReference bsTransitions, bsModal, bsDropdown, bsScrollspy, bsTab,
+            bsTooltip, bsPopover, bsAlert, bsButton, bsCollapse, bsCarousel, bsTypeahead, bsAffix;
+
+        public BootstrapJs2xBuilder(JavaScriptSettingsBuilder settingsBuilder) {
+            this.settingsBuilder = settingsBuilder;
+        }
+
+        @Override
+        public BootstrapJsBuilder withAllBootstrapJs(JavaScriptResourceReference all) {
+            this.bsTransitions = bsModal = bsDropdown = bsScrollspy = bsTab =
+                bsTooltip = bsPopover = bsAlert = bsButton = bsCollapse = bsCarousel = bsTypeahead = bsAffix = all;
+
+            return this;
+        }
+
+        @Override
+        public JavaScriptSettingsBuilder endBootstrapJs() {
+            return settingsBuilder;
+        }
+
+        @Override
+        public BootstrapJsSettings build() {
+            return new BootstrapJsSettings(bsTransitions, bsModal, bsDropdown, bsScrollspy, bsTab,
+                bsTooltip, bsPopover, bsAlert, bsButton, bsCollapse, bsCarousel, bsTypeahead, bsAffix);
+        }
+
+    }
+
     interface JQueryUiBuilderFactory {
         JQueryUiBuilder newBuilder(JavaScriptSettingsBuilder settingsBuilder);
     }
@@ -75,7 +118,7 @@ public interface JavaScriptSettingsBuilder {
         }
 
         class WidgetsBuilder implements UiWidgetsBuilder {
-            
+
             @Override
             public UiWidgetsBuilder withUiWidgetsMenu(JavaScriptResourceReference menu) {
                 Set<ResourceReference> dependencies = toSet(menu.getDependencies());
@@ -137,7 +180,7 @@ public interface JavaScriptSettingsBuilder {
 
         @Override
         public JQueryUiSettings build() {
-            return new JQueryUiSettings(uiCoreCore, uiCoreWidget, uiCoreMouse, uiCorePosition, 
+            return new JQueryUiSettings(uiCoreCore, uiCoreWidget, uiCoreMouse, uiCorePosition,
                 uiWidgetsMenu, uiWidgetsAutocomplete);
         }
 
@@ -172,6 +215,15 @@ public interface JavaScriptSettingsBuilder {
 
     }
 
+    public enum BootstrapJsVersions implements BootstrapJsBuilderFactory {
+        v2_x {
+            @Override
+            public BootstrapJsBuilder newBuilder(JavaScriptSettingsBuilder settingsBuilder) {
+                return new BootstrapJs2xBuilder(settingsBuilder);
+            }
+        }
+    }
+
     public enum JQueryUiVersions implements JQueryUiBuilderFactory {
         v1_9_2 {
             @Override
@@ -180,6 +232,8 @@ public interface JavaScriptSettingsBuilder {
             }
         }
     }
+
+    BootstrapJsBuilder withBootstrapJs(BootstrapJsBuilderFactory factory);
 
     JQueryUiBuilder withJqueryUi(JQueryUiBuilderFactory factory);
 
