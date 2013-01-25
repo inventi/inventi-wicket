@@ -16,7 +16,7 @@ public class EnumRadioChoice extends RadioChoice<Enum<?>> {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public EnumRadioChoice(String id, Class<? extends Enum<?>> enumClass) {
-        this(id, EnumSet.allOf((Class<Enum>) enumClass));
+        this(id, EnumSet.allOf((Class) enumClass));
     }
 
     public EnumRadioChoice(String id, Enum<?>[] choices) {

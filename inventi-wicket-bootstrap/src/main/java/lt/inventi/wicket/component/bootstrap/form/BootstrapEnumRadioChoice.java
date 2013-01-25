@@ -12,7 +12,7 @@ public class BootstrapEnumRadioChoice extends BootstrapRadioChoice<Enum<?>> {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public BootstrapEnumRadioChoice(String id, Class<? extends Enum<?>> enumClass) {
-        this(id, EnumSet.allOf((Class<Enum>) enumClass));
+        this(id, EnumSet.allOf((Class) enumClass));
     }
 
     public BootstrapEnumRadioChoice(String id, Enum<?>[] choices) {
