@@ -2,6 +2,7 @@ package lt.inventi.wicket.component.bootstrap.form;
 
 import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
+import org.apache.wicket.markup.MarkupNotFoundException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.FormComponent;
 
@@ -13,13 +14,13 @@ import org.apache.wicket.markup.html.form.FormComponent;
  * with <code>formComponentId</code>.
  * <p>
  * Java:
- * 
+ *
  * <pre>
  * new SingleControlGroup(new TextField&lt;String&gt;(&quot;input&quot;));
  * </pre>
  *
  * HTML:
- * 
+ *
  * <pre>
  * &lt;input type="text" wicket:id="input" /&gt;
  * </pre>
@@ -29,7 +30,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
  * <pre>
  * input = Label
  * </pre>
- * 
+ *
  * Result:
  *
  * <pre>
@@ -41,9 +42,9 @@ import org.apache.wicket.markup.html.form.FormComponent;
  *         &lt;/div&gt;
  * &lt;/div&gt;
  * </pre>
- * 
+ *
  * @author vplatonov
- * 
+ *
  */
 public class SingleControlGroup extends WebMarkupContainer {
 
@@ -59,6 +60,9 @@ public class SingleControlGroup extends WebMarkupContainer {
     @Override
     public IMarkupFragment getMarkup() {
         IMarkupFragment markup = super.getMarkup();
+        if (markup == null) {
+            throw new MarkupNotFoundException("Can not determine Markup. " + toString());
+        }
         return Markup.of("<div wicket:id=\"" + getId() + "\">" + markup.toString(true) + "</div>");
     }
 }

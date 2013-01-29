@@ -17,49 +17,51 @@ public class BootstrapRadioChoice<T> extends RadioChoice<T> {
 
     public BootstrapRadioChoice(String id, IModel<? extends List<? extends T>> choices, IChoiceRenderer<? super T> renderer) {
         super(id, choices, renderer);
+        init();
     }
 
     public BootstrapRadioChoice(String id, IModel<? extends List<? extends T>> choices) {
         super(id, choices);
+        init();
     }
 
     public BootstrapRadioChoice(String id, IModel<T> model, IModel<? extends List<? extends T>> choices, IChoiceRenderer<? super T> renderer) {
         super(id, model, choices, renderer);
+        init();
     }
 
     public BootstrapRadioChoice(String id, IModel<T> model, IModel<? extends List<? extends T>> choices) {
         super(id, model, choices);
+        init();
     }
 
     public BootstrapRadioChoice(String id, IModel<T> model, List<? extends T> choices, IChoiceRenderer<? super T> renderer) {
         super(id, model, choices, renderer);
+        init();
     }
 
     public BootstrapRadioChoice(String id, IModel<T> model, List<? extends T> choices) {
         super(id, model, choices);
+        init();
     }
 
     public BootstrapRadioChoice(String id, List<? extends T> choices, IChoiceRenderer<? super T> renderer) {
         super(id, choices, renderer);
+        init();
     }
 
     public BootstrapRadioChoice(String id, List<? extends T> choices) {
         super(id, choices);
+        init();
     }
 
     public BootstrapRadioChoice(String id) {
         super(id);
+        init();
     }
 
-    @Override
-    protected void onConfigure() {
-        super.onConfigure();
+    private void init() {
         setSuffix("\n");
-    }
-
-    @Override
-    protected void onInitialize() {
-        super.onInitialize();
     }
 
     public final BootstrapRadioChoice<T> setType(Type type) {

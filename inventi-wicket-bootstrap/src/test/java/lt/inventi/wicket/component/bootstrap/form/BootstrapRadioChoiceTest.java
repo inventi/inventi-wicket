@@ -21,7 +21,6 @@ public class BootstrapRadioChoiceTest {
     @Test
     public void generatesBootstrapRadioMarkup() {
         BootstrapRadioChoice<String> choice = new BootstrapRadioChoice<String>("test", Arrays.asList("1"));
-        choice.onConfigure();
 
         render(choice, "<div wicket:id=\"test\"><input type=\"radio\"></input></div>");
 
@@ -35,7 +34,6 @@ public class BootstrapRadioChoiceTest {
     @Test
     public void generatesInlineBootstrapRadioMarkup() {
         BootstrapRadioChoice<String> choice = new BootstrapRadioChoice<String>("test", Arrays.asList("1")).setType(Type.INLINE);
-        choice.onConfigure();
 
         render(choice, "<div wicket:id=\"test\"><input type=\"radio\"></input></div>");
 
@@ -46,7 +44,6 @@ public class BootstrapRadioChoiceTest {
     @Test
     public void generatesBootstrapRadioMarkupForMultipleOptions() {
         BootstrapRadioChoice<String> choice = new BootstrapRadioChoice<String>("test", Arrays.asList("FEMALE", "MALE", "INDETERMINATE"));
-        choice.onConfigure();
 
         render(choice, "<div wicket:id=\"test\"><input type=\"radio\"></input></div>");
 

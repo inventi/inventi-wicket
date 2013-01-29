@@ -31,9 +31,15 @@ public class ControlGroup extends Border {
         if (form != null) {
             resourcePrefix = form.getId() + ".";
         }
+        label.setDefaultModel(new ResourceModel(resourcePrefix + getLabelModelId()));
+    }
 
+    private String getLabelModelId() {
         List<FormComponent<?>> formComponents = findFormComponents();
-        label.setDefaultModel(new ResourceModel(resourcePrefix + formComponents.get(0).getId()));
+        if (formComponents.size() == 1) {
+            return formComponents.get(0).getId();
+        }
+        return getId();
     }
 
     private Form<?> findParentForm() {
