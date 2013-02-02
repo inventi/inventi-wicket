@@ -40,6 +40,23 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     @Test
+    public void outputsItemMarkupIds() {
+        IModel<List<String>> model = new PropertyModel<List<String>>(this, "values");
+        ExpandableView<String> panel = new ExpandableView<String>("test", model) {
+            @Override
+            protected void populateItem(Item<String> item) {
+                // do nothing
+            }
+        };
+        tester.startComponentInPage(panel);
+
+        Iterator<Item<String>> items = panel.getItems();
+        while (items.hasNext()) {
+            assertThat(items.next().getOutputMarkupId(), is(true));
+        }
+    }
+
+    @Test
     public void shouldContainUpdatedModelItems() {
         TestPanel panel = new TestPanel();
         tester.startComponentInPage(panel);

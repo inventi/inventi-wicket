@@ -76,6 +76,13 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
         return id;
     }
 
+    @Override
+    protected Item<T> newItem(String id, int index, IModel<T> model) {
+        Item<T> newItem = super.newItem(id, index, model);
+        newItem.setOutputMarkupId(true);
+        return newItem;
+    }
+
     private static <T> Item<?> findComponent(RefreshingView<T> refreshingView, Object modelObject) {
         Iterator<Item<T>> items = refreshingView.getItems();
         while (items.hasNext()) {
