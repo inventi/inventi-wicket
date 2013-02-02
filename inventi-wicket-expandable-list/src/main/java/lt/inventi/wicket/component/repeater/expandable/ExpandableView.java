@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.ChainingModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.cycle.RequestCycle;
 
 /**
  * A refreshing view which allows adding/removing rows on the fly.
@@ -83,17 +85,6 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
         return newItem;
     }
 
-    private static <T> Item<?> findComponent(RefreshingView<T> refreshingView, Object modelObject) {
-        Iterator<Item<T>> items = refreshingView.getItems();
-        while (items.hasNext()) {
-            Item<T> item = items.next();
-            if (modelObject.equals(item.getDefaultModelObject())) {
-                return item;
-            }
-        }
-        return null;
-    }
-
     private Iterator<IModel<T>> modelIterator(IModel<? extends Iterable<T>> model) {
         if (model == null) {
             return new Iterator<IModel<T>>() {
@@ -122,17 +113,46 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
     @Override
     public void onEvent(IEvent<?> event) {
         if (event.getPayload() instanceof NewItemAddedEvent) {
-            Object newItem = ((NewItemAddedEvent) event.getPayload()).getNewItem();
+            NewItemAddedEvent request = (NewItemAddedEvent) event.getPayload();
             // update model and make a callback to the new item link.
             this.onPopulate();
-            Item<?> item = findComponent(this, newItem);
-            //item can be null if its not our event
-            //in that case pass it through
+            Item<?> item = findComponent(request.newItem);
+            //item can be null if its not our event. In that case pass it through.
             if (item != null) {
                 event.stop();
-                AddNewItemLink.generateResponse(this, item);
+                generateResponse(item);
             }
         }
+    }
+
+    private Item<T> findComponent(Object modelObject) {
+        Iterator<Item<T>> items = this.getItems();
+        while (items.hasNext()) {
+            Item<T> item = items.next();
+            if (modelObject.equals(item.getDefaultModelObject())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private void generateResponse(Item<?> item) {
+        AjaxRequestTarget target = RequestCycle.get().find(AjaxRequestTarget.class);
+        item.setOutputMarkupId(true);
+        target.prependJavaScript(generateAddElementScript(item));
+        target.add(item);
+        Component formComponent = Repeaters.getFirstFormComponent(item);
+        if (formComponent != null) {
+            formComponent.setOutputMarkupId(true);
+            target.focusComponent(formComponent);
+        }
+    }
+
+    private String generateAddElementScript(Component itemComponent) {
+        String javascript = String.format("var item=document.createElement('span');item.id='%s';" + "$('#%s').append(item);",
+            itemComponent.getMarkupId(),
+            this.getParent().getMarkupId());
+        return javascript;
     }
 
     private class ListModelIterator implements Iterator<IModel<T>>, Serializable {

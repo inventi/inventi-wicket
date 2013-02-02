@@ -1,14 +1,11 @@
 package lt.inventi.wicket.component.repeater.expandable;
 
-public class NewItemAddedEvent {
+public final class NewItemAddedEvent {
 
-	private Object newItem;
+    final Object newItem;
 
-	public NewItemAddedEvent(Object newItem){
-		this.newItem = newItem;
-	}
+    NewItemAddedEvent(Object newItem) {
+        this.newItem = newItem;
+    }
 
-	public Object getNewItem() {
-		return newItem;
-	}
 }

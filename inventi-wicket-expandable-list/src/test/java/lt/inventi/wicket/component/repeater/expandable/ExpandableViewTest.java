@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -203,14 +204,14 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     public class TestPanel extends Panel {
-        private final IModel<? extends Iterable<String>> model;
+        private final IModel<? extends Collection<String>> model;
 
         TestPanel() {
             super("test");
             this.model = new PropertyModel<List<String>>(ExpandableViewTest.this, "values");
         }
 
-        TestPanel(IModel<? extends Iterable<String>> model) {
+        TestPanel(IModel<? extends Collection<String>> model) {
             super("test");
             this.model = model;
         }
@@ -229,10 +230,9 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
 
             add(new Form<Void>("form").add(
                 new TestView(this.model),
-                new AddNewItemLink("add") {
+                new AutoAddNewItemLink<String>("add", this.model) {
                     @Override
-                    protected String onAddNewItem() {
-                        values.add("test3");
+                    protected String createNewItem() {
                         return "test3";
                     }
                 }
