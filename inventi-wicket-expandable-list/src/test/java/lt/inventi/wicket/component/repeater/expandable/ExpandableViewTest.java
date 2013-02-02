@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -233,13 +232,7 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
         protected void populateItem(final Item<String> item) {
             item.setMarkupId(item.getModelObject());
             item.add(new TextField<String>("field", item.getModel()).setMarkupId(item.getModelObject() + "_field"));
-            RemoveItemLink<String> removeItemLink = new RemoveItemLink<String>("remove", item) {
-                @Override
-                protected void onRemoveItem(Item<String> linkItem, AjaxRequestTarget target) {
-                    values.remove(linkItem.getModelObject());
-                }
-            };
-            item.add(removeItemLink);
+            item.add(new AutoRemoveItemLink<String>("remove", item));
         }
 
         @Override

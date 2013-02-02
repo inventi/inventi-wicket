@@ -25,7 +25,7 @@ public abstract class RemoveItemLink<T> extends AjaxLink<T> {
     public void onClick(AjaxRequestTarget target) {
         String markupId = item.getMarkupId();
         Item<?> sibling = getSiblingObject(item);
-        onRemoveItem(item, target);
+        onRemoveItem(target);
         target.prependJavaScript("$('#"+markupId+"').remove();");
         item.remove();
         if(sibling != null){
@@ -41,8 +41,14 @@ public abstract class RemoveItemLink<T> extends AjaxLink<T> {
      * In this method remove object from the model
      * Also use this method to notify listeners or to add extra components to ajax request if needed.
      */
-    protected abstract void onRemoveItem(Item<T> linkItem, AjaxRequestTarget target);
+    protected abstract void onRemoveItem(AjaxRequestTarget target);
 
+    /**
+     * @return the item to be removed by this link
+     */
+    protected Item<T> item() {
+        return item;
+    }
 
     @SuppressWarnings("unchecked")
     private static Item<?> getSiblingObject(Item<?> item) {
