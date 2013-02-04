@@ -38,37 +38,11 @@ public class DateTextField extends org.apache.wicket.extensions.markup.html.form
      *
      * @param markupId
      *            The id of the text field
-     * @param datePattern
-     *            The format of the date
-     */
-    public DateTextField(String markupId, String datePattern) {
-        this(markupId, new DateTextFieldConfig().withFormat(datePattern));
-    }
-
-    /**
-     * Construct.
-     *
-     * @param markupId
-     *            The id of the text field
      * @param model
      *            The date model
      */
     public DateTextField(String markupId, IModel<Date> model) {
         this(markupId, model, new DateTextFieldConfig());
-    }
-
-    /**
-     * Construct.
-     *
-     * @param markupId
-     *            The id of the text field
-     * @param model
-     *            The date model
-     * @param dateFormat
-     *            The format of the date
-     */
-    public DateTextField(String markupId, IModel<Date> model, String dateFormat) {
-        this(markupId, model, new DateTextFieldConfig().withFormat(dateFormat));
     }
 
     /**

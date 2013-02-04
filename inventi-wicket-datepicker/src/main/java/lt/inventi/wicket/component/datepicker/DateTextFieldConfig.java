@@ -151,7 +151,7 @@ public final class DateTextFieldConfig extends AbstractConfig {
      */
     public DateTextFieldConfig() {
         super();
-        this.withFormat("yyyy-MM-dd");
+        this.withFormat("yyyy-MM-dd").autoClose(true);
     }
 
     /**
