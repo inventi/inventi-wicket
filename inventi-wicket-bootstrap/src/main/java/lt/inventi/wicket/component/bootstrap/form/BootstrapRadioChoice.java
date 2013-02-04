@@ -72,25 +72,7 @@ public class BootstrapRadioChoice<T> extends RadioChoice<T> {
     @Override
     protected void appendOptionHtml(AppendingStringBuffer buffer, T choice, int index, String selected) {
         super.appendOptionHtml(buffer, choice, index, selected);
-
-        int inputIdx = buffer.lastIndexOf("<input");
-        if (inputIdx == -1) {
-            throw new IllegalStateException("Must contain an input!");
-        }
-        int labelIdx = buffer.indexOf("<label", inputIdx);
-        if (labelIdx == -1) {
-            throw new IllegalStateException("Must contain a label!");
-        }
-        int labelEndIdx = buffer.indexOf("</label>", labelIdx);
-        if (labelEndIdx == -1) {
-            throw new IllegalStateException("Must contain label's end!");
-        }
-
-        String label = buffer.substring(labelIdx, labelEndIdx);
-        String labelClass = "class=\"radio" + (type == Type.DEFAULT ? "" : " inline") + "\" ";
-        String labelWithClass = label.substring(0, 7) + labelClass + label.substring(7, label.length());
-        String input = buffer.substring(inputIdx, labelIdx);
-
-        buffer.replace(inputIdx, labelEndIdx, labelWithClass + input);
+        String cssClass = "radio" + (type == Type.DEFAULT ? "" : " inline");
+        ChoiceUtils.moveInputInsideLabel(buffer, cssClass);
     }
 }
