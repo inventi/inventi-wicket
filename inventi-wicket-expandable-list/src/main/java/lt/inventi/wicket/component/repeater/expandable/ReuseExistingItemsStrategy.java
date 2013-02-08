@@ -23,7 +23,11 @@ public class ReuseExistingItemsStrategy implements IItemReuseStrategy {
         Map<T, Item<T>> existingItemsMap = Generics.newHashMap();
         while (existingItems.hasNext()) {
             Item<T> item = existingItems.next();
-            existingItemsMap.put(item.getModelObject(), item);
+            try {
+                existingItemsMap.put(item.getModelObject(), item);
+            } catch (RuntimeException e) {
+                // element has been removed from the model
+            }
         }
 
         return new ReusingIterator<T>(factory, newModels, existingItemsMap);

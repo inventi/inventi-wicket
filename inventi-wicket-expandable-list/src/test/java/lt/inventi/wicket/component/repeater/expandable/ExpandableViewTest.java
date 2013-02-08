@@ -69,13 +69,19 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
         values.add("test4");
         view.onBeforeRender();
 
-        Iterator<Item<String>> items = view.getItems();
-        int size = 0;
-        while(items.hasNext()){
-            items.next();
-            size++;
-        }
-        assertEquals(4, size);
+        assertEquals(4, numberOfItems(view));
+    }
+
+    @Test
+    public void handlesModelObjectChanges() {
+        TestPanel panel = new TestPanel();
+        tester.startComponentInPage(panel);
+        TestView view = panel.getTestView();
+
+        values.remove(0);
+        view.onBeforeRender();
+
+        assertThat(numberOfItems(view), is(1));
     }
 
     @Test
@@ -256,6 +262,16 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
         protected void onBeforeRender(){
             super.onBeforeRender();
         }
+    }
+
+    private static int numberOfItems(TestView view) {
+        Iterator<Item<String>> items = view.getItems();
+        int size = 0;
+        while (items.hasNext()) {
+            items.next();
+            size++;
+        }
+        return size;
     }
 
 }
