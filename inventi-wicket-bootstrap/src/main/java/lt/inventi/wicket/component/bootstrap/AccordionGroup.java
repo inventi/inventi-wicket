@@ -78,11 +78,22 @@ public class AccordionGroup extends Border {
             body.add(new AttributeAppender("class", " in"));
         }
         if (options.hasParent) {
-            label.add(new AttributeModifier("data-parent", idModel(getParent())));
+            label.add(new AttributeModifier("data-parent", idModel(getAccordionParent())));
         }
         label.add(new AttributeModifier("href", idModel(body)));
 
         addToBorder(label, body);
+    }
+
+    private Component getAccordionParent() {
+        Component parent = getParent();
+        while (!(parent instanceof Accordion)) {
+            parent = getParent();
+            if (parent == null) {
+                throw new IllegalStateException("No Accordion parent found for group: " + this);
+            }
+        }
+        return parent;
     }
 
     @Override
