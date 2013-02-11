@@ -30,7 +30,7 @@ public class BootstrapRadioChoiceTest {
         assertThat(tester.getResponse().getDocument(),
             equalTo("<label class=\"radio\" for=\"test1-0\">1<input name=\"test\" type=\"radio\" value=\"0\" id=\"test1-0\"/></label>\n"));
     }
-    
+
     @Test
     public void generatesInlineBootstrapRadioMarkup() {
         BootstrapRadioChoice<String> choice = new BootstrapRadioChoice<String>("test", Arrays.asList("1")).setType(Type.INLINE);

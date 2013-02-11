@@ -15,14 +15,95 @@
         Wicket bootstrap components
     </description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>lt.inventi:inventi-wicket-resources</exclude>
+                                    <exclude>org.apache.wicket:*</exclude>
+                                    <exclude>org.slf4j:*</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>de.agilecoders.wicket:bootstrap</artifact>
+                                    <excludes>
+                                        <exclude>**/*.js</exclude>
+                                        <exclude>**/*.css</exclude>
+                                        <exclude>**/*.less</exclude>
+                                        <exclude>**/*.png</exclude>
+                                        <exclude>**/*.gif</exclude>
+                                        <exclude>**/*.sh</exclude>
+                                        <exclude>**/*.html</exclude>
+                                        <exclude>**/BootstrapBaseBehavior.class</exclude>
+                                        <exclude>**/BootstrapJavascriptBehavior.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.google.common</pattern>
+                                    <shadedPattern>bootstrap.com.google.common</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.codehaus.jackson</pattern>
+                                    <shadedPattern>bootstrap.org.codehaus.jackson</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>inventi-wicket-resources</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>de.agilecoders.wicket</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>0.7.6</version>
+            <exclusions>
+                <!-- <dependency>                                    -->
+                <!--     <groupId>org.codehaus.jackson</groupId>     -->
+                <!--     <artifactId>jackson-mapper-asl</artifactId> -->
+                <!-- </dependency>                                   -->
+                <!-- <exclusion>                             -->
+                <!--     <groupId>com.google.guava</groupId> -->
+                <!--     <artifactId>guava</artifactId>      -->
+                <!-- </exclusion>                            -->
+                <exclusion>
+                    <groupId>joda-time</groupId>
+                    <artifactId>joda-time</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.wicket</groupId>
+                    <artifactId>wicket-extensions</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.asual.lesscss</groupId>
+                    <artifactId>lesscss-engine</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- TEST -->

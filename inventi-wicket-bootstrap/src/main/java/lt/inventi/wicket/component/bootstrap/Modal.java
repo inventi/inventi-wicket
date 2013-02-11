@@ -1,6 +1,7 @@
 package lt.inventi.wicket.component.bootstrap;
 
-import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -11,25 +12,23 @@ import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import de.agilecoders.wicket.util.Json;
 
 import lt.inventi.wicket.resource.ResourceSettings;
 
 public class Modal extends Behavior {
 
     private final WebMarkupContainer modalContainer;
-    private final Options opts;
+    private final ModalConfig modalConfig;
 
     public Modal(WebMarkupContainer modalContainer) {
-        this(modalContainer, new Options());
+        this(modalContainer, new ModalConfig());
     }
 
-    public Modal(WebMarkupContainer modalContainer, Options options) {
+    public Modal(WebMarkupContainer modalContainer, ModalConfig modalConfig) {
         this.modalContainer = modalContainer;
-        this.opts = options;
+        this.modalConfig = modalConfig;
     }
 
     @Override
@@ -50,8 +49,8 @@ public class Modal extends Behavior {
             }
         }));
 
-        if (opts.isShown != null) {
-            modalContainer.add(new ModalOpenClosedStateBehavior(opts.isShown));
+        if (modalConfig.hasVisibilityModel()) {
+            modalContainer.add(new ModalOpenClosedStateBehavior(modalConfig.visibilityModel()));
         }
     }
 
@@ -64,41 +63,10 @@ public class Modal extends Behavior {
     }
 
     private String getOptionsJson() {
-        JsonObject result = new JsonObject();
-        result.add("show", new JsonPrimitive(opts.isShown()));
-        result.add("backdrop", opts.backdrop.toJson());
-        return result.toString();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("show", modalConfig.isShown());
+        params.put("backdrop", modalConfig.backdrop());
+        return Json.stringify(params);
     }
 
-    public static class Options implements Serializable {
-        public enum Backdrop {
-            TRUE, FALSE, STATIC;
-
-            public JsonPrimitive toJson() {
-                String name = this.name().toLowerCase();
-                return (this == TRUE || this == FALSE) ? new JsonPrimitive(Boolean.valueOf(name)) : new JsonPrimitive(name);
-            }
-        }
-
-        private final Backdrop backdrop;
-        private final IModel<Boolean> isShown;
-
-        Options() {
-            this(Backdrop.TRUE);
-        }
-
-        public Options(Backdrop backdrop) {
-            this.backdrop = backdrop;
-            this.isShown = null;
-        }
-
-        public Options(IModel<Boolean> isShown) {
-            this.backdrop = Backdrop.TRUE;
-            this.isShown = isShown;
-        }
-
-        boolean isShown() {
-            return isShown == null ? false : isShown.getObject();
-        }
-    }
 }
