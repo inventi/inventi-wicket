@@ -40,16 +40,13 @@
                                 <filter>
                                     <artifact>de.agilecoders.wicket:bootstrap</artifact>
                                     <excludes>
-                                        <exclude>**/*.js</exclude>
-                                        <exclude>**/*.css</exclude>
-                                        <exclude>**/*.less</exclude>
-                                        <exclude>**/*.png</exclude>
-                                        <exclude>**/*.gif</exclude>
-                                        <exclude>**/*.sh</exclude>
-                                        <exclude>**/*.html</exclude>
                                         <exclude>**/BootstrapBaseBehavior.class</exclude>
                                         <exclude>**/BootstrapJavascriptBehavior.class</exclude>
                                     </excludes>
+                                    <includes>
+                                        <include>**/*.class</include>
+                                        <include>**/BootstrapTabbedPanel.html</include>
+                                    </includes>
                                 </filter>
                             </filters>
                             <relocations>
@@ -90,10 +87,6 @@
                 <exclusion>
                     <groupId>joda-time</groupId>
                     <artifactId>joda-time</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.wicket</groupId>
-                    <artifactId>wicket-extensions</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>com.asual.lesscss</groupId>

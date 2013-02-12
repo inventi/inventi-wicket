@@ -13,7 +13,6 @@ import de.agilecoders.wicket.markup.html.bootstrap.components.TooltipBehavior;
  */
 public class WicketBootstrapImport {
     static {
-        Class<?> clazz = TooltipBehavior.class;
-        assert clazz != null;
+        assert TooltipBehavior.class != null;
     }
 }
