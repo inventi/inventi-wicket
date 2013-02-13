@@ -1,5 +1,6 @@
 package lt.inventi.wicket.component.bootstrap.tab;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -18,6 +19,10 @@ public class RememberingTabbedPanel<T extends ITab> extends BootstrapTabbedPanel
 
     public RememberingTabbedPanel(String id, List<T> tabs) {
         super(id, tabs);
+    }
+
+    public RememberingTabbedPanel(String id, T... tabs) {
+        super(id, Arrays.asList(tabs));
     }
 
     @Override
