@@ -17,16 +17,16 @@ import de.agilecoders.wicket.util.Json;
 
 import lt.inventi.wicket.resource.ResourceSettings;
 
-public class Modal extends Behavior {
+public class ModalBehavior extends Behavior {
 
     private final WebMarkupContainer modalContainer;
-    private final ModalConfig modalConfig;
+    private final ModalBehaviorConfig modalConfig;
 
-    public Modal(WebMarkupContainer modalContainer) {
-        this(modalContainer, new ModalConfig());
+    public ModalBehavior(WebMarkupContainer modalContainer) {
+        this(modalContainer, new ModalBehaviorConfig());
     }
 
-    public Modal(WebMarkupContainer modalContainer, ModalConfig modalConfig) {
+    public ModalBehavior(WebMarkupContainer modalContainer, ModalBehaviorConfig modalConfig) {
         this.modalContainer = modalContainer;
         this.modalConfig = modalConfig;
     }

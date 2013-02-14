@@ -1,8 +1,10 @@
 package lt.inventi.wicket.component.bootstrap;
 
+import java.io.Serializable;
+
 import org.apache.wicket.model.IModel;
 
-public class ModalConfig {
+public class ModalBehaviorConfig implements Serializable {
 
     public enum Backdrop {
         TRUE, FALSE, STATIC;
@@ -11,20 +13,20 @@ public class ModalConfig {
     private Backdrop backdrop = Backdrop.TRUE;
     private IModel<Boolean> isShown;
 
-    public ModalConfig() {
+    public ModalBehaviorConfig() {
         super();
     }
 
-    public ModalConfig(IModel<Boolean> visibilityModel) {
+    public ModalBehaviorConfig(IModel<Boolean> visibilityModel) {
         this.isShown = visibilityModel;
     }
 
-    public ModalConfig withBackdrop(Backdrop value) {
+    public ModalBehaviorConfig withBackdrop(Backdrop value) {
         this.backdrop = value;
         return this;
     }
 
-    public ModalConfig shownWhen(IModel<Boolean> value) {
+    public ModalBehaviorConfig shownWhen(IModel<Boolean> value) {
         this.isShown = value;
         return this;
     }
