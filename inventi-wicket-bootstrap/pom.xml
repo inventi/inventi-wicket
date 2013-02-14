@@ -52,11 +52,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.google.common</pattern>
-                                    <shadedPattern>bootstrap.com.google.common</shadedPattern>
+                                    <shadedPattern>z.bootstrap.com.google.common</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.codehaus.jackson</pattern>
-                                    <shadedPattern>bootstrap.org.codehaus.jackson</shadedPattern>
+                                    <shadedPattern>z.bootstrap.org.codehaus.jackson</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
