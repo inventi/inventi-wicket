@@ -3,17 +3,19 @@ package lt.inventi.wicket.component.repeater.expandable;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.IGenericComponent;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.repeater.IItemFactory;
+import org.apache.wicket.markup.repeater.IItemReuseStrategy;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.model.ChainingModel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.util.lang.Generics;
 
 /**
  * A refreshing view which allows adding/removing rows on the fly.
@@ -31,7 +33,7 @@ import org.apache.wicket.request.cycle.RequestCycle;
  * container, which is <code>tbody</code>.
  *
  */
-public abstract class ExpandableView<T> extends RefreshingView<T> {
+public abstract class ExpandableView<T> extends RefreshingView<T> implements IGenericComponent<List<T>> {
 
     private int childIdCounter = 0;
 
@@ -39,20 +41,19 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
         super(id);
     }
 
-    public ExpandableView(String id, IModel<? extends Iterable<T>> model) {
+    public ExpandableView(String id, IModel<? extends List<T>> model) {
         super(id, model);
     }
 
     @Override
     protected void onInitialize() {
-        setItemReuseStrategy(new ReuseExistingItemsStrategy());
+        setItemReuseStrategy(ExpandableReuseIfModelsEqualStrategy.instance);
         super.onInitialize();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Iterator<IModel<T>> getItemModels() {
-        return modelIterator((IModel<? extends Iterable<T>>) getDefaultModel());
+        return modelIterator(getModel());
     }
 
     @Override
@@ -79,13 +80,42 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public IModel<List<T>> getModel() {
+        return (IModel<List<T>>) getDefaultModel();
+    }
+
+    @Override
+    public void setModel(IModel<List<T>> model) {
+        setDefaultModel(model);
+    }
+
+    @Override
+    public void setModelObject(List<T> object) {
+        setModelObject(object);
+    }
+
+    @Override
+    public List<T> getModelObject() {
+        return getModel().getObject();
+    }
+
+    @Override
     protected Item<T> newItem(String id, int index, IModel<T> model) {
         Item<T> newItem = super.newItem(id, index, model);
         newItem.setOutputMarkupId(true);
         return newItem;
     }
 
-    private Iterator<IModel<T>> modelIterator(IModel<? extends Iterable<T>> model) {
+    @SuppressWarnings("unchecked")
+    // internal use from AddNewItemLink
+    Item<T> appendAndGetNewItem(T newItem) {
+        getModel().getObject().add(newItem);
+        onPopulate();
+        return (Item<T>) get(getModel().getObject().size() - 1);
+    }
+
+    private Iterator<IModel<T>> modelIterator(IModel<? extends List<T>> model) {
         if (model == null) {
             return new Iterator<IModel<T>>() {
                 @Override
@@ -104,55 +134,7 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
                 }
             };
         }
-        if (model.getObject() instanceof List) {
-            return new ListModelIterator();
-        }
-        return new IterableModelIterator<T>(model.getObject());
-    }
-
-    @Override
-    public void onEvent(IEvent<?> event) {
-        if (event.getPayload() instanceof NewItemAddedEvent) {
-            NewItemAddedEvent request = (NewItemAddedEvent) event.getPayload();
-            // update model and make a callback to the new item link.
-            this.onPopulate();
-            Item<?> item = findComponent(request.newItem);
-            //item can be null if its not our event. In that case pass it through.
-            if (item != null) {
-                event.stop();
-                generateResponse(item);
-            }
-        }
-    }
-
-    private Item<T> findComponent(Object modelObject) {
-        Iterator<Item<T>> items = this.getItems();
-        while (items.hasNext()) {
-            Item<T> item = items.next();
-            if (modelObject.equals(item.getDefaultModelObject())) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    private void generateResponse(Item<?> item) {
-        AjaxRequestTarget target = RequestCycle.get().find(AjaxRequestTarget.class);
-        item.setOutputMarkupId(true);
-        target.prependJavaScript(generateAddElementScript(item));
-        target.add(item);
-        Component formComponent = Repeaters.getFirstFormComponent(item);
-        if (formComponent != null) {
-            formComponent.setOutputMarkupId(true);
-            target.focusComponent(formComponent);
-        }
-    }
-
-    private String generateAddElementScript(Component itemComponent) {
-        String javascript = String.format("var item=document.createElement('span');item.id='%s';" + "$('#%s').append(item);",
-            itemComponent.getMarkupId(),
-            this.getParent().getMarkupId());
-        return javascript;
+        return new ListModelIterator();
     }
 
     private class ListModelIterator implements Iterator<IModel<T>>, Serializable {
@@ -177,7 +159,7 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
                 }
             };
             index++;
-            return new CompoundPropertyModel<T>(model);
+            return model;
         }
 
         @Override
@@ -212,29 +194,76 @@ public abstract class ExpandableView<T> extends RefreshingView<T> {
                 index--;
             }
         }
+
+        @Override
+        public int hashCode() {
+            return index;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IModel)) {
+                return false;
+            }
+            try {
+                @SuppressWarnings("unchecked")
+                IndexTrackingModel<T> model = getTrackingModel((IModel<T>) obj);
+                return model.index == this.index;
+            } catch (IllegalStateException e) {
+                return false;
+            }
+        }
     }
 
-    private static class IterableModelIterator<T> implements Iterator<IModel<T>>, Serializable {
-        private transient Iterator<T> iterator;
-
-        public IterableModelIterator(Iterable<T> object) {
-            this.iterator = object.iterator();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
+    /**
+     * Adapted for expandable view.
+     *
+     * @see ReuseIfModelsEqualStrategy
+     */
+    private static class ExpandableReuseIfModelsEqualStrategy implements IItemReuseStrategy {
+        private static IItemReuseStrategy instance = new ExpandableReuseIfModelsEqualStrategy();
 
         @Override
-        public IModel<T> next() {
-            return new CompoundPropertyModel<T>(iterator.next());
+        public <T> Iterator<Item<T>> getItems(final IItemFactory<T> factory, final Iterator<IModel<T>> newModels,
+            Iterator<Item<T>> existingItems) {
+            final Map<IModel<T>, Item<T>> modelToItem = Generics.newHashMap();
+            while (existingItems.hasNext()) {
+                final Item<T> item = existingItems.next();
+                modelToItem.put(getTrackingModel(item.getModel()), item);
+            }
+
+            return new Iterator<Item<T>>() {
+                private int index = 0;
+
+                @Override
+                public boolean hasNext() {
+                    return newModels.hasNext();
+                }
+
+                @Override
+                public Item<T> next() {
+                    final IModel<T> model = newModels.next();
+                    final Item<T> oldItem = modelToItem.get(model);
+
+                    final Item<T> item;
+                    if (oldItem == null) {
+                        item = factory.newItem(index, model);
+                    } else {
+                        oldItem.setIndex(index);
+                        item = oldItem;
+                    }
+                    index++;
+
+                    return item;
+                }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
         }
 
-        @Override
-        public void remove() {
-            unsupportedRemoval();
-        }
     }
 
     private static void unsupportedRemoval() {

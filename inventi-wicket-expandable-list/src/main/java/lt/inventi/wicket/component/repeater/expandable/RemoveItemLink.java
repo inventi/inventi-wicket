@@ -6,7 +6,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.IModel;
 
 /**
  * Intended to be used together with ExpandableView.
@@ -24,13 +23,13 @@ public abstract class RemoveItemLink<T> extends AjaxLink<T> {
     @Override
     public void onClick(AjaxRequestTarget target) {
         String markupId = item.getMarkupId();
-        Item<?> sibling = getSiblingObject(item);
+        Item<?> sibling = getSiblingItem(item);
         onRemoveItem(target);
         target.prependJavaScript("$('#"+markupId+"').remove();");
         item.remove();
-        if(sibling != null){
+        if (sibling != null) {
             Component cmp = Repeaters.getFirstFormComponent(sibling);
-            if(cmp != null){
+            if (cmp != null) {
                 cmp.setOutputMarkupId(true);
                 target.focusComponent(cmp);
             }
@@ -51,33 +50,26 @@ public abstract class RemoveItemLink<T> extends AjaxLink<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private static Item<?> getSiblingObject(Item<?> item) {
-        Object siblingObject = null;
-        if(item.getParent() instanceof ExpandableView){
-            ExpandableView<?> listView = (ExpandableView<?>)item.getParent();
-            IModel<Iterable<?>> model =  (IModel<Iterable<?>>)listView.getDefaultModel();
+    private static Item<?> getSiblingItem(Item<?> item) {
+        if (item.getParent() instanceof ExpandableView) {
+            ExpandableView<Object> listView = (ExpandableView<Object>) item.getParent();
 
-            Iterator<?> modelObjects = model.getObject().iterator();
-            while(modelObjects.hasNext()){
-                Object tmpObject = modelObjects.next();
-                if(tmpObject.equals(item.getModelObject())){
-                    if(modelObjects.hasNext()){
-                        siblingObject = modelObjects.next();
-                    }
-                    break;
-                }
-                siblingObject = tmpObject;
+            if (listView.size() <= 1) {
+                return null;
             }
-
-            if(siblingObject != null){
-                Iterator<? extends Item<?>> items = listView.getItems();
-                while(items.hasNext()){
-                    Item<?> listItem = items.next();
-                    if(siblingObject.equals(listItem.getDefaultModelObject())){
-                        return listItem;
+            Iterator<Item<Object>> items = listView.getItems();
+            Item<Object> prev = null;
+            while (items.hasNext()) {
+                Item<Object> next = items.next();
+                if (next.getIndex() == item.getIndex()) {
+                    if (items.hasNext()) {
+                        return items.next();
                     }
+                } else {
+                    prev = next;
                 }
             }
+            return prev;
         }
         return null;
     }

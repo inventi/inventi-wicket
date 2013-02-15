@@ -7,20 +7,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.util.tester.FormTester;
@@ -59,7 +54,7 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
 
     @Test
     public void shouldContainUpdatedModelItems() {
-        TestPanel panel = new TestPanel();
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
         TestView view = panel.getTestView();
 
@@ -74,7 +69,7 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
 
     @Test
     public void handlesModelObjectChanges() {
-        TestPanel panel = new TestPanel();
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
         TestView view = panel.getTestView();
 
@@ -85,24 +80,8 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     @Test
-    public void testComponentInit(){
-        TestPanel panel = new TestPanel();
-        tester.startComponentInPage(panel);
-        TestView view = panel.getTestView();
-
-        assertEquals(ReuseExistingItemsStrategy.class, view.getItemReuseStrategy().getClass());
-
-        Iterator<Item<String>> items = view.getItems();
-        Item<String> item = items.next();
-        assertEquals("test1", item.getModelObject());
-        assertEquals("test2", items.next().getModelObject());
-
-        assertEquals(CompoundPropertyModel.class, item.getModel().getClass());
-    }
-
-    @Test
-    public void shouldAddItemsToTheList() {
-        TestPanel panel = new TestPanel();
+    public void shouldAddNonNullItemsToTheList() {
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
         tester.executeAjaxEvent(panel.getAddItemLink(), "click");
 
@@ -118,9 +97,44 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     @Test
+    public void addsNullItemsToTheEndOfTheList() {
+        NullItemTestPanel panel = new NullItemTestPanel();
+        tester.startComponentInPage(panel);
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+
+        assertThat(values, contains("test1", "test2", null));
+        assertThat(panel.getTestView().size(), is(3));
+
+        String addElementScript = "var item=document.createElement('span');item.id='null';$('#form4').append(item);";
+        String focusScript = "Wicket.Focus.setFocusOnId('null_field');";
+        checkScripts(addElementScript, focusScript);
+
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+        assertThat(values, contains("test1", "test2", null, null));
+        assertThat(panel.getTestView().size(), is(4));
+
+        // this is a degenerate case. We shouldn't be setting markup ids equal to model object values
+        addElementScript = "var item=document.createElement('span');item.id='null';$('#form4').append(item);";
+        focusScript = "Wicket.Focus.setFocusOnId('null_field');";
+        checkScripts(addElementScript, focusScript);
+    }
+
+    @Test
+    public void removesNullItemsUsingRemoveItemLink() {
+        NullItemTestPanel panel = new NullItemTestPanel();
+        tester.startComponentInPage(panel);
+
+        tester.clickLink(panel.getAddItemLink());
+        tester.clickLink(panel.getAddItemLink());
+        assertThat(values, contains("test1", "test2", null, null));
+
+        tester.executeAjaxEvent(panel.getTestView().get("2:remove"), "click");
+        assertThat(values, contains("test1", "test2", null));
+    }
+
+    @Test
     public void shouldAddAndRemoveItems() {
-        TestPanel panel = new TestPanel();
-        //TestPanel panel = new TestPanel();
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
 
         // add third item
@@ -141,7 +155,7 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
 
     @Test
     public void shouldRemoveItemsFromTheList() {
-        TestPanel panel = new TestPanel();
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
 
         tester.executeAjaxEvent(panel.getAddItemLink(), "click");
@@ -161,11 +175,12 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
 
     @Test
     public void shouldAddAnItemAndRemoveTheFirstTwo() {
-        TestPanel panel = new TestPanel();
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
 
         tester.executeAjaxEvent(panel.getAddItemLink(), "click");
         assertThat(values, contains("test1", "test2", "test3"));
+        assertThat(panel.getTestView().size(), is(3));
 
         tester.executeAjaxEvent(panel.getTestView().get("0:remove"), "click");
         assertThat(values, contains("test2", "test3"));
@@ -175,7 +190,7 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
 
     @Test
     public void shouldReplaceItemsInTheBackingListModel() {
-        TestPanel panel = new TestPanel();
+        NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
 
         FormTester formTester = tester.newFormTester("test:form");
@@ -185,23 +200,6 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
         assertThat(values, contains("newValue", "test2"));
     }
 
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void shouldNotReplaceItemsInTheBackingNonListModel() {
-        Set<String> nonListValues = new HashSet<String>();
-        nonListValues.add("1");
-        IModel model = Model.of(nonListValues);
-
-        TestPanel panel = new TestPanel(model);
-        tester.startComponentInPage(panel);
-
-        FormTester formTester = tester.newFormTester("test:form");
-        formTester.setValue("view:0:field", "newValue");
-        formTester.submit();
-
-        assertThat(nonListValues, contains("1"));
-    }
-
     private void checkScripts(String... scripts) {
         MockHttpServletResponse response = tester.getLastResponse();
         for (String s : scripts) {
@@ -209,15 +207,15 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
         }
     }
 
-    public class TestPanel extends Panel {
-        private final IModel<? extends Collection<String>> model;
+    public abstract class TestPanel extends Panel {
+        private final IModel<? extends List<String>> model;
 
-        TestPanel() {
+        protected TestPanel() {
             super("test");
             this.model = new PropertyModel<List<String>>(ExpandableViewTest.this, "values");
         }
 
-        TestPanel(IModel<? extends Collection<String>> model) {
+        protected TestPanel(IModel<? extends List<String>> model) {
             super("test");
             this.model = model;
         }
@@ -234,26 +232,62 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
         protected void onInitialize() {
             super.onInitialize();
 
-            add(new Form<Void>("form").add(
-                new TestView(this.model),
-                new AutoAddNewItemLink<String>("add", this.model) {
-                    @Override
-                    protected String createNewItem() {
-                        return "test3";
-                    }
+            TestView view = new TestView(this.model);
+            add(new Form<Void>("form").add(view, newItemLink("add", view)));
+        }
+
+        protected abstract AddNewItemLink<String> newItemLink(String id, ExpandableView<String> view);
+    }
+
+    public class NonNullItemTestPanel extends TestPanel {
+
+        public NonNullItemTestPanel() {
+            super();
+        }
+
+        public NonNullItemTestPanel(IModel<? extends List<String>> model) {
+            super(model);
+        }
+
+        @Override
+        protected AddNewItemLink<String> newItemLink(String id, ExpandableView<String> view) {
+            return new AutoAddNewItemLink<String>(id, view) {
+                @Override
+                protected String createNewItem() {
+                    return "test3";
                 }
-            ));
+            };
+        }
+    }
+
+    public class NullItemTestPanel extends TestPanel {
+        public NullItemTestPanel() {
+            super();
+        }
+
+        public NullItemTestPanel(IModel<? extends List<String>> model) {
+            super(model);
+        }
+
+        @Override
+        protected AddNewItemLink<String> newItemLink(String id, ExpandableView<String> view) {
+            return new AutoAddNewItemLink<String>(id, view) {
+                @Override
+                protected String createNewItem() {
+                    return null;
+                }
+            };
         }
     }
 
     public class TestView extends ExpandableView<String> {
-        public TestView(IModel<? extends Iterable<String>> model) {
+        public TestView(IModel<? extends List<String>> model) {
             super("view", model);
         }
 
         @Override
         protected void populateItem(final Item<String> item) {
-            item.setMarkupId(item.getModelObject());
+            item.setMarkupId(String.valueOf(item.getModelObject()));
             item.add(new TextField<String>("field", item.getModel()).setMarkupId(item.getModelObject() + "_field"));
             item.add(new AutoRemoveItemLink<String>("remove", item));
         }

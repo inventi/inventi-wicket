@@ -1,7 +1,5 @@
 package lt.inventi.wicket.component.repeater.expandable;
 
-import java.util.Collection;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.repeater.Item;
 
@@ -21,10 +19,9 @@ public class AutoRemoveItemLink<T> extends RemoveItemLink<T> {
     @Override
     protected final void onRemoveItem(AjaxRequestTarget target) {
         if (item().getParent() instanceof ExpandableView) {
-            Object modelObject = item().getParent().getDefaultModelObject();
-            if (modelObject instanceof Collection) {
-                ((Collection<?>) modelObject).remove(item().getDefaultModelObject());
-            }
+            ExpandableView<?> view = (ExpandableView<?>) item().getParent();
+            view.getModelObject().remove(item().getDefaultModelObject());
+            onAfterRemoveItem(target);
         }
     }
 
