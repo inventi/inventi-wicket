@@ -3,7 +3,7 @@ package lt.inventi.wicket.component.autocomplete;
 /**
  * Provides implementation for some of the methods
  */
-public abstract class AbstractDataProvider<T> extends AbstractLabeledDataProvider<T> {
+public abstract class AbstractDataProvider<T> implements AutocompleteDataProvider<T> {
 
     /**
      * Adds some extra checking for blank id,

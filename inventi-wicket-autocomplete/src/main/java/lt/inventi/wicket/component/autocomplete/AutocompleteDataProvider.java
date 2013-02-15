@@ -1,8 +1,6 @@
 package lt.inventi.wicket.component.autocomplete;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Provides and maps data for autocomplete.
@@ -12,53 +10,26 @@ import java.util.Map;
 public interface AutocompleteDataProvider<T> extends Serializable {
 
     /**
-     * Returns parameters for json response.
-     * Some expected parameter keys are:
-     * <ul>
-     * <li>label - item label</li>
-     * <li>value - value, which will be set to the input field (if not specified, then label will be used)</li>
-     * <li>id - hidden value to identify specific object</li>
-     * </ul>
-     * @param object
-     * @return
-     */
-    Map<String, String> getJsonParameters(T item);
-
-    /**
-     * Returns new item for the speficied data.
-     * This method is invoked on input conversion.
+     * Returns new item for the specified data.
+     * <p>
+     * This method is invoked during input conversion.
      *
      * @param id
      * @param value
+     *            input of the value field which may or may not match the actual
+     *            search result
      * @param oldItem
-     * @return
+     * @return new item for the specified data
      */
     T getObject(String id, String value, T oldItem);
 
     /**
-     * Returns value for the given object, which will be then set to the input field.
+     * Returns id for the given object, which will be then set to the hidden
+     * field.
      *
      * @param object
-     * @return
-     */
-    String getValue(T object);
-
-
-    /**
-     * Returns id for the given object, which will be then set to the hidden field.
-     *
-     * @param object
-     * @return
+     * @return id for the given object
      */
     String getId(T object);
-
-
-    /**
-     * Returns list of items for the specified query.
-     *
-     * @param query
-     * @return
-     */
-    List<T> searchItems(String query, int size);
 
 }

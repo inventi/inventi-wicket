@@ -45,7 +45,7 @@ import lt.inventi.wicket.resource.ResourceSettings;
  *
  * @param <T>
  */
-public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel<T> implements IQueryListener {
+public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPanel<T> implements IQueryListener {
 
     /**
      * Json parameters
@@ -63,55 +63,48 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
     private HiddenField<ID> idField;
 
     private AutocompleteDataProvider<T> dataProvider;
+    private AutocompleteDataLabelProvider<T> dataLabelProvider;
+    private AutocompleteSearchProvider<S> searchProvider;
 
     private boolean labelWasSet;
 
-    /**
-     * Creates new instance
-     *
-     * @param id
-     *            component id
-     * @param model
-     *            model, to which this component must be bound to
-     * @param dataProvider
-     *            autcomplete items provider, or null if you want to pass it later through
-     *            setDataProvider method.
-     */
-    public Autocomplete(String id, IModel<T> model, AutocompleteDataProvider<T> dataProvider) {
+    public Autocomplete(String id) {
+        this(id, null);
+    }
 
+    public Autocomplete(String id, IModel<T> model) {
+        this(id, model, null, null);
+    }
+
+    public Autocomplete(String id, AutocompleteDataProvider<T> dataProvider, AutocompleteSearchProvider<S> searchProvider) {
+        this(id, null, dataProvider, searchProvider);
+    }
+
+    public Autocomplete(String id, IModel<T> model, AutocompleteDataProvider<T> dataProvider, AutocompleteSearchProvider<S> searchProvider) {
         super(id, model);
         this.dataProvider = dataProvider;
-        init();
+        this.searchProvider = searchProvider;
+
+        valueField = new ValueField("value");
+        add(valueField);
     }
 
     /**
-     * Creates new instance
-     *
-     * @param id
-     *            component id
-     * @param dataProvider
-     *            autcomplete items provider, or null if you want to pass it later through
-     *            setDataProvider method.
-     */
-    public Autocomplete(String id, AutocompleteDataProvider<T> dataProvider) {
-        super(id);
-        this.dataProvider = dataProvider;
-        init();
-    }
-
-    /**
-     * Use this method if your data provider is inner class, in which case you cant provide it as
-     * constructor parameter.
-     *
-     * @param dataProvider
+     * Useful in case your data provider is an inner class.
      */
     protected void setDataProvider(AutocompleteDataProvider<T> dataProvider) {
         this.dataProvider = dataProvider;
     }
 
-    private void init() {
-        valueField = new ValueField("value");
-        add(valueField);
+    /**
+     * Use this method if your search provider is an inner class.
+     */
+    protected void setSearchProvider(AutocompleteSearchProvider<S> searchProvider) {
+        this.searchProvider = searchProvider;
+    }
+
+    protected void setDataLabelProvider(AutocompleteDataLabelProvider<T> dataLabelProvider) {
+        this.dataLabelProvider = dataLabelProvider;
     }
 
     /**
@@ -140,12 +133,19 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
      * next response page.
      */
     protected void onNewItem(String newName, NewEntityCallback<T> callback) {
+        // do nothing
     }
 
     @Override
     protected void onInitialize() {
         if (dataProvider == null) {
-            throw new IllegalStateException("Date provider can't be null");
+            throw new IllegalStateException(this.getClass() + " data provider can't be null");
+        }
+        if (dataLabelProvider == null) {
+            throw new IllegalStateException(this.getClass() + " data label provider can't be null");
+        }
+        if (searchProvider == null) {
+            throw new IllegalStateException(this.getClass() + " search provider can't be null");
         }
 
         if (!labelWasSet) {
@@ -157,7 +157,12 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
         valueField.setOutputMarkupId(true);
         valueField.setModel(new ValueModel());
 
-        idField = new HiddenField<ID>("id", new IdModel(getIdModel()));
+        idField = new HiddenField<ID>("id", new IdModel(getIdModel())) {
+            @Override
+            public void updateModel() {
+                // do nothing
+            }
+        };
         add(idField);
 
         addNewLink = new SubmitLink("addNew") {
@@ -231,6 +236,7 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
 
             @Override
             public void detach(IRequestCycle requestCycle) {
+                // do nothing
             }
         });
     }
@@ -255,11 +261,11 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
 
     private CharSequence generateResponse(String criteria, int size) {
         JSONArray response = new JSONArray();
-        List<T> result = dataProvider.searchItems(criteria, size);
+        List<S> result = searchProvider.searchItems(criteria, size);
         if (result != null) {
-            for (T item : result) {
+            for (S item : result) {
                 JSONObject obj = new JSONObject();
-                Map<String, String> params = dataProvider.getJsonParameters(item);
+                Map<String, String> params = searchProvider.getJsonParameters(item);
                 obj.putAll(params);
                 response.add(obj);
             }
@@ -319,9 +325,6 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
     }
 
     public class ValueField extends TextField<String> {
-
-        private static final long serialVersionUID = 8603979096217702996L;
-
         public ValueField(String id) {
             super(id, new Model<String>());
         }
@@ -330,26 +333,32 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
         public String getValidatorKeyPrefix() {
             return Autocomplete.this.getId();
         }
+
+        @Override
+        public void updateModel() {
+            // do nothing
+        }
     }
 
     @Override
-    protected T convertValue(String[] value) throws ConversionException {
+    protected void convertInput() {
+        setConvertedInput(doConvertValue(getInputAsArray()));
+    }
 
+    private T doConvertValue(String[] value) {
         String key = idField.getInput();
         if (!hasText(key)) {
             return null;
         }
 
         T oldObject = getModelObject();
-        if(oldObject != null){
+        if (oldObject != null) {
             String id = dataProvider.getId(oldObject);
             if (key.equals(id)) {
                 return oldObject;
             }
         }
-
         String valueString = valueField.getInput();
-
         T objectValue = dataProvider.getObject(key, valueString, oldObject);
 
         if (objectValue == null && hasText(valueString)) {
@@ -366,12 +375,12 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
         private IModel<ID> parentModel;
 
         public IdModel(IModel<ID> parentModel) {
-            super();
             this.parentModel = parentModel;
         }
 
         @Override
         public void detach() {
+            // do nothing
         }
 
         @Override
@@ -381,27 +390,37 @@ public class Autocomplete<ID extends Serializable, T> extends FormComponentPanel
 
         @Override
         public void setObject(ID object) {
-            // parentModel.setObject(object);
+            throw new UnsupportedOperationException("Id model should not be set by the autocomplete!");
         }
     }
 
     private class ValueModel implements IModel<String> {
+        private T lastObject;
+        private String lastValue;
 
         @Override
         public String getObject() {
             T object = Autocomplete.this.getModelObject();
-            if(object != null){
-                return dataProvider.getValue(object);
+            if (object != lastObject) {
+                lastObject = object;
+                if (object == null) {
+                    lastValue = null;
+                } else {
+                    lastValue = dataLabelProvider.extractLabel(object);
+                }
             }
-            return null;
-        }
-
-        @Override
-        public void detach() {
+            return lastValue;
         }
 
         @Override
         public void setObject(String object) {
+            throw new UnsupportedOperationException("Value model should not be set by the autocomplete!");
         }
+
+        @Override
+        public void detach() {
+            this.lastObject = null;
+        }
+
     }
 }

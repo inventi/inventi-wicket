@@ -3,6 +3,9 @@ package lt.inventi.wicket.component.autocomplete;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -29,25 +33,25 @@ import lt.inventi.wicket.test.BaseNonInjectedTest;
 
 public class AutoCompleteTest extends BaseNonInjectedTest {
 
-    private Autocomplete<Long, TestObject> autoComplete;
+    private Autocomplete<Long, TestObject, SearchObject> autoComplete;
     private Panel panel;
-    private List<TestObject> list;
+    private List<SearchObject> list;
     private IModel<TestObject> model;
-
-    private AutocompleteDataProvider<TestObject> dataProvider;
 
     @Before
     public void setUp(){
         ResourceSettings.installEmpty(tester.getApplication());
 
-        list = new ArrayList<TestObject>();
-        TestObject oldObj = new TestObject(2L, "OldName");
-        list.add(oldObj);
-        list.add(new TestObject(3L, "OtherName"));
+        list = new ArrayList<SearchObject>();
+        list.add(new SearchObject("1", "SomeName", "SomeDescription"));
+        list.add(new SearchObject("2", "OldName", "OldDescription"));
+        list.add(new SearchObject("3", "OtherName", "OtherDescription"));
 
-        model = new Model<TestObject>(oldObj);
-        dataProvider = new TestProvider();
-        autoComplete = new Autocomplete<Long, TestObject>("autoComplete", model, dataProvider);
+        model = new Model<TestObject>(new TestObject(2L, "OldName"));
+        autoComplete = new Autocomplete<Long, TestObject, SearchObject>("autoComplete", model);
+        autoComplete.setSearchProvider(new SearchProvider());
+        autoComplete.setDataProvider(new DataProvider());
+        autoComplete.setDataLabelProvider(new DataLabelProvider());
 
         panel = new TestPanel("panel");
         Form<TestObject> form = new Form<TestObject>("form", new Model<TestObject>());
@@ -59,23 +63,38 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
 
     @Test
     public void testQuery(){
-
         tester.getRequest().getPostParameters().addParameterValue("term", "test text");
         tester.getRequest().getPostParameters().addParameterValue("limit", "10");
 
         autoComplete.onQuery();
         tester.processRequest(tester.getRequestCycle().getRequestHandlerScheduledAfterCurrent());
 
-        assertEquals("application/json; charset=utf-8", tester.getLastResponse().getContentType());
-        assertEquals("Mon, 26 Jul 1997 05:00:00 GMT", tester.getLastResponse().getHeader("Expires"));
-        assertEquals("no-cache, must-revalidate", tester.getLastResponse().getHeader("Cache-Control"));
-        assertEquals("no-cache", tester.getLastResponse().getHeader("Pragma"));
+        MockHttpServletResponse response = tester.getLastResponse();
+        assertThat(response.getContentType(), equalTo("application/json; charset=utf-8"));
+        assertThat(response.getHeader("Expires"), equalTo("Mon, 26 Jul 1997 05:00:00 GMT"));
+        assertThat(response.getHeader("Cache-Control"), equalTo("no-cache, must-revalidate"));
+        assertThat(response.getHeader("Pragma"), equalTo("no-cache"));
 
+        JSONArray items = JSONArray.fromObject(response.getDocument());
+        assertThat(((JSONObject) items.get(0)).get("id").toString(), equalTo("1"));
+        assertThat(((JSONObject) items.get(0)).get("label").toString(), equalTo("SomeName - SomeDescription"));
+        assertThat(((JSONObject) items.get(1)).get("id").toString(), equalTo("2"));
+        assertThat(((JSONObject) items.get(1)).get("label").toString(), equalTo("OldName - OldDescription"));
+    }
 
-        JSONArray items = JSONArray.fromObject(tester.getLastResponse().getDocument());
+    @Test
+    public void rerendersValueFieldInput() {
+        tester.newFormTester("panel:form")
+            .setValue("autoComplete:id", "3")
+            .submit();
 
-        assertEquals(String.valueOf(2), ((JSONObject)items.get(0)).get("id"));
-        assertEquals("OldName", ((JSONObject)items.get(0)).get("label"));
+        assertThat(model.getObject().id, is(3L));
+        assertThat(autoComplete.getValueField().getModelObject(), equalTo("OtherName"));
+
+        autoComplete.clearAllInput();
+        panel.render();
+
+        assertThat(autoComplete.getValueField().getModelObject(), equalTo("OtherName"));
     }
 
     @Test
@@ -115,7 +134,7 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
 
         //create new item
         TestObject newObj = new TestObject(1L, "NewName");
-        list.add(newObj);
+        //list.add(newObj);
 
         tester.startComponent(autoComplete);
 
@@ -129,11 +148,11 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         formTest.setValue("autoComplete:id", "3");
         formTest.submit();
 
-        assertEquals(list.get(1).getId(), model.getObject().getId());
+        assertThat(list.get(2).id, equalTo(model.getObject().id.toString()));
+        assertThat(list.get(2).name, equalTo(model.getObject().name));
     }
 
-
-    private class TestObject implements Serializable{
+    private static class TestObject implements Serializable {
         private Long id;
         private String name;
 
@@ -145,8 +164,17 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         public Long getId() {
             return id;
         }
-        public String getName() {
-            return name;
+    }
+
+    private static class SearchObject {
+        final String id;
+        final String name;
+        final String description;
+
+        public SearchObject(String id, String name, String description) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
         }
     }
 
@@ -158,36 +186,44 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
     }
 
 
-    public  class TestProvider extends AbstractDataProvider<TestObject>{
-
-        @Override
-        public TestObject getObject(String id, String value, TestObject oldItem) {
-            for(TestObject obj : list){
-                if(obj.getId().equals(Long.valueOf(id))){
-                    return obj;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public String getValue(TestObject object) {
-            return object.getName();
-        }
-
+    private class DataProvider extends AbstractDataProvider<TestObject> {
         @Override
         public String getId(TestObject object) {
             return ""+object.getId();
         }
 
         @Override
-        public List<TestObject> searchItems(String query, int size) {
+        protected TestObject doLoadById(String id) {
+            for (SearchObject o : list) {
+                if (o.id.equals(id)) {
+                    return new TestObject(Long.valueOf(id), o.name);
+                }
+            }
+            throw new IllegalStateException("Unknown id " + id);
+        }
+    }
+
+    private class SearchProvider extends AbstractSearchProvider<SearchObject> {
+        @Override
+        public List<SearchObject> searchItems(String query, int size) {
             return list;
         }
 
         @Override
-        protected TestObject doLoadById(String id) {
-            return null;
+        public String extractLabel(SearchObject item) {
+            return item.name + " - " + item.description;
+        }
+
+        @Override
+        protected String extractId(SearchObject item) {
+            return item.id;
+        }
+    }
+
+    public class DataLabelProvider implements AutocompleteDataLabelProvider<TestObject> {
+        @Override
+        public String extractLabel(TestObject item) {
+            return item.name;
         }
     }
 }
