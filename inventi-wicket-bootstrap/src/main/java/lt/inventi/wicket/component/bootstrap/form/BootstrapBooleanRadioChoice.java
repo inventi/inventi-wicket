@@ -17,12 +17,12 @@ import org.apache.wicket.model.IModel;
  * You can localize the labels for true/false options by providing localization
  * properties for:
  * <ol>
- * <li>BooleanRadioChoice.YES</li>
- * <li>BooleanRadioChoice.NO</li>
+ * <li>BooleanRadioChoice.TRUE</li>
+ * <li>BooleanRadioChoice.FALSE</li>
  * </ol>
- * 
+ *
  * @author vplatonov
- * 
+ *
  */
 public class BootstrapBooleanRadioChoice extends BootstrapRadioChoice<Boolean> {
 
@@ -37,7 +37,7 @@ public class BootstrapBooleanRadioChoice extends BootstrapRadioChoice<Boolean> {
     private static class BooleanRadioChoiceRenderer implements IChoiceRenderer<Boolean> {
         @Override
         public Object getDisplayValue(Boolean object) {
-            return Boolean.TRUE.equals(object) ? "BooleanRadioChoice.YES" : "BooleanRadioChoice.NO";
+            return Boolean.TRUE.equals(object) ? "BooleanRadioChoice.TRUE" : "BooleanRadioChoice.FALSE";
         }
 
         @Override
