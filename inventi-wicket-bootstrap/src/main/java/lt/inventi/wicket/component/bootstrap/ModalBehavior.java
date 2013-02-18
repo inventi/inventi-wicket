@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -12,6 +13,7 @@ import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.request.cycle.RequestCycle;
 
 import de.agilecoders.wicket.util.Json;
 
@@ -33,7 +35,6 @@ public class ModalBehavior extends Behavior {
 
     @Override
     public void bind(Component component) {
-        super.bind(component);
         component.setOutputMarkupId(true);
         modalContainer.setOutputMarkupId(true);
 
@@ -51,6 +52,16 @@ public class ModalBehavior extends Behavior {
 
         if (modalConfig.hasVisibilityModel()) {
             modalContainer.add(new ModalOpenClosedStateBehavior(modalConfig.visibilityModel()));
+        }
+    }
+
+    @Override
+    public void onRemove(Component component) {
+        AjaxRequestTarget target = RequestCycle.get().find(AjaxRequestTarget.class);
+        if (target != null) {
+            StringBuilder js = new StringBuilder("var m = $('#%s').data('modal');");
+            js.append("if (m && m.isShown) { m.hide(); }");
+            target.prependJavaScript(String.format(js.toString(), modalContainer.getMarkupId()));
         }
     }
 
