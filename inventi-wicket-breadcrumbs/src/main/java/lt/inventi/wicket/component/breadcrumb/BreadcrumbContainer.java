@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-
 public class BreadcrumbContainer implements Serializable{
 
     private Map<String, List<Breadcrumb>> breadcrumbMap = new HashMap<String, List<Breadcrumb>>();
