@@ -1,12 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" >
 <body>
+<wicket:head>
+    <style>
+        /* Shamelessly copied from bootstrap.css */
+        ul.breadcrumbs {
+            display: block;
+            padding: 8px 15px;
+            margin: 0 0 20px;
+            list-style: none;
+            background-color: whiteSmoke;
+            border-radius: 4px;
+        }
+        .breadcrumbs > li {
+            display: inline-block;
+            text-shadow: 0 1px 0 white;
+            line-height: 20px;
+        }
+        .breadcrumbs > li > .divider {
+            padding: 0 5px;
+            color: #CCC;
+        }
+        .breadcrumbs > li > a {
+            float: left;
+            padding-right: 0.5em;
+            text-decoration: none;
+        }
+        .breadcrumbs > li > span.inactive {
+            float: left;
+            padding-right: 0.5em;
+            color: #999;
+        }
+    </style>
+</wicket:head>
 <wicket:panel>
-    <ul class="breadcrumb">
-    	<li>
-            <a href="/"><i class="icon-home"></i></a>
-            <span class="divider">/</span>
-        </li>
+    <ul class="breadcrumbs">
         <li wicket:id="crumbs">
             <a wicket:id="link"><span wicket:id="title"/></a> 
             <span class="divider">/</span>

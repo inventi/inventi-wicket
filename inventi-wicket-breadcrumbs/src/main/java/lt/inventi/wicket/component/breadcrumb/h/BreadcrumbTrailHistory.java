@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,23 +30,44 @@ public class BreadcrumbTrailHistory implements Serializable {
     }
 
     public static void extendTrail(String maybeTrailId, Breadcrumb crumb) {
-        BreadcrumbTrailHistory container = get();
+        BreadcrumbTrailHistory history = get();
         final List<Breadcrumb> trail;
-        if (maybeTrailId == null || !container.breadcrumbMap.containsKey(maybeTrailId)) {
+        if (maybeTrailId == null || !history.breadcrumbMap.containsKey(maybeTrailId)) {
             trail = Arrays.asList(crumb);
         } else {
-            List<Breadcrumb> previousTrail = container.breadcrumbMap.get(maybeTrailId);
+            List<Breadcrumb> previousTrail = history.breadcrumbMap.get(maybeTrailId);
             trail = new ArrayList<Breadcrumb>(previousTrail);
             trail.add(crumb);
         }
-        container.breadcrumbMap.put(crumb.getId().toString(), Collections.unmodifiableList(trail));
+        history.breadcrumbMap.put(crumb.getId().toString(), Collections.unmodifiableList(trail));
+    }
+
+    /**
+     * Tries to get the previous breadcrumb for the provided trail id.
+     * <p>
+     * In case provided trail id is null or no breadcrumb history exists for the
+     * id, nothing is returned.
+     *
+     * @param maybeTrailId
+     * @return previous breadcrumb from the history associated with the provided
+     *         trail or null if no trail exists
+     */
+    public static Breadcrumb getPreviousBreadcrumbFor(String maybeTrailId) {
+        BreadcrumbTrailHistory history = get();
+        if (maybeTrailId != null && history.breadcrumbMap.containsKey(maybeTrailId)) {
+            List<Breadcrumb> trail = history.breadcrumbMap.get(maybeTrailId);
+            if (trail.size() > 0) {
+                return trail.get(trail.size() - 1);
+            }
+        }
+        return null;
     }
 
     public static List<Breadcrumb> getTrail(String trailId) {
         return get().breadcrumbMap.get(trailId);
     }
 
-    private final Map<String, List<Breadcrumb>> breadcrumbMap = new HashMap<String, List<Breadcrumb>>();
+    private final Map<String, List<Breadcrumb>> breadcrumbMap = new LinkedHashMap<String, List<Breadcrumb>>();
 
     public static String getFullHistory() {
         return get().breadcrumbMap.toString();

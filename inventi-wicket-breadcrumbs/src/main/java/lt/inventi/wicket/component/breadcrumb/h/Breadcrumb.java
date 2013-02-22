@@ -9,8 +9,15 @@ import org.apache.wicket.request.cycle.RequestCycle;
 
 public class Breadcrumb implements Serializable, IBreadcrumbUrlProvider {
 
+    /**
+     * We cannot use page ids because they might change after page is loaded
+     * from the page store (when it's dirtied).
+     *
+     * @param page
+     * @return
+     */
     static String constructIdFrom(IRequestablePage page) {
-        return page.getPageId() + "-" + page.getRenderCount() + "-" + page.getClass().getSimpleName();
+        return String.valueOf(page.hashCode());
     }
 
     private final String id;

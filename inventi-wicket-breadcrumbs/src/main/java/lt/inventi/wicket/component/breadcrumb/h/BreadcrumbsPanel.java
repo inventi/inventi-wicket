@@ -35,7 +35,7 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
 
     protected void populateBreadcrumb(ListItem<Breadcrumb> item) {
         Component title = new Label("title", item.getModelObject().getTitleModel());
-        AbstractLink link = createBreadcrumbLink("link", item);
+        AbstractLink link = customize(createBreadcrumbLink("link", item));
         if (shouldBeDisabled(item.getIndex(), item.getModel())) {
             markAsDisabled(link);
         }
@@ -43,8 +43,15 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
         item.add(link);
     }
 
+    protected AbstractLink customize(AbstractLink link) {
+        return link.setBeforeDisabledLink("").setAfterDisabledLink("");
+    }
+
     protected AbstractLink createBreadcrumbLink(String linkId, ListItem<Breadcrumb> item) {
-        return new StatefulBreadcrumbLink(linkId, item.getModel());
+        if (BreadcrumbsSettings.useStatefulBreadcrumbLinks()) {
+            return new StatefulBreadcrumbLink(linkId, item.getModel());
+        }
+        return new StatelessBreadcrumbLink(linkId, item.getModel());
     }
 
     protected void markAsDisabled(WebMarkupContainer link) {

@@ -6,7 +6,9 @@ import org.apache.wicket.model.IModel;
 /**
  * This is kind of a hack and doesn't work with WicketTester. Tester resolves
  * the URL for the link with a {@code PageInstanceMapper} as this type of link
- * is an instance of a {@link Link} which is stateful by default;
+ * is an instance of a {@link Link} which is stateful by default.
+ * <p>
+ * However, this way links become copy-paste'able.
  *
  * @author zhilvis, vplatonov
  *

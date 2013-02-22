@@ -3,38 +3,17 @@ package lt.inventi.wicket.component.breadcrumb;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Before;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.h.Breadcrumb;
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsPanel;
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsSettings;
-import lt.inventi.wicket.component.breadcrumb.h.IProvideTitle;
 import lt.inventi.wicket.component.breadcrumb.h.NextPageLink;
 
-public class AutomaticNextBreadcrumbPageLinkTest {
-
-    private WicketTester tester = new WicketTester();
-
-    @Before
-    public void setUp() {
-        new BreadcrumbsSettings().install(tester.getApplication());
-    }
+public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
 
     @Test
     public void navigatesBetweenPagesRetainingBreadcrumbsAutomatically() {
@@ -100,18 +79,7 @@ public class AutomaticNextBreadcrumbPageLinkTest {
         assertThat(breadcrumbTitles(), contains("FirstPage"));
     }
 
-    @SuppressWarnings("unchecked")
-    private Iterable<? extends String> breadcrumbTitles() {
-        Component c = tester.getComponentFromLastRenderedPage("crumbs:crumbs");
-        ListView<Breadcrumb> view = ((ListView<Breadcrumb>) c);
-        List<String> titles = new ArrayList<String>();
-        for (Breadcrumb b : view.getList()) {
-            titles.add(b.getTitleModel().getObject());
-        }
-        return titles;
-    }
-
-    public static class APage extends WebPage implements IProvideTitle {
+    public static class APage extends AbstractBreadcrumbTestsPage {
         public APage() {
             super();
         }
@@ -134,7 +102,6 @@ public class AutomaticNextBreadcrumbPageLinkTest {
                     return String.valueOf(count);
                 }
             }));
-            add(new BreadcrumbsPanel("crumbs"));
         }
 
         @Override
@@ -143,11 +110,6 @@ public class AutomaticNextBreadcrumbPageLinkTest {
                 + "<div wicket:id=\"crumbs\"></div>"
                 + "<a wicket:id=\"link\"></a>"
                 + "<a wicket:id=\"statefulLink\"></a></body>");
-        }
-
-        @Override
-        public IModel<String> getTitle() {
-            return Model.of(getClass().getSimpleName());
         }
     }
 
