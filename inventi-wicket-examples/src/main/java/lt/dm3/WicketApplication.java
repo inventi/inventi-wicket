@@ -16,7 +16,8 @@ public class WicketApplication extends WebApplication {
     public void init() {
 		super.init();
 
-        new BreadcrumbsSettings().install(this);
+        new BreadcrumbsSettings().withDecoratedBookmarkableLinks().install(this);
+        getStoreSettings().setInmemoryCacheSize(2);
 	}
 
 }

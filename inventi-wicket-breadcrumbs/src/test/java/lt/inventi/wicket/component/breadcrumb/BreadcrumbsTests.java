@@ -25,7 +25,10 @@ public class BreadcrumbsTests {
 
     @Before
     public void setUp() {
-        new BreadcrumbsSettings().withStatefulBreadcrumbLinks().install(tester.getApplication());
+        new BreadcrumbsSettings()
+            .withStatefulBreadcrumbLinks()
+            .withDecoratedBookmarkableLinks()
+            .install(tester.getApplication());
     }
 
     @SuppressWarnings("unchecked")

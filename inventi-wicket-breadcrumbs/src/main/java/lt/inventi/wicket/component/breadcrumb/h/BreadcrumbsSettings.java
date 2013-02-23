@@ -29,8 +29,7 @@ public final class BreadcrumbsSettings {
         }
     };
 
-    @SuppressWarnings("unchecked")
-    private Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate = (Class<? extends BookmarkablePageLink<?>>) BookmarkablePageLink.class;
+    private Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate = null;
 
     private boolean useStatefulBreadcrumbLinks;
 
@@ -58,8 +57,40 @@ public final class BreadcrumbsSettings {
         return this;
     }
 
-    public <T extends BookmarkablePageLink<?>> BreadcrumbsSettings decorateLinksOfType(Class<T> type) {
-        this.linkTypeToDecorate = type;
+    /**
+     * Will create breadcrumbs only for pages assignable to the specified type.
+     * <p>
+     * By default breadcrumbs will be created for all of the pages containing an
+     * instance of {@link BreadcrumbsPanel}.
+     * <p>
+     * Useful if you have a common base class for pages requiring breadcrumbs.
+     * You also may use {@code IBreadcrumbsOperations} as a parameter.
+     *
+     * @param type
+     *            type of the page
+     * @return current settings for chaining
+     */
+    public BreadcrumbsSettings forInstancesOf(final Class<?> type) {
+        this.pageFilter = new IBreadcrumbPageFilter() {
+            @Override
+            public boolean shouldCreateBreadcrumbFor(IRequestablePage page) {
+                return type.isAssignableFrom(page.getClass());
+            }
+        };
+        return this;
+    }
+
+    /**
+     * If set, all instances of {@link BookmarkablePageLink} on pages which
+     * support breadcrumbs (specified by {@link #forPagesAnnotatedWith(Class)}
+     * will be decorated with breadcrumb trail parameter. This way bookmarkable
+     * links will automatically extend the breadcrumb trail.
+     *
+     * @return current settings for chaining
+     */
+    @SuppressWarnings("unchecked")
+    public BreadcrumbsSettings withDecoratedBookmarkableLinks() {
+        this.linkTypeToDecorate = (Class<? extends BookmarkablePageLink<?>>) BookmarkablePageLink.class;
         return this;
     }
 
@@ -68,7 +99,7 @@ public final class BreadcrumbsSettings {
      * <p>
      * This must be used in tests if you want to click on breadcrumb links using
      * {@code WicketTester}.
-     * 
+     *
      * @return current settings for chaining
      */
     public BreadcrumbsSettings withStatefulBreadcrumbLinks() {
@@ -78,8 +109,11 @@ public final class BreadcrumbsSettings {
 
     public void install(Application app) {
         app.setMetaData(KEY, this);
-        app.getComponentPreOnBeforeRenderListeners().add(new BreadcrumbTrailOnBeforeRenderListener(pageFilter));
-        app.getComponentInitializationListeners().add(new BookmarkableBreadcrumbPageInitializationListener(linkTypeToDecorate));
+        app.getComponentPreOnBeforeRenderListeners().add(new BreadcrumbTrailExtendingListener(pageFilter));
+        if (linkTypeToDecorate != null) {
+            app.getComponentInitializationListeners().add(
+                new BookmarkableBreadcrumbPageInitializationListener(pageFilter, linkTypeToDecorate));
+        }
     }
 
 }

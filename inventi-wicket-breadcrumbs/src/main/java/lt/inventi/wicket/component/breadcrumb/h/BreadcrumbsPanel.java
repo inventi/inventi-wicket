@@ -23,7 +23,7 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
         add(breadcrumbs = new ListView<Breadcrumb>("crumbs", new AbstractReadOnlyModel<List<Breadcrumb>>() {
             @Override
             public List<Breadcrumb> getObject() {
-                return BreadcrumbTrailHistory.getTrail(Breadcrumb.constructIdFrom(getPage()));
+                return getBreadcrumbs();
             }
         }) {
             @Override
@@ -31,6 +31,11 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
                 BreadcrumbsPanel.this.populateBreadcrumb(item);
             }
         });
+    }
+
+    // PRIVATE API
+    List<Breadcrumb> getBreadcrumbs() {
+        return BreadcrumbTrailHistory.getTrail(Breadcrumb.constructIdFrom(getPage()));
     }
 
     protected void populateBreadcrumb(ListItem<Breadcrumb> item) {
@@ -48,10 +53,7 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
     }
 
     protected AbstractLink createBreadcrumbLink(String linkId, ListItem<Breadcrumb> item) {
-        if (BreadcrumbsSettings.useStatefulBreadcrumbLinks()) {
-            return new StatefulBreadcrumbLink(linkId, item.getModel());
-        }
-        return new StatelessBreadcrumbLink(linkId, item.getModel());
+        return new BreadcrumbLink(linkId, item.getModel());
     }
 
     protected void markAsDisabled(WebMarkupContainer link) {
@@ -66,4 +68,5 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
     protected final int getNumberOfBreadcrumbs() {
         return breadcrumbs.getViewSize();
     }
+
 }

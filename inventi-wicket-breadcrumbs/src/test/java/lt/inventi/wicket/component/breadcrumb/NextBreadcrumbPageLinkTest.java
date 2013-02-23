@@ -7,11 +7,12 @@ import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.h.NextPageLink;
+import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsOperationsHelper;
 
 public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
 
@@ -80,6 +81,7 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
     }
 
     public static class APage extends AbstractBreadcrumbTestsPage {
+        protected BreadcrumbsOperationsHelper helper;
         public APage() {
             super();
         }
@@ -96,6 +98,7 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
         @Override
         protected void onInitialize() {
             super.onInitialize();
+            helper = new BreadcrumbsOperationsHelper(this);
             add(new Label("label", new AbstractReadOnlyModel<String>() {
                 @Override
                 public String getObject() {
@@ -130,10 +133,10 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
         protected void onInitialize() {
             super.onInitialize();
             add(new BookmarkablePageLink<SecondPage>("link", SecondPage.class));
-            add(new NextPageLink<Void>("statefulLink") {
+            add(new Link<Void>("statefulLink") {
                 @Override
                 public void onClick() {
-                    setNextResponsePage(new SecondPage(count + 1));
+                    helper.setNextResponsePage(new SecondPage(count + 1));
                 }
             });
         }
@@ -156,10 +159,10 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
         protected void onInitialize() {
             super.onInitialize();
             add(new BookmarkablePageLink<FirstPage>("link", FirstPage.class));
-            add(new NextPageLink<Void>("statefulLink") {
+            add(new Link<Void>("statefulLink") {
                 @Override
                 public void onClick() {
-                    setNextResponsePage(new FirstPage(count + 1));
+                    helper.setNextResponsePage(new FirstPage(count + 1));
                 }
             });
         }

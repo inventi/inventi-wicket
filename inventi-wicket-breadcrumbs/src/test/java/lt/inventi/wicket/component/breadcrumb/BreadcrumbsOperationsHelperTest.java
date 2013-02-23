@@ -36,14 +36,13 @@ public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
 
         assertThat(breadcrumbTitles(), contains("10", "0", "1", "1"));
 
-        // TODO: doesn't work in tests
-        /*tester.clickLink("previousPageLink");
+        tester.clickLink("previousPageLink");
 
         assertThat(breadcrumbTitles(), contains("10", "0", "1"));
 
         tester.clickLink("previousPageLink");
 
-        assertThat(breadcrumbTitles(), contains("10", "0"));*/
+        assertThat(breadcrumbTitles(), contains("10", "0"));
     }
 
     public static class OperationsTestPage extends AbstractBreadcrumbTestsPage implements IBreadcrumbsOperations {

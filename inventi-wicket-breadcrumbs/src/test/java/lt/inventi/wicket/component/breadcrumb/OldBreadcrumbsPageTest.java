@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
-import lt.inventi.wicket.test.BaseNonInjectedTest;
 
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -29,7 +28,9 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.junit.Test;
 
-public class BreadcrumbsPageTest extends BaseNonInjectedTest {
+import lt.inventi.wicket.test.BaseNonInjectedTest;
+
+public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
 
 
     @Test

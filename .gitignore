@@ -3,4 +3,5 @@ target
 .classpath
 .project
 bin
+*.log
 dependency-reduced-pom.xml

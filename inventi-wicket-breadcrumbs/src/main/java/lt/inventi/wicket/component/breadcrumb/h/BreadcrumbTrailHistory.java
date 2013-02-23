@@ -42,22 +42,30 @@ public class BreadcrumbTrailHistory implements Serializable {
         history.breadcrumbMap.put(crumb.getId().toString(), Collections.unmodifiableList(trail));
     }
 
+    public static Breadcrumb getLastBreadcrumbFor(String maybeTrailId) {
+        return getNthBreadcrumbFromEndFor(maybeTrailId, 1);
+    }
+
+    public static Breadcrumb getPenultimateBreadcrumbFor(String maybeTrailId) {
+        return getNthBreadcrumbFromEndFor(maybeTrailId, 2);
+    }
+
     /**
-     * Tries to get the previous breadcrumb for the provided trail id.
+     * Tries to get the nth breadcrumb from the end for the provided trail id.
      * <p>
      * In case provided trail id is null or no breadcrumb history exists for the
      * id, nothing is returned.
-     *
+     * 
      * @param maybeTrailId
-     * @return previous breadcrumb from the history associated with the provided
-     *         trail or null if no trail exists
+     * @return (trail size - n)th breadcrumb from the history associated with
+     *         the provided trail or null if no trail exists
      */
-    public static Breadcrumb getPreviousBreadcrumbFor(String maybeTrailId) {
+    private static Breadcrumb getNthBreadcrumbFromEndFor(String maybeTrailId, int n) {
         BreadcrumbTrailHistory history = get();
         if (maybeTrailId != null && history.breadcrumbMap.containsKey(maybeTrailId)) {
             List<Breadcrumb> trail = history.breadcrumbMap.get(maybeTrailId);
-            if (trail.size() > 0) {
-                return trail.get(trail.size() - 1);
+            if (trail.size() > n - 1) {
+                return trail.get(trail.size() - n);
             }
         }
         return null;

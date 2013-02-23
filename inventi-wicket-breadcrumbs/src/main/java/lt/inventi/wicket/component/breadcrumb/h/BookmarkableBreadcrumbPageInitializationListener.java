@@ -11,14 +11,18 @@ public class BookmarkableBreadcrumbPageInitializationListener implements ICompon
     private static final Logger logger = LoggerFactory.getLogger(BookmarkableBreadcrumbPageInitializationListener.class);
 
     private final Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate;
+    private final IBreadcrumbPageFilter pageFilter;
 
-    public BookmarkableBreadcrumbPageInitializationListener(Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate) {
+    public BookmarkableBreadcrumbPageInitializationListener(IBreadcrumbPageFilter pageFilter, Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate) {
+        this.pageFilter = pageFilter;
         this.linkTypeToDecorate = linkTypeToDecorate;
     }
 
     @Override
     public void onInitialize(Component component) {
-        if (linkTypeToDecorate.isAssignableFrom(component.getClass())) {
+        if (linkTypeToDecorate.isAssignableFrom(component.getClass()) &&
+            pageFilter.shouldCreateBreadcrumbFor(component.getPage())) {
+
             BookmarkablePageLink<?> link = linkTypeToDecorate.cast(component);
             if (link.getPage().getPageParameters() == link.getPageParameters()) {
                 logger.warn("Modifying parameters of the {} page!", link.getPage());

@@ -14,11 +14,12 @@ public abstract class BreadcrumbsRedirectHelper {
     public static void setResponseToPreviousPage(Component component) {
         Page page = component.getPage();
         String optionalTrailId = BreadcrumbPageParameters.getOptionalTrailId(page.getPageParameters());
-        Breadcrumb previousBreadcrumb = BreadcrumbTrailHistory.getPreviousBreadcrumbFor(optionalTrailId);
+        Breadcrumb previousBreadcrumb = BreadcrumbTrailHistory.getLastBreadcrumbFor(optionalTrailId);
         if (previousBreadcrumb == null) {
-            throw new IllegalStateException("No previous breadcrumb exists for page: " + page + ", parameters: " + page.getPageParameters());
+            component.getRequestCycle().setResponsePage(page);
+        } else {
+            component.getRequestCycle().scheduleRequestHandlerAfterCurrent(previousBreadcrumb.getTarget());
         }
-        component.getRequestCycle().scheduleRequestHandlerAfterCurrent(previousBreadcrumb.getTarget());
     }
 
     public static void setNextResponsePage(Component component, IRequestablePage nextPage) {
