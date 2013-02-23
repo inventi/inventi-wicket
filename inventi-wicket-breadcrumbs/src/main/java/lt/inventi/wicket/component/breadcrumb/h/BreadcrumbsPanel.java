@@ -10,8 +10,8 @@ import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.GenericPanel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 
 public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
 
@@ -20,9 +20,9 @@ public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
     public BreadcrumbsPanel(String id) {
         super(id);
 
-        add(breadcrumbs = new ListView<Breadcrumb>("crumbs", new AbstractReadOnlyModel<List<Breadcrumb>>() {
+        add(breadcrumbs = new ListView<Breadcrumb>("crumbs", new LoadableDetachableModel<List<Breadcrumb>>() {
             @Override
-            public List<Breadcrumb> getObject() {
+            public List<Breadcrumb> load() {
                 return getBreadcrumbs();
             }
         }) {
