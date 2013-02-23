@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
+
 public class BreadcrumbsPanel extends GenericPanel<List<Breadcrumb>> {
 
     private final ListView<Breadcrumb> breadcrumbs;

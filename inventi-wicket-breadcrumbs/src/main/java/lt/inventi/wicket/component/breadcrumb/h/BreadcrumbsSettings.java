@@ -8,6 +8,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.component.IRequestablePage;
 
+
 public final class BreadcrumbsSettings {
 
     private static final MetaDataKey<BreadcrumbsSettings> KEY = new MetaDataKey<BreadcrumbsSettings>(){ /* empty */ };
@@ -32,6 +33,8 @@ public final class BreadcrumbsSettings {
     private Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate = null;
 
     private boolean useStatefulBreadcrumbLinks;
+
+    private Integer timesToRepeatBeforeCollapse;
 
     /**
      * Will create breadcrumbs only for pages annotated with the specified
@@ -104,6 +107,39 @@ public final class BreadcrumbsSettings {
      */
     public BreadcrumbsSettings withStatefulBreadcrumbLinks() {
         this.useStatefulBreadcrumbLinks = true;
+        return this;
+    }
+
+    /**
+     * If set to a positive value, will force the {@code BreadcrumbsPanel} to
+     * collapse breadcrumbs encountered more than {@code times} times.
+     * <p>
+     * For example, if {@code times} is 2 and you have a breadcrumb trail
+     * consisting of
+     * 
+     * <pre>
+     * First / Second / First / Second
+     * </pre>
+     * 
+     * and the next page is <b>First</b>, the breadcrumb trail will become
+     * 
+     * <pre>
+     * ... / First
+     * </pre>
+     * 
+     * Where {@code ...} can be expanded to look at the collapsed part of the
+     * trail.
+     * 
+     * @param times
+     *            the breadcrumb must be encountered in a single trail in order
+     *            to be collapsed
+     * @return current settings for chaining
+     */
+    public BreadcrumbsSettings collapseWhenRepeated(int times) {
+        if (times < 1) {
+            throw new IllegalArgumentException("Cannot collapse when repeated " + times + " times, must be positive!");
+        }
+        this.timesToRepeatBeforeCollapse = times;
         return this;
     }
 

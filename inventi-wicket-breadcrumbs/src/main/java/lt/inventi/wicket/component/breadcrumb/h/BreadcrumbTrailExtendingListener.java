@@ -12,6 +12,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.component.IRequestablePage;
 
+
 public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRenderListener {
     /**
      * We cannot use {@link IComponentInitializationListener} or

@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
 
+
 class BreadcrumbTrailHistory implements Serializable {
 
     private static final MetaDataKey<BreadcrumbTrailHistory> CONTAINER = new MetaDataKey<BreadcrumbTrailHistory>(){ /* empty */ };

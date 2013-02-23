@@ -4,6 +4,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+
 public class NextBookmarkablePageLink<T> extends BookmarkablePageLink<T> {
 
     public <C extends Page> NextBookmarkablePageLink(String id, Class<C> pageClass, PageParameters parameters) {

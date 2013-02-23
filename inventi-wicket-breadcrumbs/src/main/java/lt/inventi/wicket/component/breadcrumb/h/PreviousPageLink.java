@@ -2,6 +2,7 @@ package lt.inventi.wicket.component.breadcrumb.h;
 
 import org.apache.wicket.model.Model;
 
+
 public class PreviousPageLink extends BreadcrumbLink {
 
     public PreviousPageLink(String id) {

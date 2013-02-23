@@ -3,6 +3,7 @@ package lt.inventi.wicket.component.breadcrumb.h;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+
 public abstract class BreadcrumbPageParameters {
 
     private static final String TRAIL_ID_PARAM = "trail";

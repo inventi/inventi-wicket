@@ -7,6 +7,7 @@ import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 
+
 public class Breadcrumb implements Serializable {
 
     /**

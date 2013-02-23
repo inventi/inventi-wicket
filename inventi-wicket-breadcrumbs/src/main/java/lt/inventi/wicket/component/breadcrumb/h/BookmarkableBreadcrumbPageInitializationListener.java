@@ -6,14 +6,15 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BookmarkableBreadcrumbPageInitializationListener implements IComponentInitializationListener {
+
+class BookmarkableBreadcrumbPageInitializationListener implements IComponentInitializationListener {
 
     private static final Logger logger = LoggerFactory.getLogger(BookmarkableBreadcrumbPageInitializationListener.class);
 
     private final Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate;
     private final IBreadcrumbPageFilter pageFilter;
 
-    public BookmarkableBreadcrumbPageInitializationListener(IBreadcrumbPageFilter pageFilter, Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate) {
+    BookmarkableBreadcrumbPageInitializationListener(IBreadcrumbPageFilter pageFilter, Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate) {
         this.pageFilter = pageFilter;
         this.linkTypeToDecorate = linkTypeToDecorate;
     }

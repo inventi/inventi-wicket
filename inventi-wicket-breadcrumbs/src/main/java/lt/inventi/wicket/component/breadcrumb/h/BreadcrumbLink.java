@@ -3,6 +3,7 @@ package lt.inventi.wicket.component.breadcrumb.h;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 
+
 /**
  * This is kind of a hack and doesn't work with WicketTester. Tester resolves
  * the URL for the link with a {@code PageInstanceMapper} as this type of link
