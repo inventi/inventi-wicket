@@ -4,6 +4,7 @@ import static lt.inventi.wicket.component.breadcrumb.h.BreadcrumbPageParameters.
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.Session;
 import org.apache.wicket.application.IComponentInitializationListener;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.application.IComponentOnBeforeRenderListener;
@@ -20,6 +21,12 @@ public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRende
      * based on the page's hashCode and a deserialized page's hashCode doesn't
      * have to match the hashCode of the serialized one, thus we cannot reliably
      * find the previous page trail without extending it on each render.
+     * <p>
+     * Possible improvement: store the newly created breadcrumb in the session's
+     * metadata and use it in all further next page links. This way we can use
+     * stable breadcrumb ids (page id + page class) and avoid creating new
+     * breadcrumbs when the same page is rerendered (same page id + class but
+     * different page object and thus hashCode).
      */
 
     private final IBreadcrumbPageFilter pageFilter;
@@ -35,6 +42,7 @@ public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRende
             Breadcrumb crumb = createBreadcrumbFrom(p);
             String maybeTrailId = getOptionalTrailId(p.getPageParameters());
             BreadcrumbTrailHistory.extendTrail(maybeTrailId, crumb);
+            System.out.println("Session: " + Session.get().getSizeInBytes() + " b.");
         }
     }
 

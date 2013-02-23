@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,10 @@ public class BreadcrumbTrailHistory implements Serializable {
         return container;
     }
 
-    public static void extendTrail(String maybeTrailId, Breadcrumb crumb) {
+    public static void extendTrail(String maybeTrailId, Breadcrumb newCrumb) {
         BreadcrumbTrailHistory history = get();
+        Breadcrumb crumb = history.useExistingCrumbIfPossible(newCrumb);
+
         final List<Breadcrumb> trail;
         if (maybeTrailId == null || !history.breadcrumbMap.containsKey(maybeTrailId)) {
             trail = Arrays.asList(crumb);
@@ -39,7 +42,7 @@ public class BreadcrumbTrailHistory implements Serializable {
             trail = new ArrayList<Breadcrumb>(previousTrail);
             trail.add(crumb);
         }
-        history.breadcrumbMap.put(crumb.getId().toString(), Collections.unmodifiableList(trail));
+        history.breadcrumbMap.put(crumb.getId(), Collections.unmodifiableList(trail));
     }
 
     public static Breadcrumb getLastBreadcrumbFor(String maybeTrailId) {
@@ -55,7 +58,7 @@ public class BreadcrumbTrailHistory implements Serializable {
      * <p>
      * In case provided trail id is null or no breadcrumb history exists for the
      * id, nothing is returned.
-     * 
+     *
      * @param maybeTrailId
      * @return (trail size - n)th breadcrumb from the history associated with
      *         the provided trail or null if no trail exists
@@ -75,10 +78,27 @@ public class BreadcrumbTrailHistory implements Serializable {
         return get().breadcrumbMap.get(trailId);
     }
 
-    private final Map<String, List<Breadcrumb>> breadcrumbMap = new LinkedHashMap<String, List<Breadcrumb>>();
-
     public static String getFullHistory() {
         return get().breadcrumbMap.toString();
+    }
+
+    private final Map<String, Breadcrumb> crumbsByPageIdClass = new HashMap<String, Breadcrumb>();
+    private final Map<String, List<Breadcrumb>> breadcrumbMap = new LinkedHashMap<String, List<Breadcrumb>>();
+
+    /**
+     * This allows us to update breadcrumb titles in the existing trails. We
+     * also share breadcrumb objects across trails instead of always storing new
+     * ones on each render.
+     */
+    private Breadcrumb useExistingCrumbIfPossible(Breadcrumb newCrumb) {
+        Breadcrumb crumb = crumbsByPageIdClass.get(newCrumb.getStableId());
+        if (crumb != null) {
+            crumb.updateWith(newCrumb);
+        } else {
+            crumb = newCrumb;
+            crumbsByPageIdClass.put(crumb.getStableId(), crumb);
+        }
+        return crumb;
     }
 
 }

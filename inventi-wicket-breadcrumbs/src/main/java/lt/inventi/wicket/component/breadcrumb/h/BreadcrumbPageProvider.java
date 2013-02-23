@@ -60,8 +60,8 @@ class BreadcrumbPageProvider implements Serializable {
         return new PageProvider(pageId, pageClass, params, null);
     }
 
-    void detach() {
-        this.webPage = null;
+    String getId() {
+        return pageClass.getName() + pageId;
     }
 
     @Override
