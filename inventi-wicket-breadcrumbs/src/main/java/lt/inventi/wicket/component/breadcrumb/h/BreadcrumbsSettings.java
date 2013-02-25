@@ -20,6 +20,10 @@ public final class BreadcrumbsSettings {
         return Application.get().getMetaData(KEY).useStatefulBreadcrumbLinks;
     }
 
+    static IBreadcrumbCollapser getBreadcrumbsCollapser() {
+        return new FirstRepeatingBreadcrumbCollapser();
+    }
+
     private IBreadcrumbPageFilter pageFilter = new IBreadcrumbPageFilter() {
         @Override
         public boolean shouldCreateBreadcrumbFor(IRequestablePage page) {
@@ -116,20 +120,20 @@ public final class BreadcrumbsSettings {
      * <p>
      * For example, if {@code times} is 2 and you have a breadcrumb trail
      * consisting of
-     * 
+     *
      * <pre>
      * First / Second / First / Second
      * </pre>
-     * 
+     *
      * and the next page is <b>First</b>, the breadcrumb trail will become
-     * 
+     *
      * <pre>
      * ... / First
      * </pre>
-     * 
+     *
      * Where {@code ...} can be expanded to look at the collapsed part of the
      * trail.
-     * 
+     *
      * @param times
      *            the breadcrumb must be encountered in a single trail in order
      *            to be collapsed

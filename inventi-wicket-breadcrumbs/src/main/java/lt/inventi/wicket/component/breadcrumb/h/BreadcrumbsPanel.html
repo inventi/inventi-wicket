@@ -3,43 +3,49 @@
 <body>
 <wicket:head>
     <style>
-        /* Shamelessly copied from bootstrap.css */
-        ul.breadcrumbs {
-            display: block;
-            padding: 8px 15px;
-            margin: 0 0 20px;
-            list-style: none;
-            background-color: whiteSmoke;
-            border-radius: 4px;
-        }
-        .breadcrumbs > li {
-            display: inline-block;
-            text-shadow: 0 1px 0 white;
-            line-height: 20px;
-        }
-        .breadcrumbs > li > .divider {
-            padding: 0 5px;
-            color: #CCC;
-        }
-        .breadcrumbs > li > a {
-            float: left;
-            padding-right: 0.5em;
-            text-decoration: none;
-        }
-        .breadcrumbs > li > span.inactive {
-            float: left;
-            padding-right: 0.5em;
-            color: #999;
-        }
+        /* from http://www.handy-html.com/simple-css-dropdown-menu-updated/ */
+        ul.crumb a { padding-right: 0.5em; text-decoration: none; }
+        
+        ul.crumb, ul.crumb li, ul.crumb ul { list-style: none; margin: 0; padding: 5px 5px 5px 5px; background-color: whiteSmoke; border-radius: 4px;}
+        ul.crumb { position: relative; z-index: 597; float: left; }
+        ul.crumb .divider { color: #CCC; }
+        ul.crumb li { float: left; line-height: 1.3em; vertical-align: middle; zoom: 1; padding: 5px; }
+        ul.crumb li > span.inactive { float: left; padding-right: 0.5em; color: #999 }
+        ul.crumb li.hover, ul.crumb li:hover { position: relative; z-index: 599; cursor: default; background: white; }
+        ul.crumb ul { visibility: hidden; position: absolute; top: 100%; left: 0; z-index: 598; width: 195px;}
+        ul.crumb ul li { float: none; }
+        ul.crumb ul ul { top: -2px; left: 100%; }
+        ul.crumb li:hover > ul { visibility: visible }
     </style>
 </wicket:head>
 <wicket:panel>
-    <ul class="breadcrumbs">
+    <ul class="crumb">
         <li wicket:id="crumbs">
-            <a wicket:id="link"><span wicket:id="title"/></a> 
-            <span class="divider">/</span>
+            <wicket:container wicket:id="crumb" />
         </li>
     </ul>
+    
+    <wicket:fragment wicket:id="single">
+        <a wicket:id="link"><span wicket:id="title"/></a> 
+        <span class="divider">/</span>
+    </wicket:fragment>
+    
+    <wicket:fragment wicket:id="singleInactive">
+        <a wicket:id="link"><span wicket:id="title"/></a> 
+    </wicket:fragment>
+    
+    <wicket:fragment wicket:id="singleCollapsed">
+        <a wicket:id="link"><span wicket:id="title"/></a> 
+    </wicket:fragment>
+    
+    <wicket:fragment wicket:id="collapsed">
+        <wicket:container wicket:id="crumb" />
+        <ul>
+            <li wicket:id="crumbs">
+                <wicket:container wicket:id="crumb" />
+            </li>
+        </ul>
+    </wicket:fragment>
 </wicket:panel>
 </body>
 </html>

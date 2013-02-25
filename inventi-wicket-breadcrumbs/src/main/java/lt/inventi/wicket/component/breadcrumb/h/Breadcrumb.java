@@ -56,6 +56,10 @@ public class Breadcrumb implements Serializable {
         return pageAndUrlProvider.getId();
     }
 
+    Class<?> getType() {
+        return pageAndUrlProvider.getPageType();
+    }
+
     @Override
     public String toString() {
         return "Crumb<" + id + ", " + pageAndUrlProvider + ">";

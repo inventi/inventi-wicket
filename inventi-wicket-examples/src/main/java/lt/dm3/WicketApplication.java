@@ -16,6 +16,7 @@ public class WicketApplication extends WebApplication {
     public void init() {
 		super.init();
 
+        getMarkupSettings().setStripWicketTags(true);
         new BreadcrumbsSettings().withDecoratedBookmarkableLinks().install(this);
         getStoreSettings().setInmemoryCacheSize(2);
         //getStoreSettings().setMaxSizePerSession(Bytes.bytes(100));

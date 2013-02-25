@@ -64,9 +64,14 @@ class BreadcrumbPageProvider implements Serializable {
         return pageClass.getName() + pageId;
     }
 
+    Class<?> getPageType() {
+        return pageClass;
+    }
+
     @Override
     public String toString() {
         return pageClass.getSimpleName() + "@" + pageId +
             (params == null || params.isEmpty() ? "" : "?" + params);
     }
+
 }
