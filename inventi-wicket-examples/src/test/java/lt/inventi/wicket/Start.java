@@ -1,4 +1,4 @@
-package lt.dm3;
+package lt.inventi.wicket;
 
 import org.apache.wicket.util.time.Duration;
 import org.eclipse.jetty.server.Server;

@@ -1,4 +1,4 @@
-package lt.dm3;
+package lt.inventi.wicket;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;

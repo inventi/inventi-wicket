@@ -17,16 +17,16 @@
 		"deployment". If no configuration is found, "development" is the default. -->
 
 	<filter>
-		<filter-name>wicket.wrapped-model</filter-name>
+		<filter-name>wicket</filter-name>
 		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
-			<param-value>lt.dm3.InventiWicketExampleApplication</param-value>
+			<param-value>lt.inventi.wicket.InventiWicketExampleApplication</param-value>
 		</init-param>
 	</filter>
 
 	<filter-mapping>
-		<filter-name>wicket.wrapped-model</filter-name>
+		<filter-name>wicket</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 </web-app>

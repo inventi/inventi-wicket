@@ -1,4 +1,4 @@
-package lt.dm3;
+package lt.inventi.wicket;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
