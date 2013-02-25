@@ -100,9 +100,9 @@ public final class BreadcrumbsSettings {
      *
      * @return current settings for chaining
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public BreadcrumbsSettings withDecoratedBookmarkableLinks() {
-        this.linkTypeToDecorate = (Class<? extends BookmarkablePageLink<?>>) BookmarkablePageLink.class;
+        this.linkTypeToDecorate = (Class) BookmarkablePageLink.class;
         return this;
     }
 
