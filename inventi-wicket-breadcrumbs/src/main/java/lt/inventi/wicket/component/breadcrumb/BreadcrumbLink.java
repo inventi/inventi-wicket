@@ -1,4 +1,4 @@
-package lt.inventi.wicket.component.breadcrumb.h;
+package lt.inventi.wicket.component.breadcrumb;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;

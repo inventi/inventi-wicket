@@ -1,4 +1,4 @@
-package lt.inventi.wicket.component.breadcrumb.h;
+package lt.inventi.wicket.component.breadcrumb;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.application.IComponentInitializationListener;

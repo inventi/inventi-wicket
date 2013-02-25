@@ -3,7 +3,7 @@ package lt.dm3;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsSettings;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsSettings;
 
 public class WicketApplication extends WebApplication {
 

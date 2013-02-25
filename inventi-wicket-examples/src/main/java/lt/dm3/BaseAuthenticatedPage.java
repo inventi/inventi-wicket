@@ -6,10 +6,10 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsOperationsHelper;
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsPanel;
-import lt.inventi.wicket.component.breadcrumb.h.IBreadcrumbsOperations;
-import lt.inventi.wicket.component.breadcrumb.h.IProvideTitle;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsPanel;
+import lt.inventi.wicket.component.breadcrumb.IBreadcrumbsOperations;
+import lt.inventi.wicket.component.breadcrumb.IProvideTitle;
 
 public class BaseAuthenticatedPage extends WebPage implements IBreadcrumbsOperations, IProvideTitle {
 

@@ -1,6 +1,6 @@
-package lt.inventi.wicket.component.breadcrumb.h;
+package lt.inventi.wicket.component.breadcrumb;
 
-import static lt.inventi.wicket.component.breadcrumb.h.BreadcrumbPageParameters.getOptionalTrailId;
+import static lt.inventi.wicket.component.breadcrumb.BreadcrumbPageParameters.getOptionalTrailId;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;

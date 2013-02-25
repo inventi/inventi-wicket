@@ -1,4 +1,4 @@
-package lt.inventi.wicket.component.breadcrumb.h;
+package lt.inventi.wicket.component.breadcrumb;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -2,7 +2,7 @@ package lt.dm3;
 
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
-import lt.inventi.wicket.component.breadcrumb.h.PreviousPageLink;
+import lt.inventi.wicket.component.breadcrumb.PreviousPageLink;
 
 public class FirstPage extends BaseAuthenticatedPage {
 

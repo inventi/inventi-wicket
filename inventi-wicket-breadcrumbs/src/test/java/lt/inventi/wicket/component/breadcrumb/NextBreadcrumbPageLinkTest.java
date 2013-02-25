@@ -12,7 +12,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsOperationsHelper;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
 
 public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
 

@@ -9,7 +9,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
-import lt.inventi.wicket.component.breadcrumb.h.PreviousPageLink;
+import lt.inventi.wicket.component.breadcrumb.PreviousPageLink;
 
 public class PersonPage extends BaseAuthenticatedPage {
 

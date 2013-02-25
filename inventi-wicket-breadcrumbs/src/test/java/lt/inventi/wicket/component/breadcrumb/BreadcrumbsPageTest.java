@@ -2,20 +2,20 @@ package lt.inventi.wicket.component.breadcrumb;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
 
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.StatelessLink;
 import org.apache.wicket.model.IModel;
@@ -28,43 +28,40 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.junit.Test;
 
-import lt.inventi.wicket.test.BaseNonInjectedTest;
+import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsPanel;
+import lt.inventi.wicket.component.breadcrumb.IProvideTitle;
+import lt.inventi.wicket.component.breadcrumb.NextBookmarkablePageLink;
+import lt.inventi.wicket.component.breadcrumb.PreviousPageLink;
 
-public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
-
+public class BreadcrumbsPageTest extends BreadcrumbsTests {
 
     @Test
     public void testStatelessBreadcrumbs(){
-        BreadcrumbsPage page = tester
+        BasePage page = tester
                 .startPage(StatelessPage.class);
-        tester.clickLink("back");
+        assertThat(page.isStateless(), is(true));
+        tester.assertDisabled("back");
 
         //same page created twice
         //should be only one breadcrumb
         page = tester.startPage(StatelessPage.class);
         page = tester.startPage(StatelessPage.class);
-        assertEquals(1, page.getBreadcrumbs().size());
-        assertTrue("Page must be bookmarkable", page.isBookmarkable());
+        assertThat(breadcrumbTitles(), contains("StatelessPage"));
+        assertThat("Page must be bookmarkable", page.isBookmarkable(), is(true));
 
         //go next, should be 2 breadcrumbs
         tester.clickLink("nextPage");
         page = getLastRenderedPage();
-        assertEquals(2, page.getBreadcrumbs().size());
+        assertThat(page.isStateless(), is(true));
+        assertThat(breadcrumbTitles(), contains("StatelessPage", "StatelessPage"));
 
         tester.clickLink("back");
         page = getLastRenderedPage();
-        assertEquals(page.getClass(), tester.getLastRenderedPage().getClass());
-        assertEquals(1, page.getBreadcrumbs().size());
-    }
-
-    @Test
-    public void testSameParametersInstanceException() {
-        BreadcrumbsPage page = tester.startPage(StatelessPage.class);
-        try {
-            page.nextPageLink("link", StatelessPage.class, page.getPageParameters());
-            fail("Should not allow to use same page parameters instance");
-        } catch (IllegalStateException e) {
-        }
+        assertThat(page.isStateless(), is(true));
+        assertThat(page, instanceOf(getLastRenderedPage().getClass()));
+        assertThat(breadcrumbTitles(), contains("StatelessPage"));
     }
 
     @Test
@@ -72,7 +69,7 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
 
         tester.startPage(StatelessPage.class);
         tester.clickLink("nextPage");
-        BreadcrumbsPage page = getLastRenderedPage();
+        BasePage page = getLastRenderedPage();
         assertEquals("testValue", page.getPageParameters().get("testKey").toString());
         assertEquals(2, page.getBreadcrumbs().size());
 
@@ -82,9 +79,9 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
         assertEquals("testValue2", page.getPageParameters().get("testKey2").toString());
         assertEquals(3, breadcrumbList.size());
 
-        tester.assertComponent("breadcrumbs:0:breadcrumb", Link.class);
-        tester.assertComponent("breadcrumbs:1:breadcrumb", Link.class);
-        tester.assertComponent("breadcrumbs:2:breadcrumb", Link.class);
+        tester.assertComponent("crumbs:crumbs:0:link", Link.class);
+        tester.assertComponent("crumbs:crumbs:1:link", Link.class);
+        tester.assertComponent("crumbs:crumbs:2:link", Link.class);
 
 
         tester.clickLink("back");
@@ -94,9 +91,9 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
         assertEquals(2, breadcrumbList.size());
 
 
-        BookmarkablePageLink<?> backLink = (BookmarkablePageLink<?>)page.get("back");
+        /*BookmarkablePageLink<?> backLink = (BookmarkablePageLink<?>)page.get("back");
         Assert.assertNotNull("Param with previous page ID doesnt exist",
-                backLink.getPageParameters().get("brd").toString());
+                backLink.getPageParameters().get("brd").toString());*/
 
         tester.clickLink("back");
         breadcrumbList = getLastRenderedPage().getBreadcrumbs();
@@ -108,7 +105,7 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
     public void testStatefullBreadcrumbs(){
         tester.startPage(StatelessPage.class);
         tester.clickLink("goStatefull");
-        BreadcrumbsPage page = getLastRenderedPage();
+        BasePage page = getLastRenderedPage();
         assertEquals(2, getLastRenderedPage().getBreadcrumbs().size());
         IPageRequestHandler handler = (IPageRequestHandler)getLastRenderedPage()
                 .getBreadcrumbs().get(1).getTarget();
@@ -131,7 +128,7 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
         formTest.submitLink("save", false);
         formTest.submitLink("save", false);
         formTest.submitLink("save", false);
-        page = (BreadcrumbsPage) formTest.getForm().getPage();
+        page = (BasePage) formTest.getForm().getPage();
         assertEquals(2, page.getBreadcrumbs().size());
 
         tester.clickLink("next");
@@ -148,11 +145,44 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
 
     }
 
-    private BreadcrumbsPage getLastRenderedPage() {
-        return (BreadcrumbsPage) tester.getLastRenderedPage();
+    private BasePage getLastRenderedPage() {
+        return (BasePage) tester.getLastRenderedPage();
     }
 
-    public static class StatefullPage extends BreadcrumbsPage {
+    public static class BasePage extends WebPage implements IProvideTitle {
+        protected BreadcrumbsOperationsHelper helper;
+
+        public BasePage() {
+            super();
+        }
+
+        public BasePage(IModel<?> model) {
+            super(model);
+        }
+
+        public BasePage(PageParameters parameters) {
+            super(parameters);
+        }
+
+        @Override
+        protected void onInitialize() {
+            super.onInitialize();
+            helper = new BreadcrumbsOperationsHelper(this);
+            add(new BreadcrumbsPanel("crumbs"));
+        }
+
+        @Override
+        public IModel<String> getTitle() {
+            return Model.of(getClass().getSimpleName());
+        }
+
+        public List<Breadcrumb> getBreadcrumbs() {
+            return ((BreadcrumbsPanel) get("crumbs")).getBreadcrumbs();
+        }
+
+    }
+
+    public static class StatefullPage extends BasePage {
 
         private int hashCode = 0;
         private Form form;
@@ -194,14 +224,14 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
             add(new Link<Void>("next"){
                 @Override
                 public void onClick() {
-                    goNextPage(new StatefullPage(new WebMarkupContainer("panel")));
+                    helper.setNextResponsePage(new StatefullPage(new WebMarkupContainer("panel")));
                 }
             });
 
             add(new Link<Void>("back"){
                 @Override
                 public void onClick() {
-                    goPreviousPage();
+                    helper.setResponseToPreviousPage();
                 }
             });
         }
@@ -211,14 +241,9 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
             hashCode = new Date().hashCode();
             super.onBeforeRender();
         }
-
-        @Override
-        public IModel<String> getTitleModel() {
-            return new Model("title");
-        }
     }
 
-    public static class StatelessPage extends BreadcrumbsPage {
+    public static class StatelessPage extends BasePage {
         public StatelessPage() {
             super();
         }
@@ -234,31 +259,25 @@ public class OldBreadcrumbsPageTest extends BaseNonInjectedTest {
 
             PageParameters params = new PageParameters();
             params.set("testKey", "testValue");
-            Link<?> link
-            = nextPageLink("nextPage", StatelessPage.class, params);
+            Link<?> link = new NextBookmarkablePageLink<StatelessPage>("nextPage", StatelessPage.class, params);
             add(link);
 
 
             params = new PageParameters();
             params.set("testKey2", "testValue2");
-            link
-            = nextPageLink("nextPage2", StatelessPage.class, params);
-            add(link);
+            Link<?> link2 = new NextBookmarkablePageLink<StatelessPage>("nextPage2", StatelessPage.class, params);
+            add(link2);
 
-            add(new StatelessLink("goStatefull"){
+            add(new StatelessLink<Void>("goStatefull") {
                 @Override
                 public void onClick() {
-                    goNextPage(new StatefullPage(new WebMarkupContainer("panel")));
+                    helper.setNextResponsePage(new StatefullPage(new WebMarkupContainer("panel")));
                 }
             });
 
-            add(previousPageLink("back"));
+            add(new PreviousPageLink("back"));
         }
 
-        @Override
-        public IModel<String> getTitleModel() {
-            return new Model("");
-        }
     }
 
 }

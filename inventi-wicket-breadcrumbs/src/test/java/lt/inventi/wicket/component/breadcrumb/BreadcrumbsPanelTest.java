@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbPageParameters;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbPageParameters;
 
 public class BreadcrumbsPanelTest extends BreadcrumbsTests {
 

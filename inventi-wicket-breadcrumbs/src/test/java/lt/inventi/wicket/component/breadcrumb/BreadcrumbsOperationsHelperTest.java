@@ -13,8 +13,8 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsOperationsHelper;
-import lt.inventi.wicket.component.breadcrumb.h.IBreadcrumbsOperations;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
+import lt.inventi.wicket.component.breadcrumb.IBreadcrumbsOperations;
 
 public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
 

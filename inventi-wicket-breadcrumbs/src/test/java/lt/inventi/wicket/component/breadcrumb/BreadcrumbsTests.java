@@ -14,10 +14,10 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 
-import lt.inventi.wicket.component.breadcrumb.h.Breadcrumb;
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsPanel;
-import lt.inventi.wicket.component.breadcrumb.h.BreadcrumbsSettings;
-import lt.inventi.wicket.component.breadcrumb.h.IProvideTitle;
+import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsPanel;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbsSettings;
+import lt.inventi.wicket.component.breadcrumb.IProvideTitle;
 
 public class BreadcrumbsTests {
 

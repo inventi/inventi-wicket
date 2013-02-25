@@ -2,84 +2,67 @@ package lt.inventi.wicket.component.breadcrumb;
 
 import java.io.Serializable;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.core.request.handler.IPageProvider;
-import org.apache.wicket.core.request.handler.PageProvider;
-import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.IRequestHandler;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.RequestCycle;
 
-public class Breadcrumb implements Serializable{
 
-    private Integer id;
-    private Class<? extends Page> pageClass;
+public class Breadcrumb implements Serializable {
 
+    /**
+     * We cannot use page ids because they might change after page is loaded,
+     * e.g. when the model is updated before navigating to the next page.
+     *
+     * @param page
+     * @return
+     */
+    static String constructIdFrom(IRequestablePage page) {
+        return String.valueOf(page.hashCode());
+    }
+
+    private String id;
     private IModel<String> titleModel;
+    private final BreadcrumbPageProvider pageAndUrlProvider;
 
-    private PageParameters params;
-    private int pageId;
-
-    private Integer renderCount;
-    private boolean stateless;
-
-    private transient Page webPage;
-
-
-    public Breadcrumb(Page breadPage) {
-        webPage = breadPage;
-        id = breadPage.hashCode();
-        pageClass = webPage.getClass();
-        params = webPage.getPageParameters();
-        pageId = webPage.getPageId();
-        renderCount = webPage.getRenderCount();
-        stateless = webPage.isPageStateless();
-        if(webPage instanceof BreadcrumbsPage){
-        	titleModel = ((BreadcrumbsPage)breadPage).getTitleModel();
-        }
-    }
-
-    public Breadcrumb(Class<? extends Page> pageClass, PageParameters params){
-        this.pageClass = pageClass;
-        this.params = params;
-        this.stateless = true;
-    }
-
-    public boolean isStateless() {
-        return stateless;
+    Breadcrumb(IRequestablePage page, IModel<String> title) {
+        this.id = constructIdFrom(page);
+        this.pageAndUrlProvider = new BreadcrumbPageProvider(page);
+        this.titleModel = title;
     }
 
     public IModel<String> getTitleModel() {
         return titleModel;
     }
 
-    public Integer getId() {
+    String getId() {
         return id;
     }
 
-    public Class<? extends Page> getPageClass() {
-        return pageClass;
+    IRequestHandler getTarget() {
+        return pageAndUrlProvider.getHandler();
     }
 
-    public PageParameters getParams() {
-        return params;
+    CharSequence getURL(RequestCycle rc) {
+        return pageAndUrlProvider.getURL(rc);
     }
 
-    public IRequestHandler getStatelessTarget() {
-        IPageProvider provider = new PageProvider(pageClass, params);
-        return new RenderPageRequestHandler(provider, RenderPageRequestHandler.RedirectPolicy.AUTO_REDIRECT);
+    void updateWith(Breadcrumb newCrumb) {
+        this.id = newCrumb.id;
+        this.titleModel = newCrumb.titleModel;
     }
 
-    public IRequestHandler getTarget(){
-        IPageProvider provider = null;
-        if(webPage != null){
-            provider = new PageProvider(webPage);
-        }else if(stateless){
-            provider =  new PageProvider(pageClass, params);
-        }else{
-            provider = new PageProvider(pageId, pageClass, renderCount);
-        }
-        return new RenderPageRequestHandler(provider, RenderPageRequestHandler.RedirectPolicy.AUTO_REDIRECT);
+    String getStableId() {
+        return pageAndUrlProvider.getId();
     }
+
+    Class<?> getType() {
+        return pageAndUrlProvider.getPageType();
+    }
+
+    @Override
+    public String toString() {
+        return "Crumb<" + id + ", " + pageAndUrlProvider + ">";
+    }
+
 }
