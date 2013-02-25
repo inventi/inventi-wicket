@@ -8,6 +8,10 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.component.IRequestablePage;
 
+import lt.inventi.wicket.component.breadcrumb.collapse.IBreadcrumbCollapser;
+import lt.inventi.wicket.component.breadcrumb.collapse.NoopCollapser;
+import lt.inventi.wicket.component.breadcrumb.collapse.RepeatingBreadcrumbCollapser;
+
 
 public final class BreadcrumbsSettings {
 
@@ -21,7 +25,7 @@ public final class BreadcrumbsSettings {
     }
 
     static IBreadcrumbCollapser getBreadcrumbsCollapser() {
-        return new FirstRepeatingBreadcrumbCollapser();
+        return Application.get().getMetaData(KEY).collapser;
     }
 
     private IBreadcrumbPageFilter pageFilter = new IBreadcrumbPageFilter() {
@@ -39,6 +43,7 @@ public final class BreadcrumbsSettings {
     private boolean useStatefulBreadcrumbLinks;
 
     private Integer timesToRepeatBeforeCollapse;
+    private IBreadcrumbCollapser collapser;
 
     /**
      * Will create breadcrumbs only for pages annotated with the specified
@@ -148,6 +153,12 @@ public final class BreadcrumbsSettings {
     }
 
     public void install(Application app) {
+        if (this.timesToRepeatBeforeCollapse != null && this.timesToRepeatBeforeCollapse > 0) {
+            this.collapser = new RepeatingBreadcrumbCollapser(timesToRepeatBeforeCollapse, new TypeBreadcrumbEquality());
+        } else {
+            this.collapser = new NoopCollapser();
+        }
+
         app.setMetaData(KEY, this);
         app.getComponentPreOnBeforeRenderListeners().add(new BreadcrumbTrailExtendingListener(pageFilter));
         if (linkTypeToDecorate != null) {
@@ -155,5 +166,4 @@ public final class BreadcrumbsSettings {
                 new BookmarkableBreadcrumbPageInitializationListener(pageFilter, linkTypeToDecorate));
         }
     }
-
 }

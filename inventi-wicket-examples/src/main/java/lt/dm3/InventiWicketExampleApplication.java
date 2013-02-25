@@ -5,7 +5,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 
 import lt.inventi.wicket.component.breadcrumb.BreadcrumbsSettings;
 
-public class WicketApplication extends WebApplication {
+public class InventiWicketExampleApplication extends WebApplication {
 
 	@Override
     public Class<? extends WebPage> getHomePage() {
@@ -16,8 +16,13 @@ public class WicketApplication extends WebApplication {
     public void init() {
 		super.init();
 
+        new BreadcrumbsSettings()
+            .withDecoratedBookmarkableLinks()
+            .collapseWhenRepeated(2)
+            .install(this);
+
         getMarkupSettings().setStripWicketTags(true);
-        new BreadcrumbsSettings().withDecoratedBookmarkableLinks().install(this);
+
         getStoreSettings().setInmemoryCacheSize(2);
         //getStoreSettings().setMaxSizePerSession(Bytes.bytes(100));
 	}

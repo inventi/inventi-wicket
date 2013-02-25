@@ -15,7 +15,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 
-import lt.inventi.wicket.component.breadcrumb.IBreadcrumbCollapser.DisplayedBreadcrumb;
+import lt.inventi.wicket.component.breadcrumb.collapse.DisplayedBreadcrumb;
+import lt.inventi.wicket.component.breadcrumb.collapse.IBreadcrumbCollapser;
 
 public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
 
