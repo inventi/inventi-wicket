@@ -30,6 +30,11 @@ class CollapsedDisplayedBreadcrumb implements DisplayedBreadcrumb {
     }
 
     @Override
+    public boolean shouldEscapeTitle() {
+        return true;
+    }
+
+    @Override
     public boolean isCollapsed() {
         return true;
     }

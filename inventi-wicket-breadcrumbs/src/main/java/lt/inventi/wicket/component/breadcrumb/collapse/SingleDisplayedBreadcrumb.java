@@ -16,7 +16,12 @@ class SingleDisplayedBreadcrumb implements DisplayedBreadcrumb {
 
     @Override
     public IModel<String> title() {
-        return crumb.getTitleModel();
+        return crumb.title().getTitle();
+    }
+
+    @Override
+    public boolean shouldEscapeTitle() {
+        return crumb.title().shouldEscapeTitle();
     }
 
     @Override

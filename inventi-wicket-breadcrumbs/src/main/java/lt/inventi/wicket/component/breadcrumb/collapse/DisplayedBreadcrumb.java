@@ -8,6 +8,8 @@ import org.apache.wicket.model.IModel;
 public interface DisplayedBreadcrumb extends Serializable {
     IModel<String> title();
 
+    boolean shouldEscapeTitle();
+
     boolean isCollapsed();
 
     List<DisplayedBreadcrumb> collapsedCrumbs();

@@ -45,17 +45,19 @@ public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
     }
 
     protected void populateBreadcrumb(ListItem<DisplayedBreadcrumb> item) {
-        Component title = new Label("title", item.getModelObject().title());
+        DisplayedBreadcrumb crumb = item.getModelObject();
+        Component title = new Label("title", crumb.title())
+            .setEscapeModelStrings(crumb.shouldEscapeTitle());
 
-        final Fragment crumb;
+        final Fragment crumbContainer;
         if (item.getParent() == breadcrumbs) {
             if (shouldBeDisabled(item)) {
-                crumb = new Fragment("crumb", "singleInactive", this);
+                crumbContainer = new Fragment("crumb", "singleInactive", this);
             } else {
-                crumb = new Fragment("crumb", "single", this);
+                crumbContainer = new Fragment("crumb", "single", this);
             }
         } else {
-            crumb = new Fragment("crumb", "singleCollapsed", this);
+            crumbContainer = new Fragment("crumb", "singleCollapsed", this);
         }
 
         if (item.getModelObject().isCollapsed()) {
@@ -67,7 +69,7 @@ public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
                     BreadcrumbsPanel.this.populateBreadcrumb(item1);
                 }
             });
-            collapsed.add(crumb.add(new WebMarkupContainer("link").add(title)));
+            collapsed.add(crumbContainer.add(new WebMarkupContainer("link").add(title)));
 
             item.add(collapsed);
         } else {
@@ -75,9 +77,9 @@ public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
             if (shouldBeDisabled(item)) {
                 markAsDisabled(link);
             }
-            crumb.add(link.add(title));
+            crumbContainer.add(link.add(title));
 
-            item.add(crumb);
+            item.add(crumbContainer);
         }
     }
 

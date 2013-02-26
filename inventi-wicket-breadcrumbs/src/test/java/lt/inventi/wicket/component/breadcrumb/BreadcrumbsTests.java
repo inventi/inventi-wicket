@@ -1,12 +1,14 @@
 package lt.inventi.wicket.component.breadcrumb;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -37,13 +39,14 @@ public class BreadcrumbsTests {
         Component c = tester.getComponentFromLastRenderedPage("crumbs:crumbs");
         ListView<DisplayedBreadcrumb> view = ((ListView<DisplayedBreadcrumb>) c);
         List<String> titles = new ArrayList<String>();
-        for (DisplayedBreadcrumb b : view.getList()) {
-            titles.add(b.title().getObject());
+        Iterator<Component> items = view.iterator();
+        while (items.hasNext()) {
+            titles.add(((Label) items.next().get("crumb:link:title")).getDefaultModelObjectAsString());
         }
         return titles;
     }
 
-    protected abstract static class AbstractBreadcrumbTestsPage extends WebPage implements IBreadcrumbTitleProvider {
+    protected abstract static class AbstractBreadcrumbTestsPage extends WebPage implements IBreadcrumbTitleModelProvider {
         protected AbstractBreadcrumbTestsPage() {
             super();
         }
@@ -64,7 +67,7 @@ public class BreadcrumbsTests {
         }
 
         @Override
-        public IModel<String> getBreadcrumbTitle() {
+        public IModel<String> getBreadcrumbTitleModel() {
             return Model.of(getClass().getSimpleName());
         }
     }

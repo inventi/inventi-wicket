@@ -7,7 +7,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.component.IRequestablePage;
 
@@ -200,9 +199,12 @@ public final class BreadcrumbsSettings {
         }
 
         @Override
-        public IModel<String> getBreadcrumbTitle(Component c) {
+        public BreadcrumbTitle getBreadcrumbTitle(Component c) {
             if (c instanceof IBreadcrumbTitleProvider) {
                 return ((IBreadcrumbTitleProvider) c).getBreadcrumbTitle();
+            }
+            if (c instanceof IBreadcrumbTitleModelProvider) {
+                return new BreadcrumbTitle(((IBreadcrumbTitleModelProvider) c).getBreadcrumbTitleModel());
             }
             return next.getBreadcrumbTitle(c);
         }
@@ -216,8 +218,8 @@ public final class BreadcrumbsSettings {
         }
 
         @Override
-        public IModel<String> getBreadcrumbTitle(Component c) {
-            return new StringResourceModel(key, c, c.getDefaultModel());
+        public BreadcrumbTitle getBreadcrumbTitle(Component c) {
+            return new BreadcrumbTitle(new StringResourceModel(key, c, c.getDefaultModel()));
         }
     }
 }

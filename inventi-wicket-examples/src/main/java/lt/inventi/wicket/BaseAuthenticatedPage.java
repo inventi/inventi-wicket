@@ -8,10 +8,10 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
 import lt.inventi.wicket.component.breadcrumb.BreadcrumbsPanel;
+import lt.inventi.wicket.component.breadcrumb.IBreadcrumbTitleModelProvider;
 import lt.inventi.wicket.component.breadcrumb.IBreadcrumbsOperations;
-import lt.inventi.wicket.component.breadcrumb.IBreadcrumbTitleProvider;
 
-public class BaseAuthenticatedPage extends WebPage implements IBreadcrumbsOperations, IBreadcrumbTitleProvider {
+public class BaseAuthenticatedPage extends WebPage implements IBreadcrumbsOperations, IBreadcrumbTitleModelProvider {
 
     private BreadcrumbsOperationsHelper helper;
 
@@ -56,7 +56,7 @@ public class BaseAuthenticatedPage extends WebPage implements IBreadcrumbsOperat
     }
 
     @Override
-    public IModel<String> getBreadcrumbTitle() {
+    public IModel<String> getBreadcrumbTitleModel() {
         return Model.of(getClass().getSimpleName());
     }
 

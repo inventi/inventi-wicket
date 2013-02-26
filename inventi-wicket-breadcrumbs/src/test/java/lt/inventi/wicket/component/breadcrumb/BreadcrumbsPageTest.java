@@ -28,13 +28,6 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
-import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
-import lt.inventi.wicket.component.breadcrumb.BreadcrumbsPanel;
-import lt.inventi.wicket.component.breadcrumb.IBreadcrumbTitleProvider;
-import lt.inventi.wicket.component.breadcrumb.NextBookmarkablePageLink;
-import lt.inventi.wicket.component.breadcrumb.PreviousPageLink;
-
 public class BreadcrumbsPageTest extends BreadcrumbsTests {
 
     @Test
@@ -149,7 +142,7 @@ public class BreadcrumbsPageTest extends BreadcrumbsTests {
         return (BasePage) tester.getLastRenderedPage();
     }
 
-    public static class BasePage extends WebPage implements IBreadcrumbTitleProvider {
+    public static class BasePage extends WebPage implements IBreadcrumbTitleModelProvider {
         protected BreadcrumbsOperationsHelper helper;
 
         public BasePage() {
@@ -172,7 +165,7 @@ public class BreadcrumbsPageTest extends BreadcrumbsTests {
         }
 
         @Override
-        public IModel<String> getBreadcrumbTitle() {
+        public IModel<String> getBreadcrumbTitleModel() {
             return Model.of(getClass().getSimpleName());
         }
 

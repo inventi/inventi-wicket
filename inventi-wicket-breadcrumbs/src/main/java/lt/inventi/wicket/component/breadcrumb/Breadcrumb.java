@@ -2,7 +2,6 @@ package lt.inventi.wicket.component.breadcrumb;
 
 import java.io.Serializable;
 
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
@@ -22,17 +21,17 @@ public class Breadcrumb implements Serializable {
     }
 
     private String id;
-    private IModel<String> titleModel;
+    private BreadcrumbTitle title;
     private final BreadcrumbPageProvider pageAndUrlProvider;
 
-    Breadcrumb(IRequestablePage page, IModel<String> title) {
+    Breadcrumb(IRequestablePage page, BreadcrumbTitle title) {
         this.id = constructIdFrom(page);
         this.pageAndUrlProvider = new BreadcrumbPageProvider(page);
-        this.titleModel = title;
+        this.title = title;
     }
 
-    public IModel<String> getTitleModel() {
-        return titleModel;
+    public BreadcrumbTitle title() {
+        return title;
     }
 
     String getId() {
@@ -49,7 +48,7 @@ public class Breadcrumb implements Serializable {
 
     void updateWith(Breadcrumb newCrumb) {
         this.id = newCrumb.id;
-        this.titleModel = newCrumb.titleModel;
+        this.title = newCrumb.title;
     }
 
     String getStableId() {
