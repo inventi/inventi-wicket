@@ -1,6 +1,7 @@
 package lt.inventi.wicket.component.breadcrumb.collapse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,24 +18,32 @@ abstract class CollapseUtils {
         List<T> acc = new ArrayList<T>();
 
         Iterator<F> forward = source.iterator();
-        Iterator<F> forward2 = source.iterator();
+
+        List<F> backwardsSource = reverse(source);
 
         F collapseTo = null;
 
         while (forward.hasNext()) {
             F f = forward.next();
+
             int timesFound = 0;
-            while (forward2.hasNext()) {
-                F b = forward2.next();
+            Iterator<F> backwards = backwardsSource.iterator();
+            while (backwards.hasNext()) {
+                F b = backwards.next();
                 if (sameEq.equal(f, b)) {
-                    continue;
-                } else if (collapseEq.equal(f, b) && ++timesFound == times) {
-                    collapseTo = b;
                     break;
+                } else if (collapseEq.equal(f, b)) {
+                    if (collapseTo == null) {
+                        collapseTo = b;
+                    }
+                    if (timesFound++ == times) {
+                        break;
+                    }
                 }
             }
-            if (collapseTo == null) {
-                forward2 = source.iterator();
+
+            if (collapseTo == null || timesFound < times) {
+                collapseTo = null;
                 acc.add(transformSingle.apply(f));
             } else {
                 List<F> collapsed = new ArrayList<F>();
@@ -56,5 +65,11 @@ abstract class CollapseUtils {
         }
 
         return acc;
+    }
+
+    private static <F> List<F> reverse(List<F> source) {
+        ArrayList<F> backwardsSource = new ArrayList<F>(source);
+        Collections.reverse(backwardsSource);
+        return backwardsSource;
     }
 }

@@ -53,6 +53,9 @@ public class CollapseUtilsTest {
 
         result = doCollapse(Arrays.asList("z:1", "a:1", "b:1", "c:1", "b:2", "a:2"), 1);
         assertThat(result, contains("z:1", "a:1-b:1-c:1-b:2-", "a:2"));
+
+        result = doCollapse(Arrays.asList("z:1", "a:1", "b:1", "a:2", "b:2", "a:3"), 1);
+        assertThat(result, contains("z:1", "a:1-b:1-a:2-b:2-", "a:3"));
     }
 
     @Test
