@@ -56,7 +56,7 @@ public class BaseAuthenticatedPage extends WebPage implements IBreadcrumbsOperat
     }
 
     @Override
-    public IModel<String> getBreadrumbTitle() {
+    public IModel<String> getBreadcrumbTitle() {
         return Model.of(getClass().getSimpleName());
     }
 

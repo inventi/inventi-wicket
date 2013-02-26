@@ -8,14 +8,11 @@ import org.apache.wicket.Session;
 import org.apache.wicket.application.IComponentInitializationListener;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.application.IComponentOnBeforeRenderListener;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRenderListener {
+class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRenderListener {
     /**
      * We cannot use {@link IComponentInitializationListener} or
      * {@link IComponentInstantiationListener} because navigation to the
@@ -35,9 +32,11 @@ public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRende
     private static final Logger logger = LoggerFactory.getLogger(BreadcrumbTrailExtendingListener.class);
 
     private final IBreadcrumbPageFilter pageFilter;
+    private final IComponentBreadcrumbTitleProvider titleProvider;
 
-    public BreadcrumbTrailExtendingListener(IBreadcrumbPageFilter pageFilter) {
+    public BreadcrumbTrailExtendingListener(IBreadcrumbPageFilter pageFilter, IComponentBreadcrumbTitleProvider titleProvider) {
         this.pageFilter = pageFilter;
+        this.titleProvider = titleProvider;
     }
 
     @Override
@@ -61,14 +60,8 @@ public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRende
         }
     }
 
-    private static Breadcrumb createBreadcrumbFrom(Page p) {
-        final IModel<String> titleModel;
-        if (p instanceof IBreadcrumbTitleProvider) {
-            titleModel = ((IBreadcrumbTitleProvider) p).getBreadrumbTitle();
-        } else {
-            titleModel = Model.of(((Component) p).getString("breadcrumb"));
-        }
-        return new Breadcrumb(p, titleModel);
+    private Breadcrumb createBreadcrumbFrom(Page p) {
+        return new Breadcrumb(p, titleProvider.getBreadcrumbTitle(p));
     }
 
 }

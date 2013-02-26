@@ -172,7 +172,7 @@ public class BreadcrumbsPageTest extends BreadcrumbsTests {
         }
 
         @Override
-        public IModel<String> getBreadrumbTitle() {
+        public IModel<String> getBreadcrumbTitle() {
             return Model.of(getClass().getSimpleName());
         }
 

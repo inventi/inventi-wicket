@@ -3,9 +3,12 @@ package lt.inventi.wicket.component.breadcrumb;
 import java.lang.annotation.Annotation;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.Component;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.component.IRequestablePage;
 
 import lt.inventi.wicket.component.breadcrumb.collapse.IBreadcrumbCollapser;
@@ -44,6 +47,8 @@ public final class BreadcrumbsSettings {
 
     private Integer timesToRepeatBeforeCollapse;
     private IBreadcrumbCollapser collapser;
+
+    private IComponentBreadcrumbTitleProvider localizedTitleProvider = new LocalizedTitleProvider("breadcrumb");
 
     /**
      * Will create breadcrumbs only for pages annotated with the specified
@@ -120,6 +125,25 @@ public final class BreadcrumbsSettings {
     }
 
     /**
+     * Sets the localization key to be used in order to find breadcrumb title
+     * for the page. By default the key is set to <b>breadcrumb</b>.
+     * <p>
+     * Localized string will be resolved according to the Wicket's localization
+     * rules starting from the {@code Page} the breadcrumb points to.
+     *
+     * @param localizationKey
+     *            to be used in order to find breadcrumb title for the page
+     * @return current settings for chaining
+     */
+    public BreadcrumbsSettings useKeyForBreadcrumbTitle(String localizationKey) {
+        if (localizationKey == null || localizationKey.isEmpty()) {
+            throw new IllegalArgumentException("Localization key for breadcrumbs cannot be empty!");
+        }
+        this.localizedTitleProvider = new LocalizedTitleProvider(localizationKey);
+        return this;
+    }
+
+    /**
      * If set to a positive value, will force the {@code BreadcrumbsPanel} to
      * collapse breadcrumbs encountered more than {@code times} times.
      * <p>
@@ -160,10 +184,40 @@ public final class BreadcrumbsSettings {
         }
 
         app.setMetaData(KEY, this);
-        app.getComponentPreOnBeforeRenderListeners().add(new BreadcrumbTrailExtendingListener(pageFilter));
+        app.getComponentPreOnBeforeRenderListeners().add(
+            new BreadcrumbTrailExtendingListener(pageFilter, new DefaultTitleProvider(localizedTitleProvider)));
         if (linkTypeToDecorate != null) {
             app.getComponentInitializationListeners().add(
                 new BookmarkableBreadcrumbPageInitializationListener(pageFilter, linkTypeToDecorate));
+        }
+    }
+
+    private static class DefaultTitleProvider implements IComponentBreadcrumbTitleProvider {
+        private IComponentBreadcrumbTitleProvider next;
+
+        DefaultTitleProvider(IComponentBreadcrumbTitleProvider next) {
+            this.next = next;
+        }
+
+        @Override
+        public IModel<String> getBreadcrumbTitle(Component c) {
+            if (c instanceof IBreadcrumbTitleProvider) {
+                return ((IBreadcrumbTitleProvider) c).getBreadcrumbTitle();
+            }
+            return next.getBreadcrumbTitle(c);
+        }
+    }
+
+    private static class LocalizedTitleProvider implements IComponentBreadcrumbTitleProvider {
+        private final String key;
+
+        LocalizedTitleProvider(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public IModel<String> getBreadcrumbTitle(Component c) {
+            return new StringResourceModel(key, c, c.getDefaultModel());
         }
     }
 }
