@@ -36,7 +36,7 @@ public class PersonPage extends BaseAuthenticatedPage {
     }
 
     @Override
-    public IModel<String> getTitle() {
+    public IModel<String> getBreadrumbTitle() {
         return Model.of("PersonPage " + getDefaultModelObjectAsString());
     }
 }

@@ -63,8 +63,8 @@ public class BreadcrumbTrailExtendingListener implements IComponentOnBeforeRende
 
     private static Breadcrumb createBreadcrumbFrom(Page p) {
         final IModel<String> titleModel;
-        if (p instanceof IProvideTitle) {
-            titleModel = ((IProvideTitle) p).getTitle();
+        if (p instanceof IBreadcrumbTitleProvider) {
+            titleModel = ((IBreadcrumbTitleProvider) p).getBreadrumbTitle();
         } else {
             titleModel = Model.of(((Component) p).getString("breadcrumb"));
         }

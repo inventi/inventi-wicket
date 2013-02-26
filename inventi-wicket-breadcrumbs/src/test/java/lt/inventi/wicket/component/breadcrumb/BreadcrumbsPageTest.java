@@ -31,7 +31,7 @@ import org.junit.Test;
 import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
 import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
 import lt.inventi.wicket.component.breadcrumb.BreadcrumbsPanel;
-import lt.inventi.wicket.component.breadcrumb.IProvideTitle;
+import lt.inventi.wicket.component.breadcrumb.IBreadcrumbTitleProvider;
 import lt.inventi.wicket.component.breadcrumb.NextBookmarkablePageLink;
 import lt.inventi.wicket.component.breadcrumb.PreviousPageLink;
 
@@ -149,7 +149,7 @@ public class BreadcrumbsPageTest extends BreadcrumbsTests {
         return (BasePage) tester.getLastRenderedPage();
     }
 
-    public static class BasePage extends WebPage implements IProvideTitle {
+    public static class BasePage extends WebPage implements IBreadcrumbTitleProvider {
         protected BreadcrumbsOperationsHelper helper;
 
         public BasePage() {
@@ -172,7 +172,7 @@ public class BreadcrumbsPageTest extends BreadcrumbsTests {
         }
 
         @Override
-        public IModel<String> getTitle() {
+        public IModel<String> getBreadrumbTitle() {
             return Model.of(getClass().getSimpleName());
         }
 

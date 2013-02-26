@@ -112,7 +112,7 @@ public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
         }
 
         @Override
-        public IModel<String> getTitle() {
+        public IModel<String> getBreadrumbTitle() {
             return Model.of(String.valueOf(count));
         }
 

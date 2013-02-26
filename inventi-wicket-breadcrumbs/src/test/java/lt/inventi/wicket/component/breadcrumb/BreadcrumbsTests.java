@@ -43,7 +43,7 @@ public class BreadcrumbsTests {
         return titles;
     }
 
-    protected abstract static class AbstractBreadcrumbTestsPage extends WebPage implements IProvideTitle {
+    protected abstract static class AbstractBreadcrumbTestsPage extends WebPage implements IBreadcrumbTitleProvider {
         protected AbstractBreadcrumbTestsPage() {
             super();
         }
@@ -64,7 +64,7 @@ public class BreadcrumbsTests {
         }
 
         @Override
-        public IModel<String> getTitle() {
+        public IModel<String> getBreadrumbTitle() {
             return Model.of(getClass().getSimpleName());
         }
     }
