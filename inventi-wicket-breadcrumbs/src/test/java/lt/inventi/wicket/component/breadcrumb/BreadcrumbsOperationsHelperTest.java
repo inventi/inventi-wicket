@@ -1,8 +1,12 @@
 package lt.inventi.wicket.component.breadcrumb;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
+import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
 import org.apache.wicket.markup.html.link.Link;
@@ -12,9 +16,6 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.junit.Test;
-
-import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
-import lt.inventi.wicket.component.breadcrumb.IBreadcrumbsOperations;
 
 public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
 
@@ -46,6 +47,38 @@ public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
 
         assertThat(breadcrumbTitles(), contains("10", "0"));
         */
+    }
+
+    @Test
+    public void defensivelyClonesPageParametersIfSameInstanceAsPage() {
+        OperationsTestPage page = tester.startPage(OperationsTestPage.class, new PageParameters().add("count", 10));
+        PageParameters params = BreadcrumbPageParameters.setTrailTo(new PageParameters().set("count", 20), page);
+        page = tester.startPage(OperationsTestPage.class, params);
+
+        tester.clickLink("statelessLinkClassOnly");
+        PageParameters newParams = tester.getLastRenderedPage().getPageParameters();
+        assertThat(newParams, is(not(params)));
+        params = newParams;
+
+        tester.clickLink("statefulLink");
+        newParams = tester.getLastRenderedPage().getPageParameters();
+        assertThat(newParams, is(not(params)));
+        params = newParams;
+
+        tester.clickLink("statelessLinkClassWithParams");
+        newParams = tester.getLastRenderedPage().getPageParameters();
+        assertThat(newParams, is(not(params)));
+    }
+
+    @Test
+    public void failsToRedirectIfSameParametersInstanceUsedForNextPage() {
+        tester.startPage(OperationsTestPage.class, new PageParameters().add("count", 10));
+
+        try {
+            tester.clickLink("statefulLinkWithParams");
+        } catch (WicketRuntimeException e) {
+            assertThat(e.getCause().getCause(), instanceOf(IllegalStateException.class));
+        }
     }
 
     public static class OperationsTestPage extends AbstractBreadcrumbTestsPage implements IBreadcrumbsOperations {
@@ -93,6 +126,12 @@ public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
                     setNextResponsePage(new OperationsTestPage(count + 1));
                 }
             });
+            add(new Link<Void>("statefulLinkWithParams") {
+                @Override
+                public void onClick() {
+                    setNextResponsePage(new OperationsTestPage(getPage().getPageParameters()));
+                }
+            });
             add(new Link<Void>("previousPageLink") {
                 @Override
                 public void onClick() {
@@ -107,6 +146,7 @@ public class BreadcrumbsOperationsHelperTest extends BreadcrumbsTests {
                 + "<a wicket:id=\"statelessLinkClassWithParams\" />"
                 + "<a wicket:id=\"statelessLinkClassOnly\" />"
                 + "<a wicket:id=\"statefulLink\" />"
+                + "<a wicket:id=\"statefulLinkWithParams\" />"
                 + "<a wicket:id=\"previousPageLink\" />"
                 + "</body>");
         }
