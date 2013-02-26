@@ -1,6 +1,8 @@
 package lt.inventi.wicket.component.breadcrumb;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
@@ -10,9 +12,11 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.component.IRequestablePage;
 
+import lt.inventi.wicket.component.breadcrumb.collapse.DisplayedBreadcrumb;
 import lt.inventi.wicket.component.breadcrumb.collapse.IBreadcrumbCollapser;
 import lt.inventi.wicket.component.breadcrumb.collapse.NoopCollapser;
 import lt.inventi.wicket.component.breadcrumb.collapse.RepeatingBreadcrumbCollapser;
+import lt.inventi.wicket.component.breadcrumb.hierarchy.IBreadcrumbHierarchy;
 
 
 public final class BreadcrumbsSettings {
@@ -28,6 +32,10 @@ public final class BreadcrumbsSettings {
 
     static IBreadcrumbCollapser getBreadcrumbsCollapser() {
         return Application.get().getMetaData(KEY).collapser;
+    }
+
+    static IBreadcrumbHierarchy getBreadcrumbsHierarchy() {
+        return Application.get().getMetaData(KEY).hierarchy;
     }
 
     private IBreadcrumbPageFilter pageFilter = new IBreadcrumbPageFilter() {
@@ -48,6 +56,8 @@ public final class BreadcrumbsSettings {
     private IBreadcrumbCollapser collapser;
 
     private IComponentBreadcrumbTitleProvider localizedTitleProvider = new LocalizedTitleProvider("breadcrumb");
+
+    private IBreadcrumbHierarchy hierarchy;
 
     /**
      * Will create breadcrumbs only for pages annotated with the specified
@@ -93,6 +103,14 @@ public final class BreadcrumbsSettings {
                 return type.isAssignableFrom(page.getClass());
             }
         };
+        return this;
+    }
+
+    /**
+     * @return current settings for chaining
+     */
+    public BreadcrumbsSettings withStaticHierarchy(IBreadcrumbHierarchy newHierarchy) {
+        this.hierarchy = newHierarchy;
         return this;
     }
 
@@ -182,6 +200,10 @@ public final class BreadcrumbsSettings {
             this.collapser = new NoopCollapser();
         }
 
+        if (this.hierarchy == null) {
+            this.hierarchy = new NoHierarchy();
+        }
+
         app.setMetaData(KEY, this);
         app.getComponentPreOnBeforeRenderListeners().add(
             new BreadcrumbTrailExtendingListener(pageFilter, new DefaultTitleProvider(localizedTitleProvider)));
@@ -222,4 +244,12 @@ public final class BreadcrumbsSettings {
             return new BreadcrumbTitle(new StringResourceModel(key, c, c.getDefaultModel()));
         }
     }
+
+    private static class NoHierarchy implements IBreadcrumbHierarchy {
+        @Override
+        public List<DisplayedBreadcrumb> restoreMissingHierarchy(List<Breadcrumb> originalCrumbs) {
+            return Collections.emptyList();
+        }
+    }
+
 }

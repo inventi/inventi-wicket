@@ -14,16 +14,16 @@ import org.apache.wicket.model.IModel;
  * @author zhilvis, vplatonov
  *
  */
-class BreadcrumbLink extends Link<Breadcrumb> {
+class BreadcrumbLink extends Link<IBreadcrumbTargetProvider> {
 
-    BreadcrumbLink(String id, IModel<Breadcrumb> model) {
+    BreadcrumbLink(String id, IModel<IBreadcrumbTargetProvider> model) {
         super(id, model);
     }
 
     @Override
     public void onClick() {
         if (BreadcrumbsSettings.useStatefulBreadcrumbLinks()) {
-            getRequestCycle().scheduleRequestHandlerAfterCurrent(getModelObject().getTarget());
+            getRequestCycle().scheduleRequestHandlerAfterCurrent(getModelObject().getHandler());
         } else {
             throw new IllegalStateException("#onClick invoked for a stateless breadcrumb link " + this + "!");
         }

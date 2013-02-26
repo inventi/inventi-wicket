@@ -1,5 +1,6 @@
 package lt.inventi.wicket.component.breadcrumb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.Component;
@@ -17,6 +18,7 @@ import org.apache.wicket.model.PropertyModel;
 
 import lt.inventi.wicket.component.breadcrumb.collapse.DisplayedBreadcrumb;
 import lt.inventi.wicket.component.breadcrumb.collapse.IBreadcrumbCollapser;
+import lt.inventi.wicket.component.breadcrumb.hierarchy.IBreadcrumbHierarchy;
 
 public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
 
@@ -29,7 +31,19 @@ public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
             @Override
             public List<DisplayedBreadcrumb> load() {
                 IBreadcrumbCollapser collapser = BreadcrumbsSettings.getBreadcrumbsCollapser();
-                return collapser.collapse(getBreadcrumbs());
+                IBreadcrumbHierarchy hierarchy = BreadcrumbsSettings.getBreadcrumbsHierarchy();
+                List<Breadcrumb> crumbs = getBreadcrumbs();
+
+                List<DisplayedBreadcrumb> collapsed = collapser.collapse(crumbs);
+                List<DisplayedBreadcrumb> missing = hierarchy.restoreMissingHierarchy(crumbs);
+                if (missing.isEmpty()) {
+                    return collapsed;
+                }
+
+                List<DisplayedBreadcrumb> result = new ArrayList<DisplayedBreadcrumb>(missing.size() + collapsed.size());
+                result.addAll(missing);
+                result.addAll(collapsed);
+                return result;
             }
         }) {
             @Override
@@ -101,7 +115,7 @@ public class BreadcrumbsPanel extends GenericPanel<List<DisplayedBreadcrumb>> {
     }
 
     protected static final AbstractLink createBreadcrumbLink(String linkId, ListItem<DisplayedBreadcrumb> item) {
-        return new BreadcrumbLink(linkId, new PropertyModel<Breadcrumb>(item.getModel(), "crumb"));
+        return new BreadcrumbLink(linkId, new PropertyModel<IBreadcrumbTargetProvider>(item.getModel(), "targetProvider"));
     }
 
 }

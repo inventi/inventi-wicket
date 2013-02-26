@@ -2,6 +2,8 @@ package lt.inventi.wicket.component.breadcrumb;
 
 import org.apache.wicket.Component;
 
-interface IComponentBreadcrumbTitleProvider {
+public interface IComponentBreadcrumbTitleProvider {
+
     BreadcrumbTitle getBreadcrumbTitle(Component c);
+
 }

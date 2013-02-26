@@ -10,7 +10,7 @@ public class NoopCollapser implements IBreadcrumbCollapser {
     public List<DisplayedBreadcrumb> collapse(List<Breadcrumb> crumbs) {
         List<DisplayedBreadcrumb> result = new ArrayList<DisplayedBreadcrumb>();
         for (Breadcrumb b : crumbs) {
-            result.add(new SingleDisplayedBreadcrumb(b));
+            result.add(new SingleDisplayedBreadcrumb(b.title(), b));
         }
         return result;
     }

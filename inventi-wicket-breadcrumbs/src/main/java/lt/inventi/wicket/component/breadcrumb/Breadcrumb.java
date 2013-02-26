@@ -7,7 +7,7 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 
 
-public class Breadcrumb implements Serializable {
+public class Breadcrumb implements IBreadcrumbTargetProvider, Serializable {
 
     /**
      * We cannot use page ids because they might change after page is loaded,
@@ -34,15 +34,17 @@ public class Breadcrumb implements Serializable {
         return title;
     }
 
-    String getId() {
-        return id;
+    public Class<?> getType() {
+        return pageAndUrlProvider.getPageType();
     }
 
-    IRequestHandler getTarget() {
+    @Override
+    public IRequestHandler getHandler() {
         return pageAndUrlProvider.getHandler();
     }
 
-    CharSequence getURL(RequestCycle rc) {
+    @Override
+    public CharSequence getURL(RequestCycle rc) {
         return pageAndUrlProvider.getURL(rc);
     }
 
@@ -51,12 +53,12 @@ public class Breadcrumb implements Serializable {
         this.title = newCrumb.title;
     }
 
-    String getStableId() {
-        return pageAndUrlProvider.getId();
+    String getId() {
+        return id;
     }
 
-    Class<?> getType() {
-        return pageAndUrlProvider.getPageType();
+    String getStableId() {
+        return pageAndUrlProvider.getId();
     }
 
     @Override

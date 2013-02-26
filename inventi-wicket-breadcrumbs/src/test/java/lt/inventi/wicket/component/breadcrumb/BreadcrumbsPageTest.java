@@ -101,7 +101,7 @@ public class BreadcrumbsPageTest extends BreadcrumbsTests {
         BasePage page = getLastRenderedPage();
         assertEquals(2, getLastRenderedPage().getBreadcrumbs().size());
         IPageRequestHandler handler = (IPageRequestHandler)getLastRenderedPage()
-                .getBreadcrumbs().get(1).getTarget();
+                .getBreadcrumbs().get(1).getHandler();
         assertFalse("Page must NOT be stateless", page.isStateless());
         assertEquals(page, handler.getPage());
 

@@ -19,7 +19,7 @@ abstract class BreadcrumbsRedirectHelper {
         if (previousBreadcrumb == null) {
             component.getRequestCycle().setResponsePage(page);
         } else {
-            component.getRequestCycle().scheduleRequestHandlerAfterCurrent(previousBreadcrumb.getTarget());
+            component.getRequestCycle().scheduleRequestHandlerAfterCurrent(previousBreadcrumb.getHandler());
         }
     }
 

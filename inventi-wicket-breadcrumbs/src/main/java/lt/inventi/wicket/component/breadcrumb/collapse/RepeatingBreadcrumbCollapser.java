@@ -25,7 +25,7 @@ public class RepeatingBreadcrumbCollapser implements IBreadcrumbCollapser {
         }, collapsibilityEq, new BFun<Breadcrumb, DisplayedBreadcrumb>() {
             @Override
             public DisplayedBreadcrumb apply(Breadcrumb f) {
-                return new SingleDisplayedBreadcrumb(f);
+                return new SingleDisplayedBreadcrumb(f.title(), f);
             }
         }, new BFun<Iterable<Breadcrumb>, DisplayedBreadcrumb>() {
             @Override

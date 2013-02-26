@@ -5,23 +5,32 @@ import java.util.List;
 
 import org.apache.wicket.model.IModel;
 
-import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
+import lt.inventi.wicket.component.breadcrumb.BreadcrumbTitle;
+import lt.inventi.wicket.component.breadcrumb.IBreadcrumbTargetProvider;
 
-class SingleDisplayedBreadcrumb implements DisplayedBreadcrumb {
-    private final Breadcrumb crumb;
+public class SingleDisplayedBreadcrumb implements DisplayedBreadcrumb {
 
-    public SingleDisplayedBreadcrumb(Breadcrumb crumb) {
-        this.crumb = crumb;
+    private final BreadcrumbTitle title;
+    private final IBreadcrumbTargetProvider target;
+
+    public SingleDisplayedBreadcrumb(BreadcrumbTitle title, IBreadcrumbTargetProvider target) {
+        this.title = title;
+        this.target = target;
     }
 
     @Override
     public IModel<String> title() {
-        return crumb.title().getTitle();
+        return title.getTitle();
     }
 
     @Override
     public boolean shouldEscapeTitle() {
-        return crumb.title().shouldEscapeTitle();
+        return title.shouldEscapeTitle();
+    }
+
+    @Override
+    public IBreadcrumbTargetProvider targetProvider() {
+        return target;
     }
 
     @Override

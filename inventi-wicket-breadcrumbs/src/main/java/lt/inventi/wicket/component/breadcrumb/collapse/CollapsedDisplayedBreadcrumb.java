@@ -8,6 +8,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
+import lt.inventi.wicket.component.breadcrumb.IBreadcrumbTargetProvider;
 
 class CollapsedDisplayedBreadcrumb implements DisplayedBreadcrumb {
     private final List<DisplayedBreadcrumb> collapsed;
@@ -19,7 +20,7 @@ class CollapsedDisplayedBreadcrumb implements DisplayedBreadcrumb {
 
         List<DisplayedBreadcrumb> result = new ArrayList<DisplayedBreadcrumb>();
         for (Breadcrumb b : crumbs) {
-            result.add(new SingleDisplayedBreadcrumb(b));
+            result.add(new SingleDisplayedBreadcrumb(b.title(), b));
         }
         collapsed = Collections.unmodifiableList(result);
     }
@@ -27,6 +28,11 @@ class CollapsedDisplayedBreadcrumb implements DisplayedBreadcrumb {
     @Override
     public IModel<String> title() {
         return Model.of("...");
+    }
+
+    @Override
+    public IBreadcrumbTargetProvider targetProvider() {
+        return null;
     }
 
     @Override
