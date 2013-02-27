@@ -6,6 +6,20 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.converter.BooleanConverter;
 
+/**
+ * A label with a boolean model which is localized using the following keys:
+ * <ul>
+ * <li>When <b>null</b>: BooleanValueLabel.UNDEFINED</li>
+ * <li>When <b>true</b>: BooleanValueLabel.TRUE</li>
+ * <li>When <b>false</b>: BooleanValueLabel.FALSE</li>
+ * </ul>
+ * <p>
+ * If no values are provided for the keys, default boolean localization rules
+ * apply.
+ *
+ * @author vplatonov
+ *
+ */
 public class BooleanValueLabel extends Label {
 
     public BooleanValueLabel(String id) {
