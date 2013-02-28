@@ -8,7 +8,7 @@ import lt.inventi.wicket.component.breadcrumb.Breadcrumb;
 public class RepeatingBreadcrumbCollapser implements IBreadcrumbCollapser {
 
     private final int timesToRepeatBeforeCollapse;
-    private BEquality<Breadcrumb> collapsibilityEq;
+    private final BEquality<Breadcrumb> collapsibilityEq;
 
     public RepeatingBreadcrumbCollapser(int timesToRepeatBeforeCollapse, BEquality<Breadcrumb> collapsibilityEq) {
         this.timesToRepeatBeforeCollapse = timesToRepeatBeforeCollapse;

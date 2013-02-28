@@ -30,10 +30,11 @@ public class RememberingTabbedPanel<T extends ITab> extends BootstrapTabbedPanel
         super.onInitialize();
 
         StringValue selectedTabId = getPage().getPageParameters().get(getId());
-        if (selectedTabId.isEmpty()) {
+        int tab = selectedTabId.toInt(0);
+        if (tab >= getTabs().size()) {
             setSelectedTab(0);
         } else {
-            setSelectedTab(selectedTabId.toInt());
+            setSelectedTab(tab);
         }
     }
 
