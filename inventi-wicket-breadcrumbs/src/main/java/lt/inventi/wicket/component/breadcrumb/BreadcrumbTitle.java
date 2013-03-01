@@ -1,8 +1,10 @@
 package lt.inventi.wicket.component.breadcrumb;
 
+import java.io.Serializable;
+
 import org.apache.wicket.model.IModel;
 
-public final class BreadcrumbTitle {
+public final class BreadcrumbTitle implements Serializable {
 
     private final IModel<String> title;
     private final boolean shouldEscapeTitle;
