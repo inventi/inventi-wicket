@@ -88,7 +88,7 @@ public class AccordionGroup extends Border {
     private Component getAccordionParent() {
         Component parent = getParent();
         while (!(parent instanceof Accordion)) {
-            parent = getParent();
+            parent = parent.getParent();
             if (parent == null) {
                 throw new IllegalStateException("No Accordion parent found for group: " + this);
             }
