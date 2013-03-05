@@ -52,7 +52,10 @@ public class FuzzyFormTester extends FormTester {
 
     @Override
     public FormTester submit(String buttonComponentId) {
-        return super.submit(resolveFormSubmittingComponentPath(buttonComponentId));
+        String buttonPath = resolveFormSubmittingComponentPath(buttonComponentId);
+
+        super.setValue(buttonPath, "marked");
+        return super.submit();
     }
 
     private String resolveFormComponentPath(String formComponentId) {
