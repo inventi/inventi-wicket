@@ -52,6 +52,7 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         autoComplete.setSearchProvider(new SearchProvider());
         autoComplete.setDataProvider(new DataProvider());
         autoComplete.setDataLabelProvider(new DataLabelProvider());
+        autoComplete.setNewItemHandler(new NewItemProvider());
 
         panel = new TestPanel("panel");
         Form<TestObject> form = new Form<TestObject>("form", new Model<TestObject>());
@@ -104,7 +105,7 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         tester.assertComponent("panel:form:autoComplete:addNew", SubmitLink.class);
         tester.assertVisible("panel:form:autoComplete:addNew");
 
-        autoComplete.setAddNewLinkEnabled(false);
+        autoComplete.disallowAddingNewItems();
         tester.startComponentInPage(panel);
         tester.assertInvisible("panel:form:autoComplete:addNew");
     }
@@ -185,6 +186,12 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         }
     }
 
+    private class NewItemProvider implements AddNewItemHandler<TestObject> {
+        @Override
+        public void onNewItem(String input, NewAutocompleteItemCallback<TestObject> callback) {
+
+        }
+    }
 
     private class DataProvider extends AbstractDataProvider<TestObject> {
         @Override

@@ -36,16 +36,20 @@ import org.apache.wicket.util.convert.ConversionException;
 import lt.inventi.wicket.resource.ResourceSettings;
 
 /**
- * Provides autocomplete functionality, based on jquery autocomplete plugin. This class adds some
- * extra functionality, which is not available in default implementation, such as expand
- * autocomplete results with mouse click, and create new item.
+ * Provides autocomplete functionality, based on jquery autocomplete plugin.
+ * <p>
+ * This class adds some extra functionality, which is not available in the
+ * default implementation, such as autocomplete result expansion with mouse
+ * click or keypress and creation of new autocompleted items.
  *
- * <p/>
- * If you want to updated autocomplete model via ajax, use AutocompleteAjaxBehaviour for that.
+ * <p>
+ * To update via Ajax use {@link AutocompleteAjaxUpdateBehaviour}.
  *
  * @param <T>
  */
 public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPanel<T> implements IQueryListener {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Json parameters
@@ -54,9 +58,7 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
     public static final String LABEL_PARAM = "label";
     public static final String ID_PARAM = "id";
 
-    private static final long serialVersionUID = 2405491595411442878L;
-
-    private boolean addNewLinkEnabled = true;
+    private boolean addNewLinkEnabled = false;
     private SubmitLink addNewLink;
 
     private ValueField valueField;
@@ -65,6 +67,7 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
     private AutocompleteDataProvider<T> dataProvider;
     private AutocompleteDataLabelProvider<T> dataLabelProvider;
     private AutocompleteSearchProvider<S> searchProvider;
+    private AddNewItemHandler<T> newItemHandler;
 
     private boolean labelWasSet;
 
@@ -73,38 +76,46 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
     }
 
     public Autocomplete(String id, IModel<T> model) {
-        this(id, model, null, null);
-    }
-
-    public Autocomplete(String id, AutocompleteDataProvider<T> dataProvider, AutocompleteSearchProvider<S> searchProvider) {
-        this(id, null, dataProvider, searchProvider);
-    }
-
-    public Autocomplete(String id, IModel<T> model, AutocompleteDataProvider<T> dataProvider, AutocompleteSearchProvider<S> searchProvider) {
         super(id, model);
-        this.dataProvider = dataProvider;
-        this.searchProvider = searchProvider;
 
         valueField = new ValueField("value");
         add(valueField);
     }
 
-    /**
-     * Useful in case your data provider is an inner class.
-     */
     protected void setDataProvider(AutocompleteDataProvider<T> dataProvider) {
         this.dataProvider = dataProvider;
     }
 
-    /**
-     * Use this method if your search provider is an inner class.
-     */
     protected void setSearchProvider(AutocompleteSearchProvider<S> searchProvider) {
         this.searchProvider = searchProvider;
     }
 
     protected void setDataLabelProvider(AutocompleteDataLabelProvider<T> dataLabelProvider) {
         this.dataLabelProvider = dataLabelProvider;
+    }
+
+    protected void setNewItemHandler(AddNewItemHandler<T> newItemHandler) {
+        if (newItemHandler == null) {
+            throw new IllegalArgumentException("New item handler cannot be null!");
+        }
+        this.addNewLinkEnabled = true;
+        this.newItemHandler = newItemHandler;
+    }
+
+    /**
+     * Dynamic control of allowing/disallowing new item addition.
+     */
+    public Autocomplete<ID, T, S> disallowAddingNewItems() {
+        this.addNewLinkEnabled = false;
+        return this;
+    }
+
+    /**
+     * Dynamic control of allowing/disallowing new item addition.
+     */
+    public Autocomplete<ID, T, S> allowAddingNewItems() {
+        this.addNewLinkEnabled = false;
+        return this;
     }
 
     /**
@@ -118,22 +129,17 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
     }
 
     /**
-     * Allows to provide extra JS function which will be invoked when item is selected. This is
-     * usefull to process extra attirbutes. For example: function(event, ui){ extraVar =
-     * ui.item.extraAttr; }
+     * Allows to provide extra JS function which will be invoked when item is
+     * selected. This is useful to process extra attributes. For example:
+     *
+     * <pre>
+     * function(event, ui){ extraVar = ui.item.extraAttr; }
+     * </pre>
      *
      * @return
      */
     protected String getSelectFunction() {
         return null;
-    }
-
-    /**
-     * Invoked when user clicks on NewItem link. It is assumed that overriding method should set
-     * next response page.
-     */
-    protected void onNewItem(String newName, NewEntityCallback<T> callback) {
-        // do nothing
     }
 
     @Override
@@ -168,15 +174,14 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
         addNewLink = new SubmitLink("addNew") {
             @Override
             public void onSubmit() {
-
-                NewEntityCallback<T> entityCallback = new NewEntityCallback<T>(){
+                NewAutocompleteItemCallback<T> callback = new NewAutocompleteItemCallback<T>() {
                     @Override
                     public void saved(T newEntity) {
                         Autocomplete.this.saved(newEntity);
                     }
                 };
 
-                onNewItem(getValueField().getInput(), entityCallback);
+                newItemHandler.onNewItem(getValueField().getInput(), callback);
             }
 
             @Override
@@ -306,14 +311,6 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
         tag.append("class", "autocomplete", " ");
         tag.remove("type");
         super.onComponentTag(tag);
-    }
-
-    public boolean isAddNewLinkEnabled() {
-        return addNewLinkEnabled;
-    }
-
-    public void setAddNewLinkEnabled(boolean addNewLinkEnabled) {
-        this.addNewLinkEnabled = addNewLinkEnabled;
     }
 
     public ValueField getValueField() {
