@@ -3,6 +3,7 @@ package lt.inventi.wicket.component.bootstrap;
 import java.io.Serializable;
 
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 public class ModalBehaviorConfig implements Serializable {
 
@@ -11,7 +12,7 @@ public class ModalBehaviorConfig implements Serializable {
     }
 
     private Backdrop backdrop = Backdrop.TRUE;
-    private IModel<Boolean> isShown;
+    private IModel<Boolean> isShown = Model.of(false);
 
     public ModalBehaviorConfig() {
         super();
@@ -46,5 +47,13 @@ public class ModalBehaviorConfig implements Serializable {
 
     IModel<Boolean> visibilityModel() {
         return isShown;
+    }
+
+    void onClose() {
+        isShown.setObject(false);
+    }
+
+    void onShow() {
+        isShown.setObject(true);
     }
 }
