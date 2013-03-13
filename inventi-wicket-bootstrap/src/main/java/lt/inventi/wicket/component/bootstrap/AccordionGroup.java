@@ -61,7 +61,7 @@ public class AccordionGroup extends Border {
     public AccordionGroup(String id, IModel<String> labelModel, Options options) {
         super(id);
         setRenderBodyOnly(true);
-        label = new Label("label", labelModel);
+        label = new Label("label", wrap(labelModel));
         this.options = options;
     }
 
