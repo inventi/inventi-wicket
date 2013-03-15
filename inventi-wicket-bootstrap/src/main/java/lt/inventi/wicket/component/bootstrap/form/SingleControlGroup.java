@@ -1,10 +1,10 @@
 package lt.inventi.wicket.component.bootstrap.form;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
 import org.apache.wicket.markup.MarkupNotFoundException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.FormComponent;
 
 /**
  * Adds a bit of magic to bootstrap's horizontal forms.
@@ -48,13 +48,9 @@ import org.apache.wicket.markup.html.form.FormComponent;
  */
 public class SingleControlGroup extends WebMarkupContainer {
 
-    private final ControlGroup group;
-
-    public SingleControlGroup(FormComponent<?> formComponent) {
-        super(formComponent.getId());
-        this.group = new ControlGroup(formComponent.getId());
-        this.group.add(formComponent);
-        add(group);
+    public SingleControlGroup(Component component) {
+        super(component.getId());
+        add(new ControlGroup(component.getId()).add(component));
     }
 
     @Override
