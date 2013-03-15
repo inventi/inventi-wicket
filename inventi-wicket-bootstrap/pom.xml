@@ -73,8 +73,8 @@
         </dependency>
         <dependency>
             <groupId>de.agilecoders.wicket</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>0.7.6</version>
+            <artifactId>wicket-bootstrap-core</artifactId>
+            <version>0.8.0</version>
             <exclusions>
                 <!-- <dependency>                                    -->
                 <!--     <groupId>org.codehaus.jackson</groupId>     -->
@@ -89,12 +89,20 @@
                     <artifactId>joda-time</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.asual.lesscss</groupId>
-                    <artifactId>lesscss-engine</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.agilecoders.wicket.webjars</groupId>
+                    <artifactId>wicket-webjars</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars</groupId>
+                    <artifactId>bootstrap</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars</groupId>
+                    <artifactId>modernizr</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

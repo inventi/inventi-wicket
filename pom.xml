@@ -17,7 +17,7 @@
     </licenses>
 
     <properties>
-        <wicket.version>6.5.0</wicket.version>
+        <wicket.version>6.6.0</wicket.version>
         <gson.version>2.2.2</gson.version>
 
         <junit.version>4.11</junit.version>
