@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.Serializable;
@@ -96,6 +97,20 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         panel.render();
 
         assertThat(autoComplete.getValueField().getModelObject(), equalTo("OtherName"));
+    }
+
+    @Test
+    public void rendersEmptyValueWhenModelObjectIsNulledOut() {
+        tester.newFormTester("panel:form")
+            .setValue("autoComplete:id", "3")
+            .submit();
+
+        assertThat(autoComplete.getValueField().getModelObject(), equalTo("OtherName"));
+
+        autoComplete.setModelObject(null);
+        panel.render();
+
+        assertThat(autoComplete.getValueField().getModelObject(), is(nullValue()));
     }
 
     @Test

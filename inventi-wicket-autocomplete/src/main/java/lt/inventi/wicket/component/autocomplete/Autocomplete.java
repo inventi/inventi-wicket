@@ -398,13 +398,12 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
         @Override
         public String getObject() {
             T object = Autocomplete.this.getModelObject();
+            if (object == null) {
+                return null;
+            }
             if (object != lastObject) {
                 lastObject = object;
-                if (object == null) {
-                    lastValue = null;
-                } else {
-                    lastValue = dataLabelProvider.extractLabel(object);
-                }
+                lastValue = dataLabelProvider.extractLabel(object);
             }
             return lastValue;
         }
