@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>lt.inventi</groupId>
+        <artifactId>inventi-wicket</artifactId>
+        <version>0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>inventi-wicket-shiro</artifactId>
+    <packaging>jar</packaging>
+    <name>Inventi :: UI :: Wicket :: Shiro Integration</name>
+
+    <description>
+        Shiro-wicket integration from https://github.com/55minutes/fiftyfive-wicket/
+        adopted for Wicket 6.  Fiftyfive isn't planning on migration (although
+        they do have a wicket6 branch) so we do it here.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>inventi-wicket-test</artifactId>
+        </dependency>
+    </dependencies>
+</project>

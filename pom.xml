@@ -19,6 +19,7 @@
     <properties>
         <wicket.version>6.6.0</wicket.version>
         <gson.version>2.2.2</gson.version>
+        <shiro.version>1.2.1</shiro.version>
 
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
@@ -37,6 +38,7 @@
         <module>inventi-wicket-autocomplete</module>
         <module>inventi-wicket-expandable-list</module>
         <module>inventi-wicket-breadcrumbs</module>
+        <module>inventi-wicket-shiro</module>
 
         <module>inventi-wicket-examples</module>
     </modules>
@@ -157,6 +159,13 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+
 
             <!-- Test -->
             <dependency>
