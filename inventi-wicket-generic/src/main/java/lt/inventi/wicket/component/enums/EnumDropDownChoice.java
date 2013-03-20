@@ -20,12 +20,12 @@ public class EnumDropDownChoice extends DropDownChoice<Enum<?>> {
         this(id, Arrays.asList(choices));
     }
 
-    public EnumDropDownChoice(String id, Set<Enum<?>> choices) {
+    public EnumDropDownChoice(String id, Set<? extends Enum<?>> choices) {
         this(id, new ArrayList<Enum<?>>(choices));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public EnumDropDownChoice(String id, List<Enum<?>> choices) {
+    public EnumDropDownChoice(String id, List<? extends Enum<?>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }
