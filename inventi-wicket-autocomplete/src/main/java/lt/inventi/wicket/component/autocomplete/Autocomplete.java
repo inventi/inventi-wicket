@@ -31,7 +31,6 @@ import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
-import org.apache.wicket.util.convert.ConversionException;
 
 import lt.inventi.wicket.resource.ResourceSettings;
 
@@ -344,10 +343,6 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
 
     private T doConvertValue(String[] value) {
         String key = idField.getInput();
-        if (!hasText(key)) {
-            return null;
-        }
-
         T oldObject = getModelObject();
         if (oldObject != null) {
             String id = dataProvider.getId(oldObject);
@@ -357,10 +352,6 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
         }
         String valueString = valueField.getInput();
         T objectValue = dataProvider.getObject(key, valueString, oldObject);
-
-        if (objectValue == null && hasText(valueString)) {
-            throw new ConversionException("Key is not specified");
-        }
         return objectValue;
     }
 

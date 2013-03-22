@@ -168,6 +168,27 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         assertThat(list.get(2).name, equalTo(model.getObject().name));
     }
 
+    @Test
+    public void submitsUsingValueIfNoIdIsPresent() {
+        tester.newFormTester("panel:form")
+            .setValue("autoComplete:id", "")
+            .setValue("autoComplete:value", "SomeName")
+            .submit();
+
+        assertThat(list.get(0).id, equalTo(model.getObject().id.toString()));
+        assertThat(list.get(0).name, equalTo(model.getObject().name));
+    }
+
+    @Test
+    public void convertsToNullIfNotFoundByKeyNorByValue() {
+        tester.newFormTester("panel:form")
+            .setValue("autoComplete:id", "")
+            .setValue("autoComplete:value", "DoesNotExist")
+            .submit();
+
+        assertThat(model.getObject(), is(nullValue()));
+    }
+
     private static class TestObject implements Serializable {
         private Long id;
         private String name;
@@ -212,6 +233,16 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         @Override
         public String getId(TestObject object) {
             return ""+object.getId();
+        }
+
+        @Override
+        protected TestObject findExactByValue(String value) {
+            for (SearchObject o : list) {
+                if (o.name.equals(value)) {
+                    return new TestObject(Long.valueOf(o.id), o.name);
+                }
+            }
+            return null;
         }
 
         @Override
