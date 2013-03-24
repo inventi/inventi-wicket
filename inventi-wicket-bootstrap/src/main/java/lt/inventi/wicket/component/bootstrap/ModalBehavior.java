@@ -42,6 +42,8 @@ public class ModalBehavior extends Behavior {
         modalContainer.setOutputMarkupId(true);
 
         modalContainer.add(new AttributeAppender("class", " modal hide"));
+        modalContainer.add(new AttributeAppender("tabindex", "-1"));
+        
         component.add(new AttributeModifier("data-toggle", "modal"));
         // markup Id might get modified after #bind (e.g. #onInitialize, #onBeforeRender)
         component.add(new AttributeModifier("data-target", new AbstractReadOnlyModel<String>() {
