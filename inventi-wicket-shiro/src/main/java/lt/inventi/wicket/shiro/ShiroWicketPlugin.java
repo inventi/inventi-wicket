@@ -29,43 +29,29 @@ import org.apache.shiro.authz.aop.GuestAnnotationHandler;
 import org.apache.shiro.authz.aop.PermissionAnnotationHandler;
 import org.apache.shiro.authz.aop.RoleAnnotationHandler;
 import org.apache.shiro.authz.aop.UserAnnotationHandler;
-
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.Session;
-
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
-
-import org.apache.wicket.markup.html.pages.AccessDeniedPage;
-
-import org.apache.wicket.protocol.http.WebApplication;
-
-import org.apache.wicket.request.IRequestHandler;
-
-import org.apache.wicket.request.component.IRequestableComponent;
-
-import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
-import org.apache.wicket.request.cycle.IRequestCycleListener;
-import org.apache.wicket.request.cycle.RequestCycle;
-
-import org.apache.wicket.request.flow.ResetResponseException;
-
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler.RedirectPolicy;
-
-import org.apache.wicket.request.http.WebRequest;
-
 import org.apache.wicket.core.request.mapper.MountedMapper;
-
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.component.IRequestableComponent;
+import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.IRequestCycleListener;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.flow.ResetResponseException;
+import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.settings.ISecuritySettings;
-
 import org.apache.wicket.util.lang.Args;
 
 
@@ -139,7 +125,7 @@ import org.apache.wicket.util.lang.Args;
  *             .install(this);
  *     }
  * }</pre>
- * 
+ *
  * @author Matt Brictson
  * @since 3.0
  */
@@ -170,7 +156,7 @@ public class ShiroWicketPlugin
 
     private static final MetaDataKey<AuthorizationException> EXCEPTION_KEY =
         new MetaDataKey<AuthorizationException>() {};
-    
+
     private static final MetaDataKey<ShiroWicketPlugin> PLUGIN_KEY =
         new MetaDataKey<ShiroWicketPlugin>() {};
 
@@ -188,7 +174,7 @@ public class ShiroWicketPlugin
      * in the current Wicket application. This is a convenience method that
      * only works within a Wicket thread, and it assumes that
      * {@link #install install()} has already been called.
-     * 
+     *
      * @throws IllegalStateException if there is no Wicket application bound
      *                               to the current thread, or if a
      *                               {@code ShiroWicketPlugin} has not been
@@ -214,7 +200,7 @@ public class ShiroWicketPlugin
         }
         return plugin;
     }
-    
+
     /**
      * Register the specified {@code ShiroWicketPlugin} in the application so that
      * {@link #get} will work. You should never need to call this method directly, unless you
@@ -224,15 +210,17 @@ public class ShiroWicketPlugin
     {
         app.setMetaData(PLUGIN_KEY, plugin);
     }
-    
-    
+
+
     private String loginPath = "login";
     private String logoutPath = "logout";
     private Class<? extends Page> loginPage;
     private Class<? extends Page> logoutPage;
     private Class<? extends Page> unauthorizedPage = null;
     private boolean unauthorizedRedirect = true;
-    
+
+    private boolean showLoginRequiredMessage;
+
     /**
      * The login page class as provided to {@link #mountLoginPage}; the default is
      * {@link LoginPage}.
@@ -254,18 +242,18 @@ public class ShiroWicketPlugin
     /**
      * Set the bookmarkable page that will be displayed when an <em>unauthenticated</em> user
      * attempts to access a page that requires authentication.
-     * 
+     *
      * @param mountPath The bookmarkable URI where the login page will be mounted when
      *                  {@link #install install} is called. The default is {@code "/login"}.
      *                  May be {@code null}, in which case the login page will not be mounted.
      *                  You would want to pass {@code null}, for example, if you use your home
      *                  page as the login page, since in that case the home page is already
      *                  implicitly mounted on {@code "/"}.
-     * 
+     *
      * @param loginPage The page to use as the login page when the user needs to be
      *                  authenticated. Cannot be {@code null}. The default is a simple
      *                  out-of-the-box {@link LoginPage}.
-     * 
+     *
      * @return {@code this} to allow chaining
      */
     public ShiroWicketPlugin mountLoginPage(String mountPath, Class<? extends Page> loginPage)
@@ -282,13 +270,13 @@ public class ShiroWicketPlugin
      *
      * @param mountPath The bookmarkable URI where the logout page will be mounted when
      *                  {@link #install install} is called. The default is {@code "/logout"}.
-     * 
+     *
      * @param logoutPage The page to load when the user clicks the
      *                   {@link fiftyfive.wicket.shiro.markup.LogoutLink LogoutLink}. This page
      *                   is responsible for actually logging the user out of the Shiro system.
      *                   Cannot be {@code null}. The default is {@link LogoutPage},
      *                   which should be sufficient for most applications.
-     * 
+     *
      * @return {@code this} to allow chaining
      */
     public ShiroWicketPlugin mountLogoutPage(String mountPath, Class<? extends Page> logoutPage)
@@ -298,7 +286,7 @@ public class ShiroWicketPlugin
         this.logoutPage = logoutPage;
         return this;
     }
-    
+
     /**
      * The page class that was set via {@link #setUnauthorizedPage}; otherwise the
      * application home page.
@@ -307,7 +295,7 @@ public class ShiroWicketPlugin
     {
         return unauthorizedPage != null ? unauthorizedPage : Application.get().getHomePage();
     }
-    
+
     /**
      * The redirect flag that was set via {@link #setUnauthorizedPage}; {@code true} by default.
      */
@@ -315,19 +303,19 @@ public class ShiroWicketPlugin
     {
         return unauthorizedRedirect;
     }
-    
+
     /**
      * Set the bookmarkable page that will be displayed when an <em>authenticated</em> user
      * attempts to access a page that they are not allowed to see. By default it is
      * {@code null}, indicating that the application home page should be used.
-     * 
+     *
      * @param page The page to display when the user is unauthorized; if {@code null}, the
      *             application home page will be used
      *
      * @param redirect If {@code true}, a 302 redirect will be performed to display the page;
      *                 if {@code false}, no redirect will occur and the URL will not change.
      *                 The latter is appropriate for an error page.
-     * 
+     *
      * @return {@code this} to allow chaining
      */
     public ShiroWicketPlugin setUnauthorizedPage(Class<? extends Page> page, boolean redirect)
@@ -336,7 +324,7 @@ public class ShiroWicketPlugin
         this.unauthorizedRedirect = redirect;
         return this;
     }
-    
+
     /**
      * The mount path for the login page as provided to {@link #mountLoginPage}; the default is
      * {@code "login"}.
@@ -368,12 +356,12 @@ public class ShiroWicketPlugin
     public void install(WebApplication app)
     {
         Args.notNull(app, "app");
-        
+
         ISecuritySettings settings = app.getSecuritySettings();
         settings.setAuthorizationStrategy(this);
         settings.setUnauthorizedComponentInstantiationListener(this);
         app.getRequestCycleListeners().add(this);
-        
+
         // Mount bookmarkable URLs
         if(this.loginPath != null)
         {
@@ -383,13 +371,13 @@ public class ShiroWicketPlugin
         {
             app.mount(new MountedMapper(this.logoutPath, this.logoutPage));
         }
-        
+
         // Install self in app metadata so that static get() can work
         ShiroWicketPlugin.set(app, this);
     }
-    
+
     // Start feedback message callbacks --------------------------------------
-    
+
     /**
      * Called by {@link LogoutPage} once the user has been logged out.
      * The default implementation adds a feedback message to the session that says
@@ -406,37 +394,51 @@ public class ShiroWicketPlugin
             // We need a new session because otherwise our feedback message won't "stick".
             Session session = Session.get();
             session.replaceSession();
-        
+
             // Add localized "you have been logged out" message to session
             session.info(message);
         }
     }
-    
+
     /**
-     * Invoked by {@code ShiroWicketPlugin} when an anonymous or remembered user has tried to
-     * access a page that requires authentication. The default implementation places a
-     * "you need to be logged in to continue" feedback message in the session.
-     * To override or localize this message,
-     * define {@code loginRequired} in your application properties. You can disable the
-     * message entirely by defining {@code loginRequired} as an empty string.
+     * Set to {@code true} if you want to show the {@code loginRequired} message
+     * if an anonymous or remembered user tries to access a page that requires
+     * authentication.
+     * <p>
+     * False by default.
+     *
+     * @param show
+     * @return this plugin for chaining
      */
-    public void onLoginRequired()
-    {
-        String message = getLocalizedMessage(
-            LOGIN_REQUIRED_MESSAGE_KEY,
-            "You need to be logged in to continue.");
-        
-        if(message != null && !message.matches("^\\s*$"))
-        {
-            // We need a new session because otherwise our feedback message won't "stick".
-            Session session = Session.get();
-            session.bind();
-        
-            // Add localized "you have been logged out" message to session
-            session.info(message);
+    public ShiroWicketPlugin showLoginRequiredMessage(boolean show) {
+        this.showLoginRequiredMessage = show;
+        return this;
+    }
+
+    /**
+     * Invoked by {@code ShiroWicketPlugin} when an anonymous or remembered user
+     * has tried to access a page that requires authentication. The default
+     * implementation places a "you need to be logged in to continue" feedback
+     * message in the session. To override or localize this message, define
+     * {@code loginRequired} in your application properties.
+     */
+    public void onLoginRequired() {
+        if (showLoginRequiredMessage) {
+            String message = getLocalizedMessage(
+                LOGIN_REQUIRED_MESSAGE_KEY,
+                "You need to be logged in to continue.");
+
+            if (message != null && !message.matches("^\\s*$")) {
+                // We need a new session because otherwise our feedback message won't "stick".
+                Session session = Session.get();
+                session.bind();
+
+                // Add localized "you have been logged out" message to session
+                session.info(message);
+            }
         }
     }
-    
+
     /**
      * Invoked by {@code ShiroWicketPlugin} when the user has tried to access a page
      * but lacks the necessary role or permission. The default implementation places a
@@ -450,22 +452,22 @@ public class ShiroWicketPlugin
         String message = getLocalizedMessage(
             UNAUTHORIZED_MESSAGE_KEY,
             "Sorry, you are not allowed to access that page.");
-        
+
         if(message != null && !message.matches("^\\s*$"))
         {
             // We need a new session because otherwise our feedback message won't "stick".
             Session session = Session.get();
             session.bind();
-        
+
             // Add localized "sorry, you are not allowed to access that page" message to session
             session.error(message);
         }
     }
-    
+
     // End feedback message callbacks ----------------------------------------
-    
+
     // Start IRequestCycleListener methods -----------------------------------
-    
+
     /**
      * React to an uncaught Exception by redirecting the browser to
      * the unauthorized page or login page if appropriate. This method will automatically be
@@ -478,13 +480,13 @@ public class ShiroWicketPlugin
      * to the unauthorized page or login page depending on the type of error.
      * If the exception is not a Shiro {@link AuthorizationException}
      * return {@code null}.
-     * 
+     *
      * @param cycle The current request cycle, as provided by Wicket.
-     * 
+     *
      * @param error The exception to handle. If it is not a subclass of
      *              Shiro's {@link AuthorizationException}, this method will
      *              not have any effect.
-     * 
+     *
      * @return A {@link RenderPageRequestHandler} redirect to the login
      *         page if the error is due to the user being
      *         <em>unauthenticated</em>;
@@ -497,7 +499,7 @@ public class ShiroWicketPlugin
     {
         Class<? extends Page> respondWithPage = null;
         RedirectPolicy redirectPolicy = RedirectPolicy.NEVER_REDIRECT;
-        
+
         if(error instanceof AuthorizationException)
         {
             AuthorizationException ae = (AuthorizationException) error;
@@ -506,7 +508,7 @@ public class ShiroWicketPlugin
                 if(loginPage != null)
                 {
                     onLoginRequired();
-                    
+
                     // Create a RestartResponseAtInterceptPageException to set the intercept,
                     // even though we don't throw the exception. (The magic happens in the
                     // RestartResponseAtInterceptPageException constructor.)
@@ -518,7 +520,7 @@ public class ShiroWicketPlugin
             else
             {
                 onUnauthorized();
-                
+
                 if(this.unauthorizedRedirect || (
                     cycle.getRequest() instanceof WebRequest &&
                     ((WebRequest) cycle.getRequest()).isAjax()))
@@ -548,28 +550,29 @@ public class ShiroWicketPlugin
      * Otherwise, access was denied due to authorization failure (e.g. insufficient privileges),
      * call {@link #onUnauthorized} and render the unauthorized page (which is the home page by
      * default).
-     * 
-     * @param component The component that failed to initialize due to 
+     *
+     * @param component The component that failed to initialize due to
      *                  authorization or authentication failure
-     * 
+     *
      * @throws {@link ResetResponseException} to render the login page or unauthorized page
-     * 
+     *
      * @throws UnauthorizedInstantiationException the login page
      *                                            has not been configured (i.e. is {@code null})
      */
+    @Override
     public void onUnauthorizedInstantiation(Component component)
     {
         AuthorizationException cause;
         RequestCycle rc = RequestCycle.get();
         cause = rc.getMetaData(EXCEPTION_KEY);
-        
+
         // Show appropriate login or error page if possible
         IRequestHandler handler = onException(rc, cause);
         if(handler != null)
         {
             throw new ResetResponseException(handler) {};
         }
-        
+
         // Otherwise bubble up the error
         UnauthorizedInstantiationException ex;
         ex = new UnauthorizedInstantiationException(component.getClass());
@@ -580,7 +583,7 @@ public class ShiroWicketPlugin
     // End IUnauthorizedComponentInstantiationListener methods ---------------
 
     // Start IAuthorizationStrategy methods ----------------------------------
-    
+
     /**
      * Performs authorization checks for the {@link Component#RENDER RENDER}
      * action only. Other actions are always allowed.
@@ -604,6 +607,7 @@ public class ShiroWicketPlugin
      *     ...
      * }</pre>
      */
+    @Override
     public boolean isActionAuthorized(Component component, Action action)
     {
         if(Component.RENDER.equals(action))
@@ -619,7 +623,7 @@ public class ShiroWicketPlugin
         }
         return true;
     }
-    
+
     /**
      * If {@code componentClass} is a subclass of {@link Page},
      * return {@code true} or {@code false} based on evaluation of any
@@ -648,6 +652,7 @@ public class ShiroWicketPlugin
      * their rendering can be controlled via annotations. See
      * {@link #isActionAuthorized isActionAuthorized()}.
      */
+    @Override
     public <T extends IRequestableComponent> boolean isInstantiationAuthorized(
         Class<T> componentClass)
     {
@@ -668,7 +673,7 @@ public class ShiroWicketPlugin
     }
 
     // End IAuthorizationStrategy methods ------------------------------------
-    
+
     /**
      * Looks up a localized string from the application properties.
      */
@@ -695,21 +700,21 @@ public class ShiroWicketPlugin
         // Shiro between "authenticated" and "remembered" states. To ensure the
         // correct behavior we have to inspect the actual exception to see what
         // action to take.
-        
+
         boolean needLogin = false;
-        
+
         // Check if Shiro blocked access due to authentication
         if(cause instanceof UnauthenticatedException)
         {
             needLogin = true;
-            
+
             // But... there is a rare case where Shiro can throw an
             // UnauthenticatedException even when the user is already logged
             // in. If the user is logged in and the page was annotated with
             // @RequiresGuest, Shiro throws an UnauthenticatedException, which
             // which is very misleading. Our only way to detect this scenario
             // is to parse the exception message. Yes, this is a hack.
-            
+
             String msg = cause.getMessage();
             String guestError = "Attempting to perform a guest-only operation.";
             if(msg != null && msg.startsWith(guestError))
@@ -737,7 +742,7 @@ public class ShiroWicketPlugin
             }
         }
     }
-    
+
     /**
      * Returns all annotations present on the given class and all of its
      * superclasses.
@@ -753,4 +758,5 @@ public class ShiroWicketPlugin
         }
         return annots;
     }
+
 }
