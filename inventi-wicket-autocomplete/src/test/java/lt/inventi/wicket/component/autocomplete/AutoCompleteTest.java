@@ -52,7 +52,7 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         autoComplete = new Autocomplete<Long, TestObject, SearchObject>("autoComplete", model);
         autoComplete.setSearchProvider(new SearchProvider());
         autoComplete.setDataProvider(new DataProvider());
-        autoComplete.setDataLabelProvider(new DataLabelProvider());
+        autoComplete.setDataValueProvider(new DataLabelProvider());
         autoComplete.setNewItemHandler(new NewItemProvider());
 
         panel = new TestPanel("panel");
@@ -263,8 +263,13 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         }
 
         @Override
-        public String extractLabel(SearchObject item) {
+        public String extractSearchLabel(SearchObject item) {
             return item.name + " - " + item.description;
+        }
+
+        @Override
+        public String extractValue(SearchObject item) {
+            return item.name;
         }
 
         @Override
@@ -273,9 +278,9 @@ public class AutoCompleteTest extends BaseNonInjectedTest {
         }
     }
 
-    public class DataLabelProvider implements AutocompleteDataLabelProvider<TestObject> {
+    public class DataLabelProvider implements AutocompleteDataValueProvider<TestObject> {
         @Override
-        public String extractLabel(TestObject item) {
+        public String extractValue(TestObject item) {
             return item.name;
         }
     }

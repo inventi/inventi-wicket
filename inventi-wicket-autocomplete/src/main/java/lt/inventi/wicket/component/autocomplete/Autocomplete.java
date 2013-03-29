@@ -64,7 +64,7 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
     private HiddenField<ID> idField;
 
     private AutocompleteDataProvider<T> dataProvider;
-    private AutocompleteDataLabelProvider<T> dataLabelProvider;
+    private AutocompleteDataValueProvider<T> dataValueProvider;
     private AutocompleteSearchProvider<S> searchProvider;
     private AddNewItemHandler<T> newItemHandler;
 
@@ -89,8 +89,8 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
         this.searchProvider = searchProvider;
     }
 
-    protected void setDataLabelProvider(AutocompleteDataLabelProvider<T> dataLabelProvider) {
-        this.dataLabelProvider = dataLabelProvider;
+    protected void setDataValueProvider(AutocompleteDataValueProvider<T> dataValueProvider) {
+        this.dataValueProvider = dataValueProvider;
     }
 
     protected void setNewItemHandler(AddNewItemHandler<T> newItemHandler) {
@@ -146,7 +146,7 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
         if (dataProvider == null) {
             throw new IllegalStateException(this.getClass() + " data provider can't be null");
         }
-        if (dataLabelProvider == null) {
+        if (dataValueProvider == null) {
             throw new IllegalStateException(this.getClass() + " data label provider can't be null");
         }
         if (searchProvider == null) {
@@ -394,7 +394,7 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
             }
             if (object != lastObject) {
                 lastObject = object;
-                lastValue = dataLabelProvider.extractLabel(object);
+                lastValue = dataValueProvider.extractValue(object);
             }
             return lastValue;
         }
