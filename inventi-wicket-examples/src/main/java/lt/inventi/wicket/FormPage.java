@@ -20,6 +20,7 @@ public class FormPage extends BaseAuthenticatedPage {
         IModel<Person> personModel = CompoundPropertyModel.<Person> of(getPersonModel());
         add(new Form<Person>("form", personModel).add(
             new TextField<String>("name"), new TextField<Integer>("age"),
+            new PersonAutocomplete("bestFriend"),
             new SubmitLink("submit") {
                 @Override
                 public void onSubmit() {
@@ -36,6 +37,7 @@ public class FormPage extends BaseAuthenticatedPage {
         });
     }
 
+    @SuppressWarnings("unchecked")
     private IModel<Person> getPersonModel() {
         return (IModel<Person>) getDefaultModel();
     }

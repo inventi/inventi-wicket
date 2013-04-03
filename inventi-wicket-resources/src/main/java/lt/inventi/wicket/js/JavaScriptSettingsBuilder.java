@@ -78,6 +78,8 @@ public interface JavaScriptSettingsBuilder {
     }
 
     interface JQueryUiBuilder {
+        JQueryUiBuilder withAllUi(JavaScriptResourceReference jqueryUi);
+
         JQueryUiBuilder withAllUiCore(JavaScriptResourceReference core);
 
         UiCoreBuilder withUiCore(JavaScriptResourceReference core);
@@ -154,6 +156,13 @@ public interface JavaScriptSettingsBuilder {
 
         public JQueryUi192Builder(JavaScriptSettingsBuilder settingsBuilder) {
             this.settingsBuilder = settingsBuilder;
+        }
+
+        @Override
+        public JQueryUiBuilder withAllUi(JavaScriptResourceReference jqueryUi) {
+            withAllUiCore(jqueryUi);
+            this.uiWidgetsAutocomplete = this.uiWidgetsMenu = jqueryUi;
+            return this;
         }
 
         @Override

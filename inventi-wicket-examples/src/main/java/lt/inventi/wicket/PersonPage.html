@@ -1,5 +1,10 @@
 <wicket:extend>
     Person <span wicket:id="name" /> aged <span wicket:id="age" />
+    <wicket:enclosure child="bestFriend">
+    <div>
+        Best Friend: <span wicket:id="bestFriend" />
+    </div>
+    </wicket:enclosure>
     <div>
         <a href="#" wicket:id="edit">Edit</a>
     </div>

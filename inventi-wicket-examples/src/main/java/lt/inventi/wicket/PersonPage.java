@@ -16,7 +16,7 @@ public class PersonPage extends BaseAuthenticatedPage {
     public PersonPage(IModel<Person> person) {
         super(new CompoundPropertyModel<Person>(person));
 
-        add(new Label("name"), new Label("age").setOutputMarkupId(true));
+        add(new Label("name"), new Label("age").setOutputMarkupId(true), new Label("bestFriend"));
         add(new Link<Void>("edit") {
             @SuppressWarnings("unchecked")
             @Override
