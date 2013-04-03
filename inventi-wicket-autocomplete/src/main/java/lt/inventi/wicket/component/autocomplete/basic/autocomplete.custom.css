@@ -15,8 +15,15 @@ span.autocomplete span.spinner{
     display:none;
 }
 
-span.autocomplete button.autocomplete-btn{background: url("images/autocomplete.gif") no-repeat scroll 0 0 transparent;}
-span.autocomplete span.spinner{background: url("images/ui-anim_basic_16x16.gif") no-repeat scroll 0 0 transparent;}
+span.autocomplete button.autocomplete-dropdown {
+	background: url("images/autocomplete.gif") no-repeat scroll 0 0 transparent;
+}
+span.autocomplete button.autocomplete-clear {
+	background: url("images/ico_clear.png") no-repeat scroll 0 0 transparent;
+}
+span.autocomplete span.spinner {
+	background: url("images/ui-anim_basic_16x16.gif") no-repeat scroll 0 0 transparent;
+}
 
 span.autocomplete button.autocomplete-btn.show,
 span.autocomplete span.spinner.show{

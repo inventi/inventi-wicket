@@ -2,7 +2,8 @@
 <wicket:panel>
 	<input wicket:id="value" type="text"></input>
 	<input type="hidden" wicket:id="id"></input>
-	<button class="autocomplete-btn" tabindex="-1" type="button"></button>
+	<button class="autocomplete-btn autocomplete-dropdown" tabindex="-1" type="button"></button>
+	<button class="autocomplete-btn autocomplete-clear" tabindex="-1" type="button"></button>
 	<span class="spinner"></span>
 	<li style="display: none" class="add_new">
 		<a href='#' wicket:id="addNew"><span><span><wicket:message key="autocomplete.addNew"/></span></span></a>
