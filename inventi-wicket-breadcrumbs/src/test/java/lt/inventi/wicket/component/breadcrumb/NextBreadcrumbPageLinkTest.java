@@ -12,8 +12,6 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Test;
 
-import lt.inventi.wicket.component.breadcrumb.BreadcrumbsOperationsHelper;
-
 public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
 
     @Test
@@ -46,6 +44,11 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
         tester.assertRenderedPage(FirstPage.class);
         tester.assertLabel("label", "0");
         assertThat(breadcrumbTitles(), contains("FirstPage"));
+
+        tester.clickLink("nonTrailingLink");
+        tester.assertRenderedPage(SecondPage.class);
+        tester.assertLabel("label", "0");
+        assertThat(breadcrumbTitles(), contains("SecondPage"));
     }
 
     @Test
@@ -112,6 +115,7 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
             return Markup.of("<body><span wicket:id=\"label\" />"
                 + "<div wicket:id=\"crumbs\"></div>"
                 + "<a wicket:id=\"link\"></a>"
+                + "<a wicket:id=\"nonTrailingLink\"></a>"
                 + "<a wicket:id=\"statefulLink\"></a></body>");
         }
     }
@@ -133,6 +137,7 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
         protected void onInitialize() {
             super.onInitialize();
             add(new BookmarkablePageLink<SecondPage>("link", SecondPage.class));
+            add(new NonTrailingBookmarkablePageLink<SecondPage>("nonTrailingLink", SecondPage.class));
             add(new Link<Void>("statefulLink") {
                 @Override
                 public void onClick() {
@@ -159,6 +164,7 @@ public class NextBreadcrumbPageLinkTest extends BreadcrumbsTests {
         protected void onInitialize() {
             super.onInitialize();
             add(new BookmarkablePageLink<FirstPage>("link", FirstPage.class));
+            add(new NonTrailingBookmarkablePageLink<FirstPage>("nonTrailingLink", FirstPage.class));
             add(new Link<Void>("statefulLink") {
                 @Override
                 public void onClick() {

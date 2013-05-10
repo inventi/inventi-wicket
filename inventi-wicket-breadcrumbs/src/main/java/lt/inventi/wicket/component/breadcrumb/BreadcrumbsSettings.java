@@ -49,6 +49,7 @@ public final class BreadcrumbsSettings {
     };
 
     private Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate = null;
+    private Class<? extends BookmarkablePageLink<?>> linkTypeToNotDecorate = null;
 
     private boolean useStatefulBreadcrumbLinks;
 
@@ -119,12 +120,16 @@ public final class BreadcrumbsSettings {
      * support breadcrumbs (specified by {@link #forPagesAnnotatedWith(Class)}
      * will be decorated with breadcrumb trail parameter. This way bookmarkable
      * links will automatically extend the breadcrumb trail.
+     * <p>
+     * In order to create bookmarkable links which <strong>do not</strong>
+     * extend the trail, use {@link NonTrailingBookmarkablePageLink}.
      *
      * @return current settings for chaining
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public BreadcrumbsSettings withDecoratedBookmarkableLinks() {
         this.linkTypeToDecorate = (Class) BookmarkablePageLink.class;
+        this.linkTypeToNotDecorate = (Class) NonTrailingBookmarkablePageLink.class;
         return this;
     }
 
@@ -209,7 +214,7 @@ public final class BreadcrumbsSettings {
             new BreadcrumbTrailExtendingListener(pageFilter, new DefaultTitleProvider(localizedTitleProvider)));
         if (linkTypeToDecorate != null) {
             app.getComponentInitializationListeners().add(
-                new BookmarkableBreadcrumbPageInitializationListener(pageFilter, linkTypeToDecorate));
+                new BookmarkableBreadcrumbPageInitializationListener(pageFilter, linkTypeToDecorate, linkTypeToNotDecorate));
         }
     }
 

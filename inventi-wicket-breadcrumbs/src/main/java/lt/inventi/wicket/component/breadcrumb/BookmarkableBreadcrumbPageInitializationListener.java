@@ -17,17 +17,21 @@ class BookmarkableBreadcrumbPageInitializationListener implements IComponentInit
 
     private static final Logger logger = LoggerFactory.getLogger(BookmarkableBreadcrumbPageInitializationListener.class);
 
-    private final Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate;
+    private final Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate, linkTypeToNotDecorate;
     private final IBreadcrumbPageFilter pageFilter;
 
-    BookmarkableBreadcrumbPageInitializationListener(IBreadcrumbPageFilter pageFilter, Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate) {
+    BookmarkableBreadcrumbPageInitializationListener(IBreadcrumbPageFilter pageFilter,
+        Class<? extends BookmarkablePageLink<?>> linkTypeToDecorate, Class<? extends BookmarkablePageLink<?>> linkTypeToNotDecorate) {
+
         this.pageFilter = pageFilter;
         this.linkTypeToDecorate = linkTypeToDecorate;
+        this.linkTypeToNotDecorate = linkTypeToNotDecorate;
     }
 
     @Override
     public void onInitialize(Component component) {
-        if (linkTypeToDecorate.isAssignableFrom(component.getClass()) &&
+        if (!linkTypeToNotDecorate.isAssignableFrom(component.getClass()) &&
+            linkTypeToDecorate.isAssignableFrom(component.getClass()) &&
             pageFilter.shouldCreateBreadcrumbFor(component.getPage())) {
 
             BookmarkablePageLink<?> link = linkTypeToDecorate.cast(component);
