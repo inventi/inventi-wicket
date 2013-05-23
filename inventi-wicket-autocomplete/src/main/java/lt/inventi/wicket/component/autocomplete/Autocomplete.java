@@ -259,8 +259,12 @@ public class Autocomplete<ID extends Serializable, T, S> extends FormComponentPa
             cfg.put("select", JSONFunction.parse(selectFunction));
         }
 
-        String script = String.format("$('#%s').objectautocomplete(%s)", valueField.getMarkupId(), cfg.toString());
+        String script = autocompleteScript(valueField.getMarkupId(), cfg.toString());
         response.render(OnDomReadyHeaderItem.forScript(script));
+    }
+
+    protected String autocompleteScript(String id, String configJson){
+        return String.format("$('#%s').objectautocomplete(%s)", id, configJson);
     }
 
     private CharSequence generateResponse(String criteria, int size) {
