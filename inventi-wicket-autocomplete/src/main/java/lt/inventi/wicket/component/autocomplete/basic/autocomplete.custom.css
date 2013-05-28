@@ -7,16 +7,16 @@ span.autocomplete{
 span.autocomplete button.autocomplete-btn,
 span.autocomplete span.spinner{ 
     border: 0 none;
-    height: 16px;
+    height: 20px;
     position: absolute;
     right: 4px;
     top: 6px;
-    width: 16px;
+    width: 20px;
     display:none;
 }
 
 span.autocomplete button.autocomplete-dropdown {
-	background: url("images/autocomplete.gif") no-repeat scroll 0 0 transparent;
+	background: url("images/autocomplete.png") no-repeat scroll 0 0 transparent;
 }
 span.autocomplete button.autocomplete-clear {
 	background: url("images/ico_clear.png") no-repeat scroll 0 0 transparent;
