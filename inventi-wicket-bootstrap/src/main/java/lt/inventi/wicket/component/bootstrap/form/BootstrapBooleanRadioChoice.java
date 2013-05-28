@@ -3,6 +3,7 @@ package lt.inventi.wicket.component.bootstrap.form;
 import java.util.Arrays;
 
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.model.IModel;
 
 /**
@@ -24,7 +25,7 @@ import org.apache.wicket.model.IModel;
  * @author vplatonov
  *
  */
-public class BootstrapBooleanRadioChoice extends BootstrapRadioChoice<Boolean> {
+public class BootstrapBooleanRadioChoice extends RadioChoice<Boolean> {
 
     public BootstrapBooleanRadioChoice(String id) {
         super(id, Arrays.asList(Boolean.TRUE, Boolean.FALSE), new BooleanRadioChoiceRenderer());
@@ -44,6 +45,10 @@ public class BootstrapBooleanRadioChoice extends BootstrapRadioChoice<Boolean> {
         public String getIdValue(Boolean object, int index) {
             return String.valueOf(object);
         }
+    }
+    
+    public String getSuffix(){
+        return "";
     }
 
     @Override
