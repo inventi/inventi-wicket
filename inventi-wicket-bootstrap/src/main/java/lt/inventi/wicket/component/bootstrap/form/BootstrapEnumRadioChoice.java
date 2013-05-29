@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
+import org.apache.wicket.markup.html.form.RadioChoice;
 
-public class BootstrapEnumRadioChoice extends BootstrapRadioChoice<Enum<?>> {
+public class BootstrapEnumRadioChoice extends RadioChoice<Enum<?>> {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public BootstrapEnumRadioChoice(String id, Class<? extends Enum<?>> enumClass) {
@@ -27,5 +28,9 @@ public class BootstrapEnumRadioChoice extends BootstrapRadioChoice<Enum<?>> {
     public BootstrapEnumRadioChoice(String id, List<? extends Enum<?>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
+    }
+
+    public String getSuffix(){
+        return "";
     }
 }
