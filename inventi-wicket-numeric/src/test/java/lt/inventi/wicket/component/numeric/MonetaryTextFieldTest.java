@@ -36,7 +36,7 @@ public class MonetaryTextFieldTest {
         MockHttpServletResponse response = tester.getLastResponse();
         assertThat(response.getDocument(), containsString("$('#" + page.getAmountMarkupId() + "').autoNumeric('init');"));
 
-        tester.newFormTester("form").setValue("amount", "11.00").submit();
+        tester.newFormTester("form").setValue("amount", "11").submit();
 
         tester.assertNoErrorMessage();
         assertThat(valueModel.getObject().compareTo(BigDecimal.valueOf(11)), is(0));
