@@ -1,7 +1,10 @@
 package lt.inventi.wicket.test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.SortedMap;
@@ -95,21 +98,32 @@ public abstract class FuzzyComponentResolverUtils {
     }
 
     private static <T> T selectSecondaryCandidate(MarkupContainer container, String path,
-        Class<T> componentType, NavigableMap<Match, T> candidates) {
+        Class<T> componentType, NavigableMap<Match, Set<T>> candidates) {
 
         if (candidates.isEmpty()) {
             throw noCandidatesException(container, path, componentType);
         }
-        if (candidates.size() == 1) {
-            return candidates.values().iterator().next();
-        }
 
         Match last = candidates.lastKey();
-        SortedMap<Match, T> bestMatches = candidates.tailMap(Match.lowestFor(last.distance));
+        SortedMap<Match, Set<T>> bestMatches = candidates.tailMap(Match.lowestFor(last.distance));
         if (bestMatches.size() > 1) {
-            throw multipleCandidatesException("secondary", bestMatches.values(), container, path, componentType);
+            throw multipleCandidatesException("secondary", concat(bestMatches.values()), container, path, componentType);
         }
-        return bestMatches.values().iterator().next();
+        Set<T> equalMatches = bestMatches.values().iterator().next();
+        if (equalMatches.size() == 1) {
+            return equalMatches.iterator().next();
+        }
+        throw multipleCandidatesException("secondary", equalMatches, container, path, componentType);
+    }
+
+    private static <C extends Iterable<T>, T> Iterable<T> concat(Collection<C> xxs) {
+        List<T> result = new LinkedList<T>();
+        for (Iterable<T> xs: xxs) {
+            for (T x: xs) {
+                result.add(x);
+            }
+        }
+        return result;
     }
 
     private static Match calculateMatch(String[] pathToMatch, String[] searchPath) {
@@ -240,7 +254,7 @@ public abstract class FuzzyComponentResolverUtils {
         private final Class<T> componentType;
 
         public final Set<T> primaryCandidates = new HashSet<T>();
-        public final NavigableMap<Match, T> secondaryCandidates = new TreeMap<Match, T>();
+        public final NavigableMap<Match, Set<T>> secondaryCandidates = new TreeMap<Match, Set<T>>();
 
         public PathMatchingVisitor(String searchPath, Class<T> componentType) {
             this.searchPath = searchPath;
@@ -260,7 +274,12 @@ public abstract class FuzzyComponentResolverUtils {
                 if (pathToMatch.length > searchPathParts.length) {
                     Match match = calculateMatch(pathToMatch, searchPathParts);
                     if (match != null) {
-                        secondaryCandidates.put(match, componentType.cast(c));
+                        Set<T> matches = secondaryCandidates.get(match);
+                        if (matches == null) {
+                            matches = new HashSet<T>();
+                        }
+                        matches.add(componentType.cast(c));
+                        secondaryCandidates.put(match, matches);
                     }
                 }
             }

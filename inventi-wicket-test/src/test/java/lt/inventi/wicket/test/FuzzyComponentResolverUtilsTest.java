@@ -1,8 +1,7 @@
 package lt.inventi.wicket.test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -10,7 +9,9 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IFormSubmittingComponent;
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.Assert;
 import org.junit.Test;
+
 
 public class FuzzyComponentResolverUtilsTest {
 
@@ -47,7 +48,7 @@ public class FuzzyComponentResolverUtilsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void doesntFindIncompleteMatch() {
+    public void doesNotFindIncompleteMatch() {
         FuzzyComponentResolverUtils.findComponent(parent, "root:child1:non-existent", WebMarkupContainer.class);
     }
 
@@ -55,10 +56,22 @@ public class FuzzyComponentResolverUtilsTest {
     public void cannotDecideBetweenMultiplePrimaryChoices() {
         // Primary choice is a choice which ends with the search path or consists of the search path entirely
         try {
-            FuzzyComponentResolverUtils.findComponent(parent, "a", WebMarkupContainer.class);
+            WebMarkupContainer result = FuzzyComponentResolverUtils.findComponent(parent, "a", WebMarkupContainer.class);
+            Assert.fail("Should not have found " + result.getPath());
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), containsString("root:child2:a"));
             assertThat(e.getMessage(), containsString("root:child1:child12:child122:a"));
+        }
+    }
+
+    @Test
+    public void cannotDecideBetweenMultipleSecondaryChoices() throws Exception {
+        try {
+            WebMarkupContainer result = FuzzyComponentResolverUtils.findComponent(parent, "root:0:x", WebMarkupContainer.class);
+            Assert.fail("Should not have found " + result.getPath());
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage(), containsString("root:0:child41:0:x"));
+            assertThat(e.getMessage(), containsString("root:0:child41:1:x"));
         }
     }
 
@@ -116,6 +129,26 @@ public class FuzzyComponentResolverUtilsTest {
         r.add(child3);
         // first level
         child3.add(new Button("submit"));
+
+        // root:0:child41:0:x
+        // root:0:child41:1:x
+        WebMarkupContainer child4 = new WebMarkupContainer("0");
+        r.add(child4);
+
+        WebMarkupContainer child41 = new WebMarkupContainer("child41");
+        child4.add(child41);
+
+        WebMarkupContainer child411 = new WebMarkupContainer("0");
+        child41.add(child411);
+
+        WebMarkupContainer child4111 = new WebMarkupContainer("x");
+        child411.add(child4111);
+
+        WebMarkupContainer child421 = new WebMarkupContainer("1");
+        child41.add(child421);
+
+        WebMarkupContainer child4121 = new WebMarkupContainer("x");
+        child421.add(child4121);
 
         return result;
     }
