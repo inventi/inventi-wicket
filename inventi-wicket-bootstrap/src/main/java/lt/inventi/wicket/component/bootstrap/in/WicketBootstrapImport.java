@@ -1,6 +1,6 @@
 package lt.inventi.wicket.component.bootstrap.in;
 
-import de.agilecoders.wicket.markup.html.bootstrap.components.TooltipBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.TooltipBehavior;
 
 /**
  * Specifies classes which should be imported from the <a

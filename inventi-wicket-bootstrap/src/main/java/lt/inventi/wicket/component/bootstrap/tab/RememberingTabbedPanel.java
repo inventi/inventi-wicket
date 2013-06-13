@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.string.StringValue;
 
-import de.agilecoders.wicket.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
+import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 
 public class RememberingTabbedPanel<T extends ITab> extends BootstrapTabbedPanel<T> {
 

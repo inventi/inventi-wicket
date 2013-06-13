@@ -17,7 +17,7 @@
     </licenses>
 
     <properties>
-        <wicket.version>6.6.0</wicket.version>
+        <wicket.version>6.8.0</wicket.version>
         <gson.version>2.2.2</gson.version>
         <shiro.version>1.2.1</shiro.version>
 

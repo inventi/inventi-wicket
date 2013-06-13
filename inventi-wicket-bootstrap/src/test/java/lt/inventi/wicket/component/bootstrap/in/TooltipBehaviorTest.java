@@ -5,7 +5,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Test;
 
-import de.agilecoders.wicket.markup.html.bootstrap.components.TooltipBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.components.TooltipBehavior;
 
 public class TooltipBehaviorTest {
 

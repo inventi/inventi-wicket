@@ -16,7 +16,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 
-import de.agilecoders.wicket.util.Json;
+import de.agilecoders.wicket.core.util.Json;
 
 import lt.inventi.wicket.resource.ResourceSettings;
 
