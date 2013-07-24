@@ -15,6 +15,7 @@ public class BootstrapCheckBoxMultipleChoice<T> extends CheckBoxMultipleChoice<T
     }
 
     private CheckboxType type = CheckboxType.DEFAULT;
+    private ChoiceUtils.InputPosition position = ChoiceUtils.InputPosition.BEFORE_LABEL;
 
     public BootstrapCheckBoxMultipleChoice(String id, IModel<? extends Collection<T>> model, IModel<? extends List<? extends T>> choices, IChoiceRenderer<? super T> renderer) {
         super(id, model, choices, renderer);
@@ -65,6 +66,11 @@ public class BootstrapCheckBoxMultipleChoice<T> extends CheckBoxMultipleChoice<T
         setSuffix("\n");
     }
 
+    public BootstrapCheckBoxMultipleChoice<T> setInputPosition(ChoiceUtils.InputPosition position) {
+        this.position = position;
+        return this;
+    }
+
     public BootstrapCheckBoxMultipleChoice<T> setType(CheckboxType type) {
         this.type = type;
         return this;
@@ -74,6 +80,6 @@ public class BootstrapCheckBoxMultipleChoice<T> extends CheckBoxMultipleChoice<T
     protected void appendOptionHtml(AppendingStringBuffer buffer, T choice, int index, String selected) {
         super.appendOptionHtml(buffer, choice, index, selected);
         String cssClass = "checkbox" + (type == CheckboxType.DEFAULT ? "" : " inline");
-        ChoiceUtils.moveInputInsideLabel(buffer, cssClass);
+        ChoiceUtils.moveInputInsideLabel(buffer, cssClass, position);
     }
 }

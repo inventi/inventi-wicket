@@ -21,6 +21,7 @@ public class BootstrapCheckBoxMultipleChoiceTest {
     @Test
     public void generatesBootstrapCheckBoxMarkup() {
         BootstrapCheckBoxMultipleChoice<String> choice = new BootstrapCheckBoxMultipleChoice<String>("test", Arrays.asList("1"));
+        choice.setInputPosition(ChoiceUtils.InputPosition.AFTER_LABEL);
 
         render(choice, "<div wicket:id=\"test\"><input type=\"checkbox\"></input></div>");
 
@@ -34,6 +35,7 @@ public class BootstrapCheckBoxMultipleChoiceTest {
     @Test
     public void generatesInlineBootstrapCheckBoxMarkup() {
         BootstrapCheckBoxMultipleChoice<String> choice = new BootstrapCheckBoxMultipleChoice<String>("test", Arrays.asList("1")).setType(CheckboxType.INLINE);
+        choice.setInputPosition(ChoiceUtils.InputPosition.AFTER_LABEL);
 
         render(choice, "<div wicket:id=\"test\"><input type=\"checkbox\"></input></div>");
 
@@ -44,6 +46,7 @@ public class BootstrapCheckBoxMultipleChoiceTest {
     @Test
     public void generatesBootstrapcheckboxMarkupForMultipleOptions() {
         BootstrapCheckBoxMultipleChoice<String> choice = new BootstrapCheckBoxMultipleChoice<String>("test", Arrays.asList("FEMALE", "MALE", "INDETERMINATE"));
+        choice.setInputPosition(ChoiceUtils.InputPosition.AFTER_LABEL);
 
         render(choice, "<div wicket:id=\"test\"><input type=\"checkbox\"></input></div>");
 

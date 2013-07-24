@@ -73,6 +73,6 @@ public class BootstrapRadioChoice<T> extends RadioChoice<T> {
     protected void appendOptionHtml(AppendingStringBuffer buffer, T choice, int index, String selected) {
         super.appendOptionHtml(buffer, choice, index, selected);
         String cssClass = "radio" + (type == Type.DEFAULT ? "" : " inline");
-        ChoiceUtils.moveInputInsideLabel(buffer, cssClass);
+        ChoiceUtils.moveInputInsideLabel(buffer, cssClass, ChoiceUtils.InputPosition.AFTER_LABEL);
     }
 }

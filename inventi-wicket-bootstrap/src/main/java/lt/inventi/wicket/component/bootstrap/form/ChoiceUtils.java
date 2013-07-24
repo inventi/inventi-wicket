@@ -4,11 +4,15 @@ import org.apache.wicket.util.string.AppendingStringBuffer;
 
 abstract class ChoiceUtils {
 
+    public enum InputPosition {
+        BEFORE_LABEL, AFTER_LABEL
+    }
+
     private ChoiceUtils() {
         // static utils
     }
 
-    static void moveInputInsideLabel(AppendingStringBuffer buffer, String cssClass) {
+    static void moveInputInsideLabel(AppendingStringBuffer buffer, String cssClass, InputPosition position) {
         int inputIdx = buffer.lastIndexOf("<input");
         if (inputIdx == -1) {
             throw new IllegalStateException("Must contain an input!");
@@ -27,6 +31,6 @@ abstract class ChoiceUtils {
         String labelWithClass = label.substring(0, 7) + labelClass + label.substring(7, label.length());
         String input = buffer.substring(inputIdx, labelIdx);
 
-        buffer.replace(inputIdx, labelEndIdx, labelWithClass + input);
+        buffer.replace(inputIdx, labelEndIdx, position == InputPosition.BEFORE_LABEL ? input + labelWithClass : labelWithClass + input);
     }
 }
