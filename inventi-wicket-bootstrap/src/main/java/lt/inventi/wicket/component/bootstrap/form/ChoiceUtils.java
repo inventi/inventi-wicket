@@ -31,6 +31,6 @@ abstract class ChoiceUtils {
         String labelWithClass = label.substring(0, 7) + labelClass + label.substring(7, label.length());
         String input = buffer.substring(inputIdx, labelIdx);
 
-        buffer.replace(inputIdx, labelEndIdx, position == InputPosition.BEFORE_LABEL ? "<div>" + input + labelWithClass + "</div>" : labelWithClass + input);
+        buffer.replace(inputIdx, labelEndIdx, position == InputPosition.BEFORE_LABEL ? "<div class=\"" + cssClass + "\">" + input + label + "</div>" : labelWithClass + input);
     }
 }
