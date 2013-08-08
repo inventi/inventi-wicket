@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.Session;
 
@@ -35,7 +34,28 @@ class BreadcrumbTrailHistory implements Serializable {
         Breadcrumb crumb = history.useExistingCrumbIfPossible(newCrumb);
 
         PersistentList previousTrail = history.breadcrumbMap.get(maybeTrailId);
+        if (BreadcrumbsSettings.isCompactionEnabled()) {
+            previousTrail = compact(previousTrail, crumb);
+        }
         history.breadcrumbMap.put(crumb.getId(), new PersistentList(previousTrail, crumb));
+    }
+
+    private static PersistentList compact(PersistentList trail, Breadcrumb crumb) {
+        if (trail == null) {
+            return null;
+        }
+
+        PersistentList next = trail;
+        while (true) {
+            if (next.tail.getType().equals(crumb.getType())) {
+                return next.first;
+            }
+            if (next.first == null) {
+                break;
+            }
+            next = next.first;
+        }
+        return trail;
     }
 
     /**

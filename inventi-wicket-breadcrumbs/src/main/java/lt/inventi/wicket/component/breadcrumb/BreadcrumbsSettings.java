@@ -38,6 +38,10 @@ public final class BreadcrumbsSettings {
         return Application.get().getMetaData(KEY).hierarchy;
     }
 
+    static boolean isCompactionEnabled() {
+        return Application.get().getMetaData(KEY).compactionEnabled;
+    }
+
     private IBreadcrumbPageFilter pageFilter = new IBreadcrumbPageFilter() {
         @Override
         public boolean shouldCreateBreadcrumbFor(IRequestablePage page) {
@@ -55,6 +59,8 @@ public final class BreadcrumbsSettings {
 
     private Integer timesToRepeatBeforeCollapse;
     private IBreadcrumbCollapser collapser;
+
+    private boolean compactionEnabled;
 
     private IComponentBreadcrumbTitleProvider localizedTitleProvider = new LocalizedTitleProvider("breadcrumb");
 
@@ -185,6 +191,11 @@ public final class BreadcrumbsSettings {
      * Where {@code ...} can be expanded to look at the collapsed part of the
      * trail.
      *
+     * <p>
+     *     <b>If {@link #compact()} is set, collapse won't happen as all of the
+     *     repeated breadcrumbs will be instantly compacted</b>
+     * </p>
+     *
      * @param times
      *            the breadcrumb must be encountered in a single trail in order
      *            to be collapsed
@@ -195,6 +206,35 @@ public final class BreadcrumbsSettings {
             throw new IllegalArgumentException("Cannot collapse when repeated " + times + " times, must be positive!");
         }
         this.timesToRepeatBeforeCollapse = times;
+        return this;
+    }
+
+    /**
+     * Will force the {@code BreadcrumbsPanel} to compact breadcrumbs encountered more than once.
+     * <p>
+     * For example, if {@link #compact} is set and you have a breadcrumb trail
+     * consisting of
+     *
+     * <pre>
+     * First / Second / Third
+     * </pre>
+     *
+     * and the next page is <b>First</b>, the breadcrumb trail will become
+     *
+     * <pre>
+     * First
+     * </pre>
+     *
+     * i.e. all of the crumbs between the repeated pages will be discarded.
+     *
+     * <p>
+     * <b>This effectivly discards any {@link #collapseWhenRepeated(int)} settings.</b>
+     * </p>
+     *
+     * @return current settings for chaining
+     */
+    public BreadcrumbsSettings compact() {
+        this.compactionEnabled = true;
         return this;
     }
 
