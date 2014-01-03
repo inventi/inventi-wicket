@@ -174,18 +174,24 @@ public class ExpandableViewTest extends BaseNonInjectedTest {
     }
 
     @Test
-    public void shouldAddAnItemAndRemoveTheFirstTwo() {
+    public void shouldRemoveItemsFromTheMiddle() {
         NonNullItemTestPanel panel = new NonNullItemTestPanel();
         tester.startComponentInPage(panel);
 
         tester.executeAjaxEvent(panel.getAddItemLink(), "click");
-        assertThat(values, contains("test1", "test2", "test3"));
-        assertThat(panel.getTestView().size(), is(3));
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+        tester.executeAjaxEvent(panel.getAddItemLink(), "click");
+        assertThat(values, contains("test1", "test2", "test3", "test3", "test3"));
+        assertThat(panel.getTestView().size(), is(5));
 
-        tester.executeAjaxEvent(panel.getTestView().get("0:remove"), "click");
-        assertThat(values, contains("test2", "test3"));
         tester.executeAjaxEvent(panel.getTestView().get("1:remove"), "click");
-        assertThat(values, contains("test3"));
+        assertThat(values, contains("test1", "test3", "test3", "test3"));
+        tester.executeAjaxEvent(panel.getTestView().get("2:remove"), "click");
+        assertThat(values, contains("test1", "test3", "test3"));
+        tester.executeAjaxEvent(panel.getTestView().get("3:remove"), "click");
+        assertThat(values, contains("test1", "test3"));
+        tester.executeAjaxEvent(panel.getTestView().get("4:remove"), "click");
+        assertThat(values, contains("test1"));
     }
 
     @Test

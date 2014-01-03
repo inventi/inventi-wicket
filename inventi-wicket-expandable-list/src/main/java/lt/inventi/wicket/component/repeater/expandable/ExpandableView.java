@@ -150,7 +150,9 @@ public abstract class ExpandableView<T> extends RefreshingView<T> implements IGe
             IndexTrackingModel<T> model = new IndexTrackingModel<T>(index) {
                 @Override
                 public T getObject() {
-                    return getList().get(getIndex());
+                    List<T> list = getList();
+                    int index = Math.min(Math.max(getIndex(), 0), list.size() - 1);
+                    return list.get(index);
                 }
 
                 @Override
