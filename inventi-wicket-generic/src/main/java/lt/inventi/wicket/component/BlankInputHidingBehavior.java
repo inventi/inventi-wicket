@@ -19,7 +19,6 @@ import lt.inventi.wicket.resource.ResourceSettings;
 public class BlankInputHidingBehavior extends Behavior {
 
     private Component focusComponent;
-
     private IModel<String> linkLabel;
 
     public BlankInputHidingBehavior(IModel<String> linkLabel) {
@@ -58,4 +57,5 @@ public class BlankInputHidingBehavior extends Behavior {
             String.format("$('#%s').blankInput({id: '%s', label: '%s', focus: '%s'});",
                 id, id, label, focusComponent.getMarkupId())));
     }
+
 }
