@@ -1,13 +1,14 @@
 package lt.inventi.wicket.component.enums;
 
+import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
+import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
+import org.apache.wicket.model.IModel;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
-import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 
 public class EnumCheckBoxMultipleChoice extends CheckBoxMultipleChoice<Enum<?>> {
 
@@ -26,6 +27,12 @@ public class EnumCheckBoxMultipleChoice extends CheckBoxMultipleChoice<Enum<?>> 
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public EnumCheckBoxMultipleChoice(String id, List<Enum<?>> choices) {
+        super(id, choices);
+        setChoiceRenderer(new EnumChoiceRenderer(this));
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public EnumCheckBoxMultipleChoice(String id, IModel<List<Enum<?>>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }

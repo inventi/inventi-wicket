@@ -1,13 +1,14 @@
 package lt.inventi.wicket.component.enums;
 
+import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
+import org.apache.wicket.markup.html.form.RadioChoice;
+import org.apache.wicket.model.IModel;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
-import org.apache.wicket.markup.html.form.RadioChoice;
 
 /**
  * Radio component that displays localized values of certain enumeration.
@@ -29,6 +30,12 @@ public class EnumRadioChoice extends RadioChoice<Enum<?>> {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public EnumRadioChoice(String id, List<? extends Enum<?>> choices) {
+        super(id, choices);
+        setChoiceRenderer(new EnumChoiceRenderer(this));
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public EnumRadioChoice(String id, IModel<List<? extends Enum<?>>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }
