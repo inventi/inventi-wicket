@@ -32,7 +32,7 @@ public class EnumCheckBoxMultipleChoice extends CheckBoxMultipleChoice<Enum<?>> 
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public EnumCheckBoxMultipleChoice(String id, IModel<List<Enum<?>>> choices) {
+    public EnumCheckBoxMultipleChoice(String id, IModel<? extends List<Enum<?>>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }

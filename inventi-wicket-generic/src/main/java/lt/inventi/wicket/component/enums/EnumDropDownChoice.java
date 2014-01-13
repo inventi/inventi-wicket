@@ -31,7 +31,7 @@ public class EnumDropDownChoice extends DropDownChoice<Enum<?>> {
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }
 
-    public EnumDropDownChoice(String id, IModel<List<? extends Enum<?>>> choices) {
+    public EnumDropDownChoice(String id, IModel<? extends List<? extends Enum<?>>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }

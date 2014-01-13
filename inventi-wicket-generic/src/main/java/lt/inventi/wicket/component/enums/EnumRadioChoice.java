@@ -35,7 +35,7 @@ public class EnumRadioChoice extends RadioChoice<Enum<?>> {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public EnumRadioChoice(String id, IModel<List<? extends Enum<?>>> choices) {
+    public EnumRadioChoice(String id, IModel<? extends List<? extends Enum<?>>> choices) {
         super(id, choices);
         setChoiceRenderer(new EnumChoiceRenderer(this));
     }
